@@ -4,234 +4,189 @@
 
 ## Software Architecture Document (SAD)
 
-Version: 1.0
+**Version:** 1.0
 
-Status: Draft
+**Status:** Draft
 
-Project: Alura Challenge Agente AI
+**Project:** Alura Challenge Agente AI
 
-Author: Oscar Alejandro Medina
-
----
-
-# 1. Overview
-
-## Purpose
-
-This document describes the software architecture of the TechFlow AI Corporate Knowledge Agent.
-
-The application is based on a Retrieval-Augmented Generation (RAG) architecture that allows users to ask questions about company documentation using natural language.
-
-The objective is to provide a simple, modular and maintainable architecture while keeping deployment and operational costs close to zero by using free-tier technologies.
+**Author:** Oscar Alejandro Medina
 
 ---
 
-# 2. Architectural Goals
+# 1. Purpose
 
-The architecture has been designed to satisfy the following principles:
+This document defines the software architecture of the TechFlow AI Corporate Knowledge Agent.
 
-- Simplicity over complexity
-- Clean architecture
-- Modular components
-- Easy maintenance
-- Easy deployment
-- Easy migration to commercial AI providers
-- Minimal infrastructure
-- Local execution support
-- Cloud deployment support
+Its objective is to describe how the application is organized internally, how its modules interact, and which architectural decisions guide the implementation.
+
+Project objectives, business scope and functional requirements are defined in **specs/000-project-overview.md**.
 
 ---
 
-# 3. High Level Architecture
+# 2. Architectural Principles
+
+The architecture follows the following principles:
+
+- Keep It Simple (KISS)
+- Separation of Concerns
+- Single Responsibility Principle
+- Low Coupling
+- High Cohesion
+- Configuration over Hardcoding
+- Modular Monolith
+- AI Provider Agnostic
+- Maintainability First
+
+Every module should have one clear responsibility.
+
+---
+
+# 3. High-Level Architecture
 
 ```
-                        User
+                         User
 
-                          │
+                           │
 
-                  Streamlit Web UI
+                   Streamlit Interface
 
-                ┌─────────┴─────────┐
+                           │
 
-                │                   │
+                    Application Layer
 
-            Chat Interface      Admin Panel
+        ┌────────────┬─────────────┬────────────┐
 
-                │                   │
+        │            │             │
 
-                └─────────┬─────────┘
+   Authentication   Chat      Knowledge Base
 
-                          │
+        │            │             │
 
-                    Application Core
+        └────────────┴─────────────┘
 
-          ┌───────────────┼────────────────┐
+                     RAG Pipeline
 
-          │               │                │
+        ┌────────────┬─────────────┬────────────┐
 
-     Chat Service   Document Service   Authentication
+        │            │             │
 
-          │               │
-
-          └───────────────┬───────────────┘
-
-                          │
-
-                    Vector Database
-
-                      ChromaDB
-
-                          │
-
-                    Embedding Model
-
-                          │
-
-                  Document Processing
-
-                          │
-
- PDF • DOCX • TXT • CSV • MD • JSON • HTML
+   Embeddings   ChromaDB     LLM Provider
 
 ```
 
----
+The application is implemented as a modular monolith.
 
-# 4. Architectural Style
-
-The project follows a modular monolithic architecture.
-
-Reasons:
-
-- Small application
-- Easy deployment
-- Simple maintenance
-- Fast development
-- Minimal configuration
-- Perfect fit for Streamlit
-
-No microservices are required.
-
-No distributed architecture is required.
+Each layer communicates only with the services directly below it.
 
 ---
 
-# 5. Main Components
+# 4. Layer Responsibilities
 
-## Streamlit UI
+## Presentation Layer
 
 Responsible for:
 
-- User interface
-- Chat window
-- File upload
-- Admin authentication
-- Sidebar
-- Displaying references
-- Status messages
-
----
-
-## Chat Service
-
-Responsible for:
-
-- Receiving user questions
-- Preparing prompts
-- Sending requests to the LLM
-- Returning formatted answers
-
-This module never accesses documents directly.
-
----
-
-## Document Service
-
-Responsible for:
-
-- Uploading files
-- Validating formats
-- Loading documents
-- Chunking
-- Generating embeddings
-- Updating ChromaDB
-
----
-
-## Authentication
-
-A lightweight administrator authentication system.
-
-The application does not implement user accounts.
-
-Only one administrator password is required.
-
-Administrator permissions:
-
-- Upload documents
-- Delete documents
-- Rebuild Vector Database
-
-Regular users can only:
-
-- Ask questions
-
----
-
-## Vector Database
+- User Interface
+- Navigation
+- Forms
+- Chat
+- Theme Management
+- Status Messages
 
 Technology:
 
-ChromaDB
-
-Responsibilities:
-
-- Store embeddings
-- Persist vectors
-- Similarity search
-- Metadata storage
-
-Persistence is automatic.
+- Streamlit
 
 ---
 
-## Embedding Service
+## Application Layer
 
-Responsible for converting document chunks into vector representations.
+Responsible for:
 
-Initially local HuggingFace embeddings will be used.
+- Business workflows
+- Session state
+- Service orchestration
+- Request routing
 
-This component should be replaceable without modifying the rest of the application.
-
----
-
-## LLM Provider
-
-The architecture abstracts the language model provider.
-
-Initial provider:
-
-OpenRouter
-
-The project should support changing providers simply by editing environment variables.
-
-Future compatible providers:
-
-- OpenAI
-- Gemini
-- Claude
-- Cohere
-- Groq
-- Local Ollama
+This layer contains no UI code.
 
 ---
 
-# 6. Document Processing Pipeline
+## RAG Layer
 
-When an administrator uploads documents, the following workflow is executed:
+Responsible for:
+
+- Query Embeddings
+- Similarity Search
+- Prompt Construction
+- Context Assembly
+- Response Generation
+
+The RAG pipeline should remain independent of any specific LLM provider.
+
+---
+
+## Infrastructure Layer
+
+Responsible for:
+
+- ChromaDB
+- Embedding Models
+- LLM Providers
+- File Storage
+- Environment Configuration
+
+Infrastructure components should be replaceable without affecting higher layers.
+
+---
+
+# 5. Component Architecture
+
+The system is organized into independent services.
 
 ```
-Upload Files
+src/
+
+services/
+
+    auth_service.py
+
+    chat_service.py
+
+    knowledge_library_service.py
+
+    embedding_service.py
+
+    retrieval_service.py
+
+    prompt_service.py
+
+    llm_service.py
+
+    rag_pipeline.py
+
+utils/
+
+config/
+
+pages/
+
+assets/
+
+data/
+```
+
+Each service owns a single business responsibility.
+
+---
+
+# 6. Data Flow
+
+## Knowledge Indexing
+
+```
+Knowledge Asset
 
 ↓
 
@@ -252,26 +207,26 @@ Embeddings
 ↓
 
 ChromaDB
-
-↓
-
-Ready
 ```
 
 ---
 
-# 7. Question Answering Pipeline
+## Question Answering
 
 ```
 User Question
 
 ↓
 
-Retriever
+Embedding
 
 ↓
 
-Relevant Chunks
+Similarity Search
+
+↓
+
+Context Retrieval
 
 ↓
 
@@ -287,192 +242,221 @@ Answer
 
 ↓
 
-Display Sources
+Source Attribution
 ```
 
----
-
-# 8. Supported File Formats
-
-The system will support:
-
-- PDF
-- DOCX
-- TXT
-- CSV
-- Markdown
-- JSON
-- HTML
-
-The architecture should allow new loaders to be added without changing existing modules.
+Both workflows remain independent.
 
 ---
 
-# 9. Security
+# 7. Module Dependencies
 
-The application is public.
+Dependency direction should always be:
 
-Only the document management area is protected.
+```
+UI
 
-Authentication is based on a password stored as an environment variable.
+↓
 
-No user database is required.
+Application
 
-No session persistence is required.
+↓
 
----
+Services
 
-# 10. Error Handling
+↓
 
-The system should gracefully handle:
+Infrastructure
+```
 
-- Invalid files
-- Unsupported formats
-- Empty documents
-- Corrupted documents
-- LLM failures
-- Embedding failures
-- ChromaDB failures
+Lower layers must never depend on higher layers.
 
-The user should always receive friendly error messages.
+For example:
 
----
+✓ Chat → LLM
 
-# 11. Logging
+✓ Chat → Retrieval
 
-The application should generate logs for:
+✗ ChromaDB → UI
 
-- Uploaded documents
-- Deleted documents
-- Index creation
-- User questions
-- LLM responses
-- Errors
-
-The objective is debugging, not auditing.
+✗ Embeddings → Streamlit
 
 ---
 
-# 12. Scalability
+# 8. Configuration Strategy
 
-Although this project is intentionally simple, the architecture should support:
+Application behavior should be configurable.
 
-- More document types
-- Larger document collections
+Secrets:
+
+- Environment Variables (.env)
+
+Runtime Preferences:
+
+- config.json
+
+No configuration should be hardcoded.
+
+---
+
+# 9. Extension Points
+
+The architecture intentionally supports future replacement of:
+
+LLM Provider
+
+- OpenRouter
+- OpenAI
+- Gemini
+- Ollama
+- Claude
+- Cohere
+
+Vector Database
+
+- ChromaDB
+
+Embedding Models
+
+- HuggingFace
+- Nomic
+- E5
+- BGE
+
+Document Loaders
+
+- Additional file formats
+
+These replacements should require minimal code changes.
+
+---
+
+# 10. Design Decisions
+
+The following architectural decisions are considered stable.
+
+### Modular Monolith
+
+The application remains a single deployable unit.
+
+### Streamlit
+
+The UI is implemented exclusively with Streamlit.
+
+### ChromaDB
+
+The default vector database.
+
+### LangChain
+
+Used for orchestration and document processing.
+
+### Environment-based Configuration
+
+Sensitive information must never be hardcoded.
+
+### Local Embeddings
+
+Embeddings are generated locally whenever possible.
+
+---
+
+# 11. Error Isolation
+
+Each service should manage its own exceptions.
+
+Errors should propagate only as friendly application-level messages.
+
+Internal exceptions should never be exposed directly to users.
+
+---
+
+# 12. Logging Strategy
+
+Logging responsibilities are distributed.
+
+Examples:
+
+Authentication
+
+Knowledge Library
+
+Indexing
+
+Retrieval
+
+LLM Requests
+
+Application Errors
+
+Logging should support debugging rather than auditing.
+
+---
+
+# 13. Scalability Strategy
+
+Although Version 1 is intentionally simple, the architecture supports future growth.
+
+Potential extensions include:
+
+- Additional document formats
+- Larger Knowledge Libraries
+- Multiple LLM providers
 - Better embedding models
-- Different vector databases
-- Different LLM providers
+- Metadata filtering
+- Hybrid search
+- Reranking
+- OCR
 
-without major code changes.
-
----
-
-# 13. Deployment
-
-The application should run identically in:
-
-- Local development
-- Streamlit Community Cloud
-- Render
-
-The deployment process must only require environment variables.
+These extensions should require minimal architectural changes.
 
 ---
 
-# 14. Directory Responsibilities
+# 14. Architecture Constraints
 
-```
-src/
+The architecture intentionally avoids:
 
-    app/
-
-        ui/
-
-        services/
-
-        rag/
-
-        loaders/
-
-        embeddings/
-
-        llm/
-
-        auth/
-
-        config/
-
-        utils/
-
-```
-
-Each module must have a single responsibility.
-
----
-
-# 15. Design Principles
-
-The project follows:
-
-- KISS (Keep It Simple, Stupid)
-- DRY (Don't Repeat Yourself)
-- Separation of Concerns
-- Low Coupling
-- High Cohesion
-- Configuration over Hardcoding
-
----
-
-# 16. Future Improvements
-
-Possible future enhancements:
-
-- User accounts
-
-- Role Based Access
-
-- Conversation history
-
-- Document versioning
-
-- OCR support
-
-- Image processing
-
-- Voice interaction
-
-- Agentic workflows
-
-These features are intentionally excluded from the current version.
-
----
-
-# 17. Out of Scope
-
-The following features are intentionally excluded:
-
-- Multi-agent systems
+- Microservices
+- Distributed systems
 - SQL databases
+- REST APIs
 - Docker orchestration
 - Kubernetes
-- Authentication providers
-- Payment systems
-- Analytics dashboards
-- REST API
-- React frontend
+- Message brokers
+- Event sourcing
 
-The goal is to keep the project focused, maintainable and suitable for the requirements.
+These technologies are unnecessary for Version 1.
 
 ---
 
-# 18. Success Criteria
+# 15. Relationship with Specifications
 
-The architecture will be considered successful if:
+This document describes **how the system is organized**.
 
-- The application answers questions accurately.
-- Documents can be uploaded dynamically.
-- The vector database updates correctly.
-- The administrator area is protected.
-- Deployment works in cloud services.
-- Switching LLM providers requires only configuration changes.
-- The codebase remains simple and understandable.
+The detailed behavior of each module is defined in:
+
+- specs/000-project-overview.md
+- specs/001-chat-interface.md
+- specs/002-knowledge-base-management.md
+- specs/003-authentication.md
+- specs/004-rag-pipeline.md
+- specs/005-configuration.md
+- specs/006-deployment.md
+
+If a conflict exists, the individual specification takes precedence over this document.
+
+---
+
+# 16. Final Notes
+
+The architecture intentionally favors simplicity over sophistication.
+
+Every architectural decision should contribute to one or more of the following goals:
+
+- Readability
+- Maintainability
+- Modularity
+- Ease of deployment
+- Ease of extension
+
+The objective is to provide a clean and professional foundation suitable for an educational AI project while remaining flexible enough for future enhancements.
