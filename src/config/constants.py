@@ -1,0 +1,5 @@
+"""
+Constants
+
+Application-wide constants.
+"""
