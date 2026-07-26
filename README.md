@@ -27,14 +27,29 @@
 
 ## 🚀 Estado del Proyecto
 
-**Fase actual:** ✅ **Fase 0 completa** - Especificación y arquitectura  
-**Próximo paso:** 🟡 **Fase 1** - Implementación de fundaciones
+**Fase actual:** ✅ **Fase 5 completa** - UI Layer implementada  
+**Próximo paso:** 🟡 **Fase 6** - Integration & Testing
 
 Para ver el progreso detallado: **[📊 BUILD PLAN](docs/BUILD-PLAN.md)**
 
 ```
-Progreso general: ██░░░░░░░░░░░░░░░░░░ 11% (1/9 fases)
+Progreso general: ████████████████░░░░ 80% (5/9 fases)
 ```
+
+### ✅ Completado
+
+- ✅ Fase 0: Especificación y arquitectura (100%)
+- ✅ Fase 1: Fundaciones - config, utils, storage (100%)
+- ✅ Fase 2: Core Logic - auth, llm providers (100%)
+- ✅ Fase 3: RAG Pipeline - embeddings, retrieval, prompts (100%)
+- ✅ Fase 4: Services - business logic (100%)
+- ✅ Fase 5: UI - Streamlit interface (100%)
+
+### 🟡 En Progreso
+
+- 🟡 Fase 6: Integration & Testing
+- ⏸️ Fase 7: Documentation
+- ⏸️ Fase 8: Deployment
 
 ---
 
@@ -81,9 +96,9 @@ Progreso general: ██░░░░░░░░░░░░░░░░░░ 1
 - **PyMuPDF** - Procesamiento de PDFs
 
 ### LLMs & Embeddings
-- **Google Gemini 2.0 Flash** - LLM principal (free tier)
-- **Cohere Command** - LLM fallback (free tier)
-- **multilingual-e5-base** - Modelo de embeddings (HuggingFace)
+- **Google Gemini 1.5 Flash** - LLM principal (free tier)
+- **Cohere Command-R** - LLM fallback (free tier)
+- **multilingual-e5-base** - Modelo de embeddings (768 dim, optimizado español)
 
 ### Deployment
 - **Streamlit Community Cloud** - Hosting gratuito
@@ -102,8 +117,8 @@ Progreso general: ██░░░░░░░░░░░░░░░░░░ 1
 
 ```bash
 # 1. Clonar el repositorio
-git clone https://github.com/tu-usuario/techflow-rag-agent.git
-cd techflow-rag-agent
+git clone https://github.com/AlejandroMedina-Ar/Alura-Challenge-Agente-AI.git
+cd Alura-Challenge-Agente-AI
 
 # 2. Crear entorno virtual
 python -m venv venv
@@ -116,8 +131,15 @@ pip install -r requirements.txt
 cp .env.example .env
 # Editar .env con tus API keys
 
-# 5. Ejecutar la aplicación
-streamlit run src/app.py
+# 5. Ejecutar setup
+python setup.py
+
+# 6. Ejecutar tests (opcional)
+python test_integration.py
+
+# 7. Iniciar la aplicación
+python run.py
+# o directamente: streamlit run src/app.py
 ```
 
 ---
@@ -132,8 +154,8 @@ GEMINI_API_KEY=tu_api_key_aqui
 COHERE_API_KEY=tu_api_key_aqui
 
 # Modelos
-GEMINI_MODEL=gemini-2.0-flash-exp
-COHERE_MODEL=command-r-plus-08-2024
+GEMINI_MODEL=gemini-1.5-flash
+COHERE_MODEL=command-r
 
 # Embeddings
 EMBEDDING_MODEL=intfloat/multilingual-e5-base
@@ -301,13 +323,13 @@ Este proyecto está bajo la licencia MIT. Ver [LICENSE](LICENSE) para más detal
 ## 🗺️ Roadmap
 
 - [x] **Fase 0:** Especificación completa ✅
-- [ ] **Fase 1:** Fundaciones (config, utils, storage)
-- [ ] **Fase 2:** Core logic (auth, LLM)
-- [ ] **Fase 3:** RAG pipeline
-- [ ] **Fase 4:** Business services
-- [ ] **Fase 5:** User interface
-- [ ] **Fase 6:** Integration
-- [ ] **Fase 7:** Testing & debugging
+- [x] **Fase 1:** Fundaciones (config, utils, storage) ✅
+- [x] **Fase 2:** Core logic (auth, LLM) ✅
+- [x] **Fase 3:** RAG pipeline ✅
+- [x] **Fase 4:** Business services ✅
+- [x] **Fase 5:** User interface ✅
+- [ ] **Fase 6:** Integration & Testing (en progreso)
+- [ ] **Fase 7:** Documentation
 - [ ] **Fase 8:** Deployment
 
 Ver progreso detallado: **[BUILD PLAN](docs/BUILD-PLAN.md)**
@@ -335,5 +357,5 @@ Esto hace que sea ideal para:
 ---
 
 **Última actualización:** 2026-07-25  
-**Versión:** 0.1.0-alpha (pre-implementación)  
-**Estado:** 📋 Especificación completa - Listo para desarrollo
+**Versión:** 1.0.0-beta  
+**Estado:** 🚀 80% completo - Listo para testing y deployment
