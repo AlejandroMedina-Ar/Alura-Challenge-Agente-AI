@@ -17,7 +17,9 @@ Applied **25 critical corrections**, **8 important corrections**, and **11 minor
 ### Architecture Documentation
 
 #### `architecture/Architecture.md`
+
 **Changes:**
+
 - ✓ Clarified "session state" vs "conversation history" (added explicit note in Section 4)
 - ✓ Fixed complete component architecture structure (Section 5) - now matches Source-Code-Structure.md
 - ✓ Updated Extension Points (Section 9) - replaced OpenRouter with Gemini/Cohere, marked future providers
@@ -26,7 +28,9 @@ Applied **25 critical corrections**, **8 important corrections**, and **11 minor
 - ✓ Added reference to Glossary.md (Section 15)
 
 #### `architecture/Source-Code-Structure.md`
+
 **Changes:**
+
 - ✓ Clarified RAG module responsibilities - added note about pipeline.py as orchestrator (Section 4)
 - ✓ Added prompt_builder.py to rag/ module structure
 - ✓ Updated llm/ module - replaced openrouter_provider.py and ollama_provider.py with gemini_provider.py and cohere_provider.py
@@ -36,7 +40,9 @@ Applied **25 critical corrections**, **8 important corrections**, and **11 minor
 - ✓ Added RAG → Storage dependency in import rules (Section 6)
 
 #### `architecture/Glossary.md` ⭐ NEW FILE
+
 **Purpose:**
+
 - ✓ Created comprehensive glossary to resolve all terminology conflicts
 - ✓ Defined canonical terms: Knowledge Asset vs Document, Session State vs Conversation History
 - ✓ Standardized naming conventions for files, classes, variables, constants
@@ -49,7 +55,9 @@ Applied **25 critical corrections**, **8 important corrections**, and **11 minor
 ### Specifications
 
 #### `specs/000-project-overview.md`
+
 **Changes:**
+
 - ✓ Updated Section 5 (Out of Scope) - clarified conversation history exclusion with explicit note about session-based memory being INCLUDED
 - ✓ Added Multi-language Support to Section 8 (Core Features)
 - ✓ Updated Technology Stack (Section 10) - replaced OpenRouter with "Google Gemini (primary), Cohere (fallback)"
@@ -57,7 +65,9 @@ Applied **25 critical corrections**, **8 important corrections**, and **11 minor
 - ✓ Updated Stable Decisions (Section 13) - replaced OpenRouter reference
 
 #### `specs/001-chat-interface.md`
+
 **Changes:**
+
 - ✓ Updated Section 5 example - changed Gemini 2.5 Flash to Gemini 2.0 Flash
 - ✓ Clarified Section 6 default theme naming - "Tokyo Night (Dark)" instead of "Tokyo Night Dark"
 - ✓ Standardized Section 7 theme name - "Tokyo Night (Dark)"
@@ -66,15 +76,20 @@ Applied **25 critical corrections**, **8 important corrections**, and **11 minor
 - ✓ Updated Section 49 LLM model reference
 
 #### `specs/002-knowledge-base-management.md`
+
 **Changes:**
+
 - ✓ Updated Section 14 directory structure - expanded with explicit responsibilities and config.json location
 - ✓ Updated Section 15 complete project structure - now matches Architecture.md
 
 #### `specs/003-authentication.md`
+
 **No changes required** - already consistent
 
 #### `specs/004-rag-pipeline.md` ⭐ MAJOR UPDATES
+
 **Changes:**
+
 - ✓ Updated Section 3 RAG Pipeline Overview - added Gemini/Cohere reference
 - ✓ **NEW Section 3.1 "Pipeline Orchestration"** - defined rag_pipeline.py responsibilities and boundaries
 - ✓ Updated Section 7 - replaced "Top K = 4" with "MAX_CONTEXT_CHUNKS = 4"
@@ -92,7 +107,9 @@ Applied **25 critical corrections**, **8 important corrections**, and **11 minor
 - ✓ Updated Section 14 - expanded ChromaDB error handling with specific scenarios
 
 #### `specs/005-configuration.md` ⭐ MAJOR UPDATES
+
 **Changes:**
+
 - ✓ **Completely rewrote Section 4** (.env.example) - replaced generic LLM_PROVIDER/LLM_API_KEY with:
   - GEMINI_API_KEY and GEMINI_MODEL
   - COHERE_API_KEY and COHERE_MODEL
@@ -109,7 +126,9 @@ Applied **25 critical corrections**, **8 important corrections**, and **11 minor
 - ✓ Updated Section 15 - acceptance criteria updated for dual-provider architecture
 
 #### `specs/006-deployment.md`
+
 **Changes:**
+
 - ✓ Updated Section 2 - added explicit exclusion of Docker containers
 - ✓ Updated Section 4 future versions - noted Docker as "single container, no orchestration"
 - ✓ Updated Section 5 installation workflow - added explicit "Copy .env.example to .env" step
@@ -123,15 +142,19 @@ Applied **25 critical corrections**, **8 important corrections**, and **11 minor
 
 ### Prompts & Rules
 
-#### `prompts/cursor-rules.md`
+#### `prompts/implementation-rules.md`
+
 **Changes:**
+
 - ✓ Updated LLM Providers section - replaced OpenRouter with Gemini/Cohere dual-provider architecture
 - ✓ Updated Services section - added service naming convention note
 - ✓ Updated Configuration section - added specific examples (GEMINI_API_KEY, COHERE_API_KEY)
 - ✓ Updated Knowledge Base section - added terminology note (Knowledge Asset vs Document)
 
 #### `prompts/system-prompt.md`
+
 **Changes:**
+
 - ✓ Updated Primary Objective - added mention of Gemini/Cohere architecture
 - ✓ Updated Configuration Rules - replaced generic LLM_PROVIDER with specific API key examples
 - ✓ Updated Out of Scope - added "Docker containers" and "Persistent conversation history"
@@ -141,7 +164,9 @@ Applied **25 critical corrections**, **8 important corrections**, and **11 minor
 ### Configuration Files
 
 #### `.env.example` ⭐ COMPLETELY REWRITTEN
+
 **Changes:**
+
 - ✗ Removed: LLM_PROVIDER, OPENROUTER_API_KEY, OPENROUTER_MODEL, OLLAMA_BASE_URL, OLLAMA_MODEL
 - ✓ Added: GEMINI_API_KEY, GEMINI_MODEL, COHERE_API_KEY, COHERE_MODEL
 - ✓ Changed: EMBEDDING_MODEL from "all-MiniLM-L6-v2" to "BAAI/bge-small-en-v1.5"
@@ -159,7 +184,7 @@ Applied **25 critical corrections**, **8 important corrections**, and **11 minor
 
 1. ✓ **C1: Session State vs Conversation History** - Clarified in Architecture.md, 000-project-overview.md, 004-rag-pipeline.md
 2. ✓ **C2: Directory Structure Conflicts** - Unified in Architecture.md, Source-Code-Structure.md, all specs
-3. ✓ **C3: Service Naming Inconsistencies** - Fixed in Architecture.md, Source-Code-Structure.md, cursor-rules.md
+3. ✓ **C3: Service Naming Inconsistencies** - Fixed in Architecture.md, Source-Code-Structure.md, implementation-rules.md
 4. ✓ **C4: rag_pipeline.py Role Ambiguous** - Defined in 004-rag-pipeline.md Section 3.1
 5. ✓ **C5: Docker Deployment Ambiguity** - Clarified as "no containers" in Architecture.md, 006-deployment.md
 6. ✓ **C6: Authentication Module Naming** - Standardized as authentication_service.py
@@ -181,7 +206,7 @@ Applied **25 critical corrections**, **8 important corrections**, and **11 minor
 16. ✓ **C16: .env.example Copy Step Missing** - Added to 006-deployment.md Section 5
 17. ✓ **C17: System Prompt vs System Instructions** - Standardized in Glossary.md
 18. ✓ **C18: Embedding Model Path Unclear** - Clarified in 005-configuration.md Section 7
-19-25. ✓ **Other minor inconsistencies** - Resolved via Glossary.md
+    19-25. ✓ **Other minor inconsistencies** - Resolved via Glossary.md
 
 ### GAPS FILLED
 
@@ -201,18 +226,21 @@ Applied **25 critical corrections**, **8 important corrections**, and **11 minor
 ### LLM Provider Strategy (Per User Request)
 
 **Old Approach:**
+
 - Generic provider abstraction with OpenRouter as default
 - Multiple interchangeable providers
 - Single LLM_PROVIDER and LLM_API_KEY variables
 
 **New Approach:**
+
 - Dual-provider architecture (Gemini primary, Cohere fallback)
 - Automatic fallback with retry logic
 - Provider-specific API keys (GEMINI_API_KEY, COHERE_API_KEY)
 - Free-tier optimization strategy
 - Comprehensive fallback specification in 004-rag-pipeline.md Section 13.1
 
-**Impact:** 
+**Impact:**
+
 - 9 documents modified
 - .env.example completely rewritten
 - New fallback strategy specification created
@@ -236,11 +264,12 @@ Applied **25 critical corrections**, **8 important corrections**, and **11 minor
 6. ✓ `specs/004-rag-pipeline.md` (major updates)
 7. ✓ `specs/005-configuration.md` (major updates)
 8. ✓ `specs/006-deployment.md`
-9. ✓ `prompts/cursor-rules.md`
+9. ✓ `prompts/implementation-rules.md`
 10. ✓ `prompts/system-prompt.md`
 11. ✓ `.env.example` (completely rewritten)
 
 **Not modified (already consistent):**
+
 - `specs/003-authentication.md`
 
 ---
@@ -252,9 +281,11 @@ Applied **25 critical corrections**, **8 important corrections**, and **11 minor
 All pending decisions have been addressed and implemented in the specifications. Details below:
 
 ### 1. Empty Document Handling (V4) ✅ RESOLVED
+
 **Decision:** Reject during validation with error message.
 
 **Implementation:**
+
 - Updated `specs/002-knowledge-base-management.md` Section 10
 - Validation rule enforces rejection of 0-byte files or whitespace-only content
 - Error message: "Document '{filename}' is empty and cannot be indexed. Please upload a document with actual content."
@@ -262,9 +293,11 @@ All pending decisions have been addressed and implemented in the specifications.
 ---
 
 ### 2. Knowledge Library Size Limits (V5) ✅ RESOLVED
+
 **Decision:** Hard limit of 5000 documents.
 
 **Implementation:**
+
 - Updated `specs/002-knowledge-base-management.md` Section 16
 - System rejects uploads when limit reached
 - Error message: "Maximum document limit reached (5000). Please delete existing documents before uploading new ones."
@@ -273,14 +306,17 @@ All pending decisions have been addressed and implemented in the specifications.
 ---
 
 ### 3. LLM/Embedding Timeout Values (V6) ✅ RESOLVED
+
 **Decision:** Configured timeouts for all external operations.
 
 **Values:**
+
 - `LLM_REQUEST_TIMEOUT=30` (triggers fallback to Cohere)
 - `EMBEDDING_TIMEOUT=120` (local processing, may take longer for batches)
 - `CHROMADB_TIMEOUT=10` (local DB should respond quickly)
 
 **Implementation:**
+
 - Added to `.env.example`
 - Added to `specs/005-configuration.md` Section 4 and new Section 9.1
 - Documented timeout behavior and failure modes
@@ -288,11 +324,13 @@ All pending decisions have been addressed and implemented in the specifications.
 ---
 
 ### 4. Empty Knowledge Base UX (V7) ✅ RESOLVED
+
 **Decision:** Allow question submission, return friendly message without LLM call.
 
 **Message:** "Por favor agregar al menos 2 documentos para poder indexarlos"
 
 **Implementation:**
+
 - Updated `specs/004-rag-pipeline.md` Section 14 with new "Empty Knowledge Base" subsection
 - System checks document count before invoking LLM
 - No API cost incurred for empty base queries
@@ -300,9 +338,11 @@ All pending decisions have been addressed and implemented in the specifications.
 ---
 
 ### 5. Missing ADMIN_PASSWORD Behavior (V8) ✅ RESOLVED
+
 **Decision:** Default to "admin123" for local development (v1 demo project).
 
 **Implementation:**
+
 - Updated `.env.example` with default value and prominent warning
 - Updated `specs/005-configuration.md` Sections 12 and 13
 - Startup logs warning when default password is active
@@ -313,9 +353,11 @@ All pending decisions have been addressed and implemented in the specifications.
 ---
 
 ### 6. Log Rotation Policy ✅ RESOLVED
+
 **Decision:** Size-based rotation (10MB per file, keep 5 files).
 
 **Implementation:**
+
 - Updated `specs/005-configuration.md` Section 11
 - Prevents disk exhaustion while preserving debugging history
 - Automatic deletion of oldest files when limit exceeded
@@ -323,9 +365,11 @@ All pending decisions have been addressed and implemented in the specifications.
 ---
 
 ### 7. ChromaDB Persistence Behavior ✅ RESOLVED
+
 **Decision:** Verified automatic persistence in ChromaDB v0.4.0+.
 
 **Implementation:**
+
 - Updated `specs/005-configuration.md` Section 8
 - Documented that persistence is automatic when `CHROMA_DB_PATH` is set
 - No explicit `.persist()` call required in modern ChromaDB versions
@@ -338,9 +382,11 @@ All pending decisions have been addressed and implemented in the specifications.
 ## ADDITIONAL CHANGE: EMBEDDING MODEL FOR SPANISH ✅ IMPLEMENTED
 
 ### Issue Identified
+
 The originally specified embedding model (`BAAI/bge-small-en-v1.5`) is optimized for English text. Since the project is designed to process documentation and queries primarily in Spanish, this model would result in suboptimal semantic retrieval performance for Spanish content.
 
 ### Solution Implemented
+
 **Replaced:** `BAAI/bge-small-en-v1.5`  
 **With:** `intfloat/multilingual-e5-base`
 
@@ -357,11 +403,11 @@ The originally specified embedding model (`BAAI/bge-small-en-v1.5`) is optimized
 
 ### Performance Comparison (Spanish Retrieval Tasks)
 
-| Model | Spanish NDCG@10 | Multilingual Support | Size |
-|-------|-----------------|---------------------|------|
-| BAAI/bge-small-en-v1.5 | ~0.45 | ❌ English only | 133MB |
-| intfloat/multilingual-e5-base | **~0.68** | ✅ 100+ languages | 560MB |
-| intfloat/multilingual-e5-large | ~0.72 | ✅ 100+ languages | 2.24GB |
+| Model                          | Spanish NDCG@10 | Multilingual Support | Size   |
+| ------------------------------ | --------------- | -------------------- | ------ |
+| BAAI/bge-small-en-v1.5         | ~0.45           | ❌ English only      | 133MB  |
+| intfloat/multilingual-e5-base  | **~0.68**       | ✅ 100+ languages    | 560MB  |
+| intfloat/multilingual-e5-large | ~0.72           | ✅ 100+ languages    | 2.24GB |
 
 **Note:** NDCG@10 (Normalized Discounted Cumulative Gain) measures retrieval quality - higher is better.
 
@@ -416,17 +462,20 @@ Before implementation, verify these decisions:
 
 ## Breaking Changes
 
-### For Cursor Implementation
+### For Implementation Agent
 
 **API Keys:**
+
 - Old: Single `LLM_API_KEY` variable
 - New: `GEMINI_API_KEY` and `COHERE_API_KEY` required
 
 **Provider Selection:**
+
 - Old: Manual via `LLM_PROVIDER` environment variable
 - New: Automatic (Gemini primary, Cohere fallback)
 
 **Embedding Model:**
+
 - Old: `all-MiniLM-L6-v2` (from bootstrap)
 - Intermediate: `BAAI/bge-small-en-v1.5` (initial audit correction)
 - **Final: `intfloat/multilingual-e5-base` (optimized for Spanish)**
@@ -437,7 +486,7 @@ Before implementation, verify these decisions:
 
 ## Validation Checklist
 
-Before starting implementation in Cursor:
+Before starting implementation:
 
 - [x] All critical conflicts resolved
 - [x] Directory structure unified across all docs
@@ -463,8 +512,8 @@ Before starting implementation in Cursor:
 
 1. ~~**User:** Review and decide on 7 pending decisions~~ ✅ COMPLETED
 2. ~~**User:** Approve this changelog~~ ⏳ PENDING
-3. **User:** Pass corrected specifications to Cursor
-4. **Cursor:** Begin implementation following updated specs
+3. **User:** Select implementation agent (Kiro, OpenCode+Ollama, etc.)
+4. **Agent:** Begin implementation following updated specs
 
 ---
 
@@ -482,9 +531,10 @@ Before starting implementation in Cursor:
 
 ---
 
-**Status:** ✅ **ALL CORRECTIONS COMPLETE. READY FOR CURSOR IMPLEMENTATION.**
+**Status:** ✅ **ALL CORRECTIONS COMPLETE. READY FOR IMPLEMENTATION.**
 
 **API Keys:** ✅ **Configured for development testing (2026-07-25)**
+
 - `.env` file created with Gemini and Cohere testing keys
 - Protected by `.gitignore` (not committed to repository)
 - `SECURITY-NOTES.md` created with key management guidelines

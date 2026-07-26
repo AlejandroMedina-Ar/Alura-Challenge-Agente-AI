@@ -14,7 +14,7 @@
 
 This document defines the complete graphical user interface (GUI) specification for the TechFlow AI Corporate Knowledge Agent.
 
-Its objective is to provide a modern, intuitive and professional user experience inspired by contemporary AI applications such as ChatGPT, Claude, Cursor and Perplexity, while maintaining the simplicity and rapid development offered by Streamlit.
+Its objective is to provide a modern, intuitive and professional user experience inspired by contemporary AI applications such as ChatGPT, Claude, and Perplexity, while maintaining the simplicity and rapid development offered by Streamlit.
 
 This specification defines:
 
@@ -54,7 +54,6 @@ The application should feel familiar to users of:
 
 - ChatGPT
 - Claude
-- Cursor
 - Perplexity
 - GitHub Copilot
 
@@ -309,9 +308,9 @@ The interface should adopt the visual language of modern developer tools.
 
 Inspiration
 
-- Cursor
 - VS Code
 - Claude
+- ChatGPT
 - Perplexity
 - GitHub Copilot
 
@@ -1496,7 +1495,7 @@ The interface should follow these principles.
 - Clean typography
 - No visual clutter
 
-The interface should feel closer to Cursor than to a traditional Streamlit application.
+The interface should feel modern and professional, similar to contemporary AI chat applications.
 
 ---
 

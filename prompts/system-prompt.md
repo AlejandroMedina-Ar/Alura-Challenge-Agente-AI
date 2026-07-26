@@ -124,12 +124,12 @@ Only implement functionality described by the corresponding specification.
 
 ---
 
-## 4. Cursor Rules
+## 4. Implementation Rules
 
 Finally, read:
 
 ```
-prompts/cursor-rules.md
+prompts/implementation-rules.md
 ```
 
 These rules define implementation conventions, coding style and project standards.
@@ -389,7 +389,7 @@ Whenever two documents appear to conflict:
 
 1. Architecture.md has priority for architectural decisions.
 2. The corresponding specification has priority for functional behavior.
-3. cursor-rules.md defines implementation conventions.
+3. implementation-rules.md defines implementation conventions.
 
 Never contradict the documented architecture.
 

@@ -7,7 +7,7 @@
 
 ## IMPORTANT CLARIFICATION
 
-After Cursor's audit, it was clarified that **Streamlit does NOT support custom top navigation bars natively**. The project philosophy is **Python-only with no custom HTML**.
+After the implementation agent's audit, it was clarified that **Streamlit does NOT support custom top navigation bars natively**. The project philosophy is **Python-only with no custom HTML**.
 
 This document supersedes any previous mentions of "top navigation bar" or "fixed header" in the specifications.
 
@@ -384,6 +384,6 @@ When in doubt, follow: **Streamlit-native, Python-only, minimal CSS for theming.
 
 ---
 
-**Document Status:** ✅ APPROVED - Ready for Cursor Implementation  
+**Document Status:** ✅ APPROVED - Ready for Implementation  
 **Last Updated:** 2026-07-25  
 **Supersedes:** Any previous UI layout descriptions with custom top bars

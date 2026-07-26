@@ -1,4 +1,4 @@
-# Cursor Implementation Rules
+# Implementation Rules
 
 ## TechFlow AI Corporate Knowledge Agent
 
@@ -8,7 +8,7 @@ Version: 1.0
 
 # Purpose
 
-This document defines the implementation rules that Cursor must follow while generating or modifying code for this project.
+This document defines the implementation rules that the AI coding agent must follow while generating or modifying code for this project.
 
 These rules complement the project specifications and architecture.
 

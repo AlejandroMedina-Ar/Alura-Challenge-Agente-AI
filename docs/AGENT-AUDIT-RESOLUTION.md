@@ -1,4 +1,4 @@
-# Resolución de Auditoría de Cursor
+# Resolución de Auditoría del Agente de Implementación
 
 **Fecha:** 2026-07-25  
 **Estado:** ✅ TODAS LAS CORRECCIONES APLICADAS
@@ -7,7 +7,7 @@
 
 ## RESUMEN
 
-Cursor identificó 20 problemas en las especificaciones (6 críticos, 10 importantes, 4 menores). Todas las correcciones han sido aplicadas según las decisiones del usuario.
+El agente de implementación identificó 20 problemas en las especificaciones (6 críticos, 10 importantes, 4 menores). Todas las correcciones han sido aplicadas según las decisiones del usuario.
 
 ---
 
@@ -242,7 +242,7 @@ for event in response_stream:
 **Decisión:** **Usar menú hamburguesa (⋮) de Streamlit**, prescindir de top bar custom  
 **Implementado en:** 
 - `specs/001-chat-interface.md` - Secciones 4, 5, 6, 7 completamente reescritas
-- `prompts/cursor-rules.md` - Nueva sección "UI Implementation Rules"
+- `prompts/implementation-rules.md` - Nueva sección "UI Implementation Rules"
 - `UI-ARCHITECTURE-CLARIFICATION.md` - Documento completo nuevo
 
 **Cambios aplicados:**
@@ -315,7 +315,7 @@ Main Area [center-right]
 | `data/config.json` | I7 (creado), I13 (límites tamaño) |
 | `specs/005-configuration.md` | I7 (separación .env vs config.json) |
 | `specs/002-knowledge-base-management.md` | I12 (duplicados SKIP), I13 (límites tamaño) |
-| `prompts/cursor-rules.md` | I15 (UI Implementation Rules nueva sección) |
+- `prompts/implementation-rules.md` | I15 (UI Implementation Rules nueva sección) |
 | `prompts/system-prompt.md` | I15 (Python-only clarificado) |
 
 ---
@@ -323,7 +323,7 @@ Main Area [center-right]
 ## ARCHIVOS CREADOS
 
 1. **`data/config.json`** - Runtime configuration con límites y preferencias UI
-2. **`CURSOR-AUDIT-RESOLUTION.md`** - Este documento
+2. **`AGENT-AUDIT-RESOLUTION.md`** - Este documento
 3. **`UI-ARCHITECTURE-CLARIFICATION.md`** - Documentación completa de arquitectura UI sin top bar
 
 ---
@@ -388,7 +388,7 @@ config/
 
 ---
 
-## SIGUIENTE PASO PARA CURSOR
+## SIGUIENTE PASO PARA EL AGENTE DE IMPLEMENTACIÓN
 
 **Orden de implementación recomendado:**
 
@@ -479,10 +479,10 @@ def get_max_file_size(file_extension: str) -> int:
 
 **STATUS: ✅ TODAS LAS CORRECCIONES COMPLETADAS**
 
-**Cursor puede proceder con implementación usando estas especificaciones corregidas.**
+**El agente de implementación puede proceder usando estas especificaciones corregidas.**
 
 ---
 
 **Documento creado:** 2026-07-25  
-**Auditoría de Cursor resuelta:** Completamente  
+**Auditoría resuelta:** Completamente  
 **Pendientes:** Ninguno

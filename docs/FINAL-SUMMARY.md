@@ -1,7 +1,7 @@
 # 🎯 RESUMEN EJECUTIVO FINAL - Auditoría y Correcciones Completadas
 
 **Fecha:** 2026-07-25  
-**Estado:** ✅ LISTO PARA IMPLEMENTACIÓN EN CURSOR
+**Estado:** ✅ LISTO PARA IMPLEMENTACIÓN
 
 ---
 
@@ -129,7 +129,7 @@
    - Estructura de proyecto actualizada
 
 ### Prompts y Reglas
-10. ✅ `prompts/cursor-rules.md`
+10. ✅ `prompts/implementation-rules.md`
     - Proveedores LLM actualizados
     - Service naming conventions
     - Terminología estandarizada
@@ -203,7 +203,7 @@
 
 ---
 
-## ⚠️ PUNTOS IMPORTANTES PARA CURSOR
+## ⚠️ PUNTOS IMPORTANTES PARA IMPLEMENTACIÓN
 
 ### 1. Variables de Entorno Críticas
 
@@ -306,7 +306,7 @@ Para dudas de nomenclatura o conflictos: **Glossary.md es la autoridad final**.
 
 ✅ **UI Architecture completamente redefinida**
 
-Después de la auditoría de Cursor, se confirmó que Streamlit NO soporta barras de navegación superiores custom nativamente. El proyecto mantiene su filosofía **Python-only sin HTML custom**.
+Después de la auditoría del agente, se confirmó que Streamlit NO soporta barras de navegación superiores custom nativamente. El proyecto mantiene su filosofía **Python-only sin HTML custom**.
 
 **Documento detallado:** `UI-ARCHITECTURE-CLARIFICATION.md`
 
@@ -333,7 +333,7 @@ Después de la auditoría de Cursor, se confirmó que Streamlit NO soporta barra
 
 **Documentos actualizados:**
 - `specs/001-chat-interface.md` - Secciones 4, 5, 6, 7 reescritas
-- `prompts/cursor-rules.md` - Nueva sección "UI Implementation Rules"
+- `prompts/implementation-rules.md` - Nueva sección "UI Implementation Rules"
 - `prompts/system-prompt.md` - Clarificado "Python-only"
 - `UI-ARCHITECTURE-CLARIFICATION.md` - Documento completo creado
 
@@ -360,14 +360,14 @@ Después de la auditoría de Cursor, se confirmó que Streamlit NO soporta barra
 
 ---
 
-## 🔧 AUDITORÍA DE CURSOR RESUELTA
+## 🔧 AUDITORÍA DEL AGENTE RESUELTA
 
 ### Estado (2026-07-25)
 
-✅ **Cursor identificó 20 problemas** (6 críticos, 10 importantes, 4 menores)  
+✅ **El agente de implementación identificó 20 problemas** (6 críticos, 10 importantes, 4 menores)  
 ✅ **Todas las correcciones aplicadas** según decisiones del usuario
 
-**Documento detallado:** `CURSOR-AUDIT-RESOLUTION.md`
+**Documento detallado:** `AGENT-AUDIT-RESOLUTION.md`
 
 **Correcciones principales:**
 - ✅ Umbral KB vacía: 1 documento mínimo (no 0 ni 2)
@@ -388,11 +388,11 @@ Después de la auditoría de Cursor, se confirmó que Streamlit NO soporta barra
 
 ## 🚀 PRÓXIMOS PASOS
 
-### Para Cursor:
+### Para el Agente de Implementación:
 
-1. ✅ **Leer `AUDIT-CHANGELOG.md`** para entender todos los cambios
+1. ✅ **Leer `AGENT-AUDIT-RESOLUTION.md`** para entender todos los cambios
 2. ✅ **Leer `architecture/Glossary.md`** para nomenclatura consistente
-3. ✅ **Seguir `cursor-rules.md`** estrictamente
+3. ✅ **Seguir `implementation-rules.md`** estrictamente
 4. ✅ **Implementar módulos en este orden:**
    - `src/config/` (settings, constants, paths)
    - `src/utils/` (logger, validators, helpers, exceptions)
@@ -415,7 +415,7 @@ Después de la auditoría de Cursor, se confirmó que Streamlit NO soporta barra
 
 ## ✅ LISTA DE VERIFICACIÓN FINAL
 
-Antes de pasar a Cursor, confirmar:
+Antes de pasar al agente de implementación, confirmar:
 
 - [x] Todos los conflictos críticos resueltos
 - [x] Todos los conflictos importantes resueltos
@@ -439,7 +439,7 @@ Antes de pasar a Cursor, confirmar:
 |---------|-------|
 | Documentos auditados | 14 |
 | Documentos modificados | 11 |
-| Documentos creados | 3 (Glossary, AUDIT-CHANGELOG, FINAL-SUMMARY) + 2 (SECURITY-NOTES, CURSOR-AUDIT-RESOLUTION) + 1 (config.json) |
+| Documentos creados | 3 (Glossary, AUDIT-CHANGELOG, FINAL-SUMMARY) + 3 (SECURITY-NOTES, AGENT-AUDIT-RESOLUTION, UI-ARCHITECTURE-CLARIFICATION) + 1 (config.json) |
 | Conflictos críticos resueltos | 6/6 |
 | Conflictos importantes resueltos | 8/8 |
 | Conflictos menores resueltos | 11/11 |
@@ -464,7 +464,7 @@ Antes de pasar a Cursor, confirmar:
 
 **TODAS LAS ESPECIFICACIONES ESTÁN CONSISTENTES Y COMPLETAS.**
 
-**EL PROYECTO ESTÁ LISTO PARA IMPLEMENTACIÓN EN CURSOR.**
+**EL PROYECTO ESTÁ LISTO PARA IMPLEMENTACIÓN.**
 
 No quedan puntos pendientes de definición, decisión o documentación.
 
@@ -472,6 +472,6 @@ No quedan puntos pendientes de definición, decisión o documentación.
 
 **Auditoría y correcciones completadas:** 2026-07-25  
 **Auditor:** Kiro  
-**Próximo paso:** Implementación en Cursor
+**Próximo paso:** Seleccionar agente de implementación
 
 🚀 **¡Listo para desarrollo!**

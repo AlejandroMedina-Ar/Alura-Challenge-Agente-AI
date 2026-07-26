@@ -1,14 +1,14 @@
 # Resumen de Cambios de UI - Arquitectura Final
 
 **Fecha:** 2026-07-25  
-**Razón:** Clarificación post-auditoría de Cursor  
+**Razón:** Clarificación post-auditoría del agente de implementación  
 **Estado:** ✅ COMPLETO
 
 ---
 
 ## 🎯 PROBLEMA IDENTIFICADO
 
-Cursor señaló que las especificaciones originales mencionaban una **"top navigation bar"** (barra de navegación superior fija), pero **Streamlit no soporta esto nativamente**.
+El agente de implementación señaló que las especificaciones originales mencionaban una **"top navigation bar"** (barra de navegación superior fija), pero **Streamlit no soporta esto nativamente**.
 
 Tu filosofía del proyecto es:
 - ✅ **Solo Python** (sin HTML custom)
@@ -131,7 +131,7 @@ st.sidebar.metric("LLM", "Gemini")
 
 ---
 
-### 2. `prompts/cursor-rules.md`
+### 2. `prompts/implementation-rules.md`
 
 **Nueva sección agregada:** "UI Implementation Rules"
 
@@ -248,7 +248,7 @@ st.sidebar.button("Admin Login")
 
 ---
 
-## 📋 CHECKLIST PARA CURSOR
+## 📋 CHECKLIST PARA EL AGENTE DE IMPLEMENTACIÓN
 
 Antes de implementar UI, verificar:
 
@@ -269,8 +269,8 @@ Antes de implementar UI, verificar:
 
 1. **`UI-ARCHITECTURE-CLARIFICATION.md`** ⭐⭐⭐ - LEER PRIMERO
 2. **`specs/001-chat-interface.md`** - Spec UI actualizada
-3. **`prompts/cursor-rules.md`** - Reglas de implementación
-4. **`CURSOR-AUDIT-RESOLUTION.md`** - Problema I15 detallado
+3. **`prompts/implementation-rules.md`** - Reglas de implementación
+4. **`AGENT-AUDIT-RESOLUTION.md`** - Problema I15 detallado
 
 ---
 
@@ -296,13 +296,13 @@ Antes de implementar UI, verificar:
 - ✅ Mantiene tu filosofía Python-only
 - ✅ Sin HTML custom, sin JavaScript
 - ✅ Solo dark.css y light.css para colores
-- ✅ Todo documentado y listo para Cursor
+- ✅ Todo documentado y listo para el agente de implementación
 
 ---
 
-**Estado:** ✅ LISTO PARA IMPLEMENTACIÓN EN CURSOR
+**Estado:** ✅ LISTO PARA IMPLEMENTACIÓN
 
-**Próximo paso:** Cursor puede comenzar implementación usando la arquitectura actualizada.
+**Próximo paso:** El agente de implementación puede comenzar usando la arquitectura actualizada.
 
 ---
 
