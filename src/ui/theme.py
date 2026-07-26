@@ -4,7 +4,7 @@ Theme Module
 This module handles UI theming and styling for Streamlit.
 Provides light/dark theme management and custom CSS injection.
 
-Author: TechFlow AI Project
+Author: TechFlow Solutions Project
 License: MIT
 """
 

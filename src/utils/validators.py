@@ -4,7 +4,7 @@ Validators Module
 This module provides validation functions for files, inputs, and data.
 All validators return True if valid, or raise an exception if invalid.
 
-Author: TechFlow AI Project
+Author: TechFlow Solutions Project
 License: MIT
 """
 

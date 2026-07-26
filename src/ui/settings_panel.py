@@ -4,7 +4,7 @@ Módulo de Panel de Configuración
 Este módulo implementa la interfaz de configuración.
 Permite configuración de LLM, RAG y ajustes de UI.
 
-Autor: TechFlow AI Project
+Autor: TechFlow Solutions Project
 Licencia: MIT
 """
 

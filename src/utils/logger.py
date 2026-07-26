@@ -4,7 +4,7 @@ Logging Module
 This module provides a centralized logging system for the application.
 Logs are written to both console and file with rotation support.
 
-Author: TechFlow AI Project
+Author: TechFlow Solutions Project
 License: MIT
 """
 

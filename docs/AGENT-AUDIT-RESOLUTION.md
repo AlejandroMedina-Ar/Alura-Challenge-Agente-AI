@@ -249,7 +249,7 @@ for event in response_stream:
 - ❌ Removido: Toda mención de "top navigation bar"
 - ❌ Removido: "Fixed header"
 - ❌ Removido: Custom theme selector widget
-- ✅ Agregado: Branding en top de sidebar (🤖 TechFlow AI + tagline)
+- ✅ Agregado: Branding en top de sidebar (🤖 TechFlow Solutions + tagline)
 - ✅ Agregado: System status section en sidebar (métricas)
 - ✅ Agregado: Admin access section en sidebar (botones)
 - ✅ Confirmado: Theme selection via Streamlit menu (⋮) → Settings → Theme
@@ -269,7 +269,7 @@ Streamlit Menu (⋮) [top-right]
 └─ Documentation
 
 Sidebar [left]
-├─ 🤖 TechFlow AI (branding)
+├─ 🤖 TechFlow Solutions (branding)
 ├─ 📊 System Status (metrics)
 └─ 👤 Admin Access (buttons)
 

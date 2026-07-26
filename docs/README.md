@@ -1,6 +1,6 @@
 # 📚 Documentación del Proyecto
 
-**TechFlow AI - Corporate Knowledge Agent**
+**TechFlow Solutions - Corporate Knowledge Agent**
 
 Este directorio contiene toda la documentación del proyecto, organizada por tipo y propósito.
 

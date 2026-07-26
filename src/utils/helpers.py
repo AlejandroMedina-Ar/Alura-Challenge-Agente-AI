@@ -4,7 +4,7 @@ Helper Functions Module
 This module provides utility functions used throughout the application.
 Functions are organized by category for easy discovery.
 
-Author: TechFlow AI Project
+Author: TechFlow Solutions Project
 License: MIT
 """
 

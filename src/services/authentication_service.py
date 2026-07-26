@@ -4,7 +4,7 @@ Authentication Service Module
 This module provides business logic for authentication operations.
 Coordinates between auth module and session management.
 
-Author: TechFlow AI Project
+Author: TechFlow Solutions Project
 License: MIT
 """
 

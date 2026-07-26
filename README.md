@@ -1,4 +1,4 @@
-# 🤖 TechFlow AI - Corporate Knowledge Agent
+# 🤖 TechFlow Solutions - Corporate Knowledge Agent
 
 > **RAG-powered AI assistant for enterprise knowledge management**
 
@@ -11,7 +11,7 @@
 
 ## 📋 Descripción
 
-**TechFlow AI** es un agente de conocimiento corporativo potenciado por RAG (Retrieval-Augmented Generation) que permite a las empresas interactuar con su base de conocimiento mediante lenguaje natural.
+**TechFlow Solutions** es un agente de conocimiento corporativo potenciado por RAG (Retrieval-Augmented Generation) que permite a las empresas interactuar con su base de conocimiento mediante lenguaje natural.
 
 ### ✨ Características Principales
 

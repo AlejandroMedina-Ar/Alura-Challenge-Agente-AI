@@ -1,6 +1,6 @@
 # Architecture.md
 
-# TechFlow AI Corporate Knowledge Agent
+# TechFlow Solutions Corporate Knowledge Agent
 
 ## Software Architecture Document (SAD)
 
@@ -16,7 +16,7 @@
 
 # 1. Purpose
 
-This document defines the software architecture of the TechFlow AI Corporate Knowledge Agent.
+This document defines the software architecture of the TechFlow Solutions Corporate Knowledge Agent.
 
 Its objective is to describe how the application is organized internally, how its modules interact, and which architectural decisions guide the implementation.
 

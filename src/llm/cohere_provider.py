@@ -1,10 +1,10 @@
 """
 Cohere LLM Provider Module
 
-This module implements the Cohere provider for the TechFlow AI project.
+This module implements the Cohere provider for the TechFlow Solutions project.
 Uses Cohere Command-R (free tier) as the fallback LLM provider.
 
-Author: TechFlow AI Project
+Author: TechFlow Solutions Project
 License: MIT
 """
 

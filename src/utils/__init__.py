@@ -16,7 +16,7 @@ Usage:
     >>> validate_filename("document.pdf")
     True
 
-Author: TechFlow AI Project
+Author: TechFlow Solutions Project
 License: MIT
 """
 

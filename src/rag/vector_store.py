@@ -4,7 +4,7 @@ Vector Store Module
 This module provides a wrapper around ChromaDB for vector storage and retrieval.
 Handles document embedding storage and similarity search.
 
-Author: TechFlow AI Project
+Author: TechFlow Solutions Project
 License: MIT
 """
 

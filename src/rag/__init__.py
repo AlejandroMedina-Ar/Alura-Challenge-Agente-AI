@@ -11,7 +11,7 @@ Modules:
 - prompt_builder: RAG prompt construction
 - pipeline: Complete RAG workflow orchestration
 
-Author: TechFlow AI Project
+Author: TechFlow Solutions Project
 License: MIT
 """
 

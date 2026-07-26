@@ -1,10 +1,10 @@
 """
-TechFlow AI RAG Agent - Aplicación Principal
+TechFlow Solutions RAG Agent - Aplicación Principal
 
 Este es el punto de entrada principal para la aplicación Streamlit.
 Maneja enrutamiento, autenticación y renderizado de páginas.
 
-Autor: TechFlow AI Project
+Autor: TechFlow Solutions Project
 Licencia: MIT
 """
 
@@ -40,7 +40,7 @@ def main():
     """
     # Configure page
     st.set_page_config(
-        page_title="TechFlow AI - Agente RAG",
+        page_title="TechFlow Solutions - Agente RAG",
         page_icon="🤖",
         layout="wide",
         initial_sidebar_state="expanded"
@@ -71,7 +71,7 @@ def render_login_page():
     render_compact_sidebar()
     
     # Formulario de login
-    st.title("🤖 TechFlow AI")
+    st.title("🤖 TechFlow Solutions")
     st.markdown("### Agente de Conocimiento con RAG")
     st.divider()
     
@@ -104,7 +104,7 @@ def render_login_page():
     st.divider()
     
     # Sección de información
-    with st.expander("ℹ️ Acerca de TechFlow AI"):
+    with st.expander("ℹ️ Acerca de TechFlow Solutions"):
         st.markdown("""
         ### Características
         - 🔍 **Chat con RAG** - Respuestas contextuales desde tus documentos

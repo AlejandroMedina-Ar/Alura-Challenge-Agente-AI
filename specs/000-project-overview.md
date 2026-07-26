@@ -1,6 +1,6 @@
 # Project Overview
 
-**Project Name:** TechFlow AI Corporate Knowledge Agent
+**Project Name:** TechFlow Solutions Corporate Knowledge Agent
 
 **Repository:** Alura-Challenge-Agente-AI
 
@@ -14,7 +14,7 @@
 
 # 1. Purpose
 
-This document provides the functional overview of the TechFlow AI Corporate Knowledge Agent.
+This document provides the functional overview of the TechFlow Solutions Corporate Knowledge Agent.
 
 It defines the project's vision, objectives, scope, constraints and development roadmap.
 
@@ -32,7 +32,7 @@ Detailed functional behavior is defined in the individual specifications under t
 
 # 2. Project Vision
 
-TechFlow AI is an internal corporate knowledge assistant capable of answering natural language questions based exclusively on company documentation.
+TechFlow Solutions is an internal corporate knowledge assistant capable of answering natural language questions based exclusively on company documentation.
 
 Instead of forcing employees to manually search dozens of PDF files, Word documents, spreadsheets or internal manuals, the assistant retrieves relevant information and generates contextual answers with references to the original documentation.
 

@@ -8,7 +8,7 @@ Modules:
 - gemini_provider: Google Gemini 2.0 Flash provider (primary)
 - cohere_provider: Cohere Command-R provider (fallback)
 
-Author: TechFlow AI Project
+Author: TechFlow Solutions Project
 License: MIT
 """
 

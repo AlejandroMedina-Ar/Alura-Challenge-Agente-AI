@@ -4,7 +4,7 @@ Custom Exceptions Module
 This module defines all custom exceptions used throughout the application.
 Exceptions are organized by category for better error handling.
 
-Author: TechFlow AI Project
+Author: TechFlow Solutions Project
 License: MIT
 """
 
@@ -15,7 +15,7 @@ License: MIT
 
 class TechFlowError(Exception):
     """
-    Base exception for all TechFlow AI errors.
+    Base exception for all TechFlow Solutions errors.
     
     All custom exceptions inherit from this class for easy catching.
     """

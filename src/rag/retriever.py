@@ -4,7 +4,7 @@ Retriever Module
 This module handles document retrieval from the vector store.
 Performs similarity search to find relevant context for queries.
 
-Author: TechFlow AI Project
+Author: TechFlow Solutions Project
 License: MIT
 """
 

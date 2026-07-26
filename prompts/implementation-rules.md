@@ -1,6 +1,6 @@
 # Implementation Rules
 
-## TechFlow AI Corporate Knowledge Agent
+## TechFlow Solutions Corporate Knowledge Agent
 
 Version: 1.0
 
@@ -132,7 +132,7 @@ Keep pages clean and lightweight.
 **Example:**
 ```python
 # Correct: Use Streamlit native components
-st.sidebar.title("🤖 TechFlow AI")
+st.sidebar.title("🤖 TechFlow Solutions")
 st.sidebar.info("✓ System Ready")
 
 # Wrong: Custom HTML navigation

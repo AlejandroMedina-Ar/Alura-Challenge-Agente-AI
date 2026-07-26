@@ -4,7 +4,7 @@ Módulo de Barra Lateral
 Este módulo maneja la navegación de la barra lateral y la visualización de información del usuario.
 Proporciona navegación de menú e información de sesión.
 
-Autor: TechFlow AI Project
+Autor: TechFlow Solutions Project
 Licencia: MIT
 """
 
@@ -32,7 +32,7 @@ def render_sidebar() -> str:
     """
     with st.sidebar:
         # App branding
-        st.markdown("# 🤖 TechFlow AI")
+        st.markdown("# 🤖 TechFlow Solutions")
         st.caption("Agente de Conocimiento con RAG")
         st.divider()
         
@@ -147,7 +147,7 @@ def render_sidebar_footer() -> None:
         >>> render_sidebar_footer()
     """
     st.markdown("---")
-    st.caption("TechFlow AI Agente RAG")
+    st.caption("TechFlow Solutions Agente RAG")
     st.caption("Versión 1.0.0")
     st.caption("© 2024 TechFlow")
 
@@ -164,7 +164,7 @@ def render_admin_sidebar() -> str:
     """
     with st.sidebar:
         # App branding
-        st.markdown("# 🤖 TechFlow AI")
+        st.markdown("# 🤖 TechFlow Solutions")
         st.caption("Agente de Conocimiento con RAG")
         st.caption("🛡️ Panel de Admin")
         st.divider()
@@ -211,7 +211,7 @@ def render_compact_sidebar() -> None:
         >>> render_compact_sidebar()
     """
     with st.sidebar:
-        st.markdown("# 🤖 TechFlow AI")
+        st.markdown("# 🤖 TechFlow Solutions")
         st.caption("Agente de Conocimiento con RAG")
         st.divider()
         

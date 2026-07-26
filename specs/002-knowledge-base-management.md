@@ -12,7 +12,7 @@
 
 # 1. Purpose
 
-This document defines the architecture, workflow and management rules for the Knowledge Base used by the TechFlow AI Corporate Knowledge Agent.
+This document defines the architecture, workflow and management rules for the Knowledge Base used by the TechFlow Solutions Corporate Knowledge Agent.
 
 The Knowledge Base is responsible for transforming uploaded knowledge assets into searchable vector representations that can be used by the Retrieval-Augmented Generation (RAG) pipeline.
 
@@ -1481,4 +1481,4 @@ The Knowledge Base Management module is responsible for transforming uploaded kn
 
 It provides the administrative foundation required by the RAG Engine while hiding all technical complexity from end users.
 
-This specification establishes the complete lifecycle of Knowledge Assets and ensures a consistent, maintainable and scalable architecture for Version 1 of the TechFlow AI Corporate Knowledge Agent.
+This specification establishes the complete lifecycle of Knowledge Assets and ensures a consistent, maintainable and scalable architecture for Version 1 of the TechFlow Solutions Corporate Knowledge Agent.

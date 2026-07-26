@@ -4,7 +4,7 @@ Path Configuration Module
 This module defines all file system paths used by the application.
 Paths are resolved relative to the project root and created automatically if needed.
 
-Author: TechFlow AI Project
+Author: TechFlow Solutions Project
 License: MIT
 """
 

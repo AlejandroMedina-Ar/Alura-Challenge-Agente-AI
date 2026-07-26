@@ -1,6 +1,6 @@
 # Source Code Structure
 
-## TechFlow AI Corporate Knowledge Agent
+## TechFlow Solutions Corporate Knowledge Agent
 
 Version: 1.0
 

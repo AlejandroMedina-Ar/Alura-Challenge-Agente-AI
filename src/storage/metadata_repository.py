@@ -4,7 +4,7 @@ Metadata Repository Module
 This module manages document metadata in JSON files.
 Provides CRUD operations for metadata records.
 
-Author: TechFlow AI Project
+Author: TechFlow Solutions Project
 License: MIT
 """
 

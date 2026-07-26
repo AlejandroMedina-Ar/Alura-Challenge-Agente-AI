@@ -1,7 +1,7 @@
 """
 Configuration Package
 
-This package provides centralized configuration management for the TechFlow AI application.
+This package provides centralized configuration management for the TechFlow Solutions application.
 
 Modules:
     - settings: Environment variables and application settings
@@ -15,7 +15,7 @@ Usage:
     >>> print(settings.GEMINI_MODEL)
     >>> print(paths.DOCUMENTS_DIR)
 
-Author: TechFlow AI Project
+Author: TechFlow Solutions Project
 License: MIT
 """
 

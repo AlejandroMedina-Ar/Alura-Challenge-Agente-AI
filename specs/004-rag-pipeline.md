@@ -12,7 +12,7 @@
 
 # 1. Purpose
 
-This document defines how the Retrieval-Augmented Generation (RAG) pipeline operates within the TechFlow AI Corporate Knowledge Agent.
+This document defines how the Retrieval-Augmented Generation (RAG) pipeline operates within the TechFlow Solutions Corporate Knowledge Agent.
 
 The RAG pipeline is responsible for transforming a user's question into a context-aware response using information stored in the Knowledge Base.
 
@@ -515,4 +515,4 @@ These enhancements are outside the scope of Version 1.
 
 The RAG Pipeline is the core of the application.
 
-It connects the Knowledge Base with the selected LLM, enabling accurate and context-aware answers while maintaining a simple, modular and maintainable architecture suitable for Version 1 of the TechFlow AI Corporate Knowledge Agent.
+It connects the Knowledge Base with the selected LLM, enabling accurate and context-aware answers while maintaining a simple, modular and maintainable architecture suitable for Version 1 of the TechFlow Solutions Corporate Knowledge Agent.

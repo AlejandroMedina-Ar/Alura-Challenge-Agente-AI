@@ -4,7 +4,7 @@ Constants Module
 This module defines all application constants, enums, and magic values.
 Constants are organized by category for easy maintenance.
 
-Author: TechFlow AI Project
+Author: TechFlow Solutions Project
 License: MIT
 """
 
@@ -16,8 +16,8 @@ from typing import Final
 # APPLICATION METADATA
 # ==========================================
 
-APP_NAME: Final[str] = "TechFlow AI"
-APP_FULL_NAME: Final[str] = "TechFlow AI Corporate Knowledge Agent"
+APP_NAME: Final[str] = "TechFlow Solutions"
+APP_FULL_NAME: Final[str] = "TechFlow Solutions Corporate Knowledge Agent"
 APP_VERSION: Final[str] = "0.1.0-alpha"
 APP_TAGLINE: Final[str] = "Corporate Knowledge Agent"
 APP_DESCRIPTION: Final[str] = "RAG-powered AI assistant for enterprise knowledge management"

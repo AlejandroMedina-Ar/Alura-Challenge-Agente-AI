@@ -1,6 +1,6 @@
-# 🚀 TechFlow AI - Deployment Guide
+# 🚀 TechFlow Solutions - Deployment Guide
 
-**Complete guide for deploying TechFlow AI RAG Agent**
+**Complete guide for deploying TechFlow Solutions RAG Agent**
 
 ---
 
@@ -129,26 +129,26 @@ docker-compose logs -f
 
 ```bash
 # Build image
-docker build -t techflow-ai:latest .
+docker build -t techflow-solutions:latest .
 
 # Run container
 docker run -d \
-  --name techflow-ai \
+  --name techflow-solutions \
   -p 8501:8501 \
   -e GEMINI_API_KEY=your_key \
   -e COHERE_API_KEY=your_key \
   -e ADMIN_PASSWORD=secure_password \
   -v $(pwd)/data:/app/data \
-  techflow-ai:latest
+  techflow-solutions:latest
 
 # Check logs
-docker logs -f techflow-ai
+docker logs -f techflow-solutions
 
 # Stop container
-docker stop techflow-ai
+docker stop techflow-solutions
 
 # Remove container
-docker rm techflow-ai
+docker rm techflow-solutions
 ```
 
 ### Docker Management
@@ -158,13 +158,13 @@ docker rm techflow-ai
 docker ps
 
 # View logs
-docker logs techflow-ai
+docker logs techflow-solutions
 
 # Access container shell
-docker exec -it techflow-ai bash
+docker exec -it techflow-solutions bash
 
 # Restart container
-docker restart techflow-ai
+docker restart techflow-solutions
 
 # Stop all
 docker-compose down
@@ -284,7 +284,7 @@ docker-compose up -d
 
 ```bash
 # 1. Create VM instance
-gcloud compute instances create techflow-ai \
+gcloud compute instances create techflow-solutions \
   --zone=us-central1-a \
   --machine-type=e2-medium \
   --image-family=ubuntu-2204-lts \
@@ -293,7 +293,7 @@ gcloud compute instances create techflow-ai \
   --tags=http-server
 
 # 2. SSH into instance
-gcloud compute ssh techflow-ai --zone=us-central1-a
+gcloud compute ssh techflow-solutions --zone=us-central1-a
 
 # 3. Follow same steps as AWS EC2 (Docker installation)
 ```
@@ -449,7 +449,7 @@ restart: unless-stopped
 ```ini
 # /etc/systemd/system/techflow.service
 [Unit]
-Description=TechFlow AI RAG Agent
+Description=TechFlow Solutions RAG Agent
 After=docker.service
 Requires=docker.service
 
@@ -490,7 +490,7 @@ healthcheck:
 
 **Docker:**
 ```bash
-docker logs -f techflow-ai
+docker logs -f techflow-solutions
 ```
 
 **Local:**
@@ -506,7 +506,7 @@ tail -f data/logs/application.log
 sudo apt install htop
 
 # Docker stats
-docker stats techflow-ai
+docker stats techflow-solutions
 ```
 
 ### Application Metrics
@@ -606,7 +606,7 @@ docker-compose up -d
 **Docker resource limits:**
 ```yaml
 services:
-  techflow-ai:
+  techflow-solutions:
     deploy:
       resources:
         limits:
@@ -655,7 +655,7 @@ server {
 
 ```bash
 # Check logs
-docker logs techflow-ai
+docker logs techflow-solutions
 
 # Check if port is in use
 sudo lsof -i :8501

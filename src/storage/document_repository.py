@@ -4,7 +4,7 @@ Document Repository Module
 This module manages document records in the knowledge library.
 Provides CRUD operations for document files.
 
-Author: TechFlow AI Project
+Author: TechFlow Solutions Project
 License: MIT
 """
 

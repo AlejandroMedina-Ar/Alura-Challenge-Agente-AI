@@ -4,7 +4,7 @@ Módulo de Panel de Administración
 Este módulo implementa la interfaz del panel de administración.
 Proporciona gestión de documentos, controles de indexación y estadísticas del sistema.
 
-Autor: TechFlow AI Project
+Autor: TechFlow Solutions Project
 Licencia: MIT
 """
 

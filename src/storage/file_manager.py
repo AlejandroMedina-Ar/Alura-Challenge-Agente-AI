@@ -4,7 +4,7 @@ File Manager Module
 This module handles all file system operations for document storage.
 Provides safe file operations with proper error handling.
 
-Author: TechFlow AI Project
+Author: TechFlow Solutions Project
 License: MIT
 """
 

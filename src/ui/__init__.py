@@ -11,7 +11,7 @@ Modules:
 - admin_panel: Document management and system stats
 - settings_panel: Configuration (LLM, RAG, UI)
 
-Author: TechFlow AI Project
+Author: TechFlow Solutions Project
 License: MIT
 """
 

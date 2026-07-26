@@ -4,7 +4,7 @@ Prompt Builder Module
 This module constructs RAG prompts by combining retrieved context
 with user queries and system instructions.
 
-Author: TechFlow AI Project
+Author: TechFlow Solutions Project
 License: MIT
 """
 

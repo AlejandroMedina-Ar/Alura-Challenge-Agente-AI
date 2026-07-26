@@ -1,9 +1,9 @@
 """
-TechFlow AI - Corporate Knowledge Agent
+TechFlow Solutions - Corporate Knowledge Agent
 
 Main source package.
 
-Author: TechFlow AI Project
+Author: TechFlow Solutions Project
 License: MIT
 """
 

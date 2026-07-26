@@ -12,7 +12,7 @@
 
 # 1. Purpose
 
-This document defines the deployment strategy for the TechFlow AI Corporate Knowledge Agent.
+This document defines the deployment strategy for the TechFlow Solutions Corporate Knowledge Agent.
 
 The primary objective is to provide a simple, reliable and reproducible deployment process.
 

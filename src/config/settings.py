@@ -4,7 +4,7 @@ Configuration Settings Module
 This module handles loading and validation of environment variables and application settings.
 All configuration is loaded from .env file and validated at startup.
 
-Author: TechFlow AI Project
+Author: TechFlow Solutions Project
 License: MIT
 """
 

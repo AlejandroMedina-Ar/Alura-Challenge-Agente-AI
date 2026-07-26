@@ -4,7 +4,7 @@ Chat Service Module
 This module provides business logic for chat operations.
 Coordinates RAG pipeline and LLM invocation with fallback.
 
-Author: TechFlow AI Project
+Author: TechFlow Solutions Project
 License: MIT
 """
 

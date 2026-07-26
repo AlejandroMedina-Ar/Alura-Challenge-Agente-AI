@@ -66,7 +66,7 @@ He eliminado completamente el concepto de "top navigation bar" y redistribuido t
 **Ahora:** **Top del sidebar**
 
 ```python
-st.sidebar.title("🤖 TechFlow AI")
+st.sidebar.title("🤖 TechFlow Solutions")
 st.sidebar.caption("Corporate Knowledge Agent")
 ```
 
@@ -236,7 +236,7 @@ st.markdown("""
 
 ```python
 # SÍ: Componentes nativos de Streamlit
-st.sidebar.title("🤖 TechFlow AI")
+st.sidebar.title("🤖 TechFlow Solutions")
 st.sidebar.metric("Status", "Ready")
 st.sidebar.button("Admin Login")
 

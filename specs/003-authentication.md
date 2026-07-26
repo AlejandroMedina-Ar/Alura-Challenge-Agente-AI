@@ -12,7 +12,7 @@
 
 # 1. Purpose
 
-This document defines the authentication mechanism used by the TechFlow AI Corporate Knowledge Agent.
+This document defines the authentication mechanism used by the TechFlow Solutions Corporate Knowledge Agent.
 
 Authentication exists solely to protect administrative functionality.
 
@@ -378,4 +378,4 @@ The authentication system protects only the administrative features of the appli
 
 Its purpose is to prevent unauthorized modifications to the Knowledge Base while preserving an open and frictionless chat experience for regular users.
 
-The implementation intentionally favors simplicity, maintainability and ease of deployment, making it suitable for Version 1 of the TechFlow AI Corporate Knowledge Agent.
+The implementation intentionally favors simplicity, maintainability and ease of deployment, making it suitable for Version 1 of the TechFlow Solutions Corporate Knowledge Agent.

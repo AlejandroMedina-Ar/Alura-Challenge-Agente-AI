@@ -4,7 +4,7 @@ Text Chunker Module
 This module handles text chunking for RAG pipeline.
 Uses recursive character splitting with overlap to preserve context.
 
-Author: TechFlow AI Project
+Author: TechFlow Solutions Project
 License: MIT
 """
 

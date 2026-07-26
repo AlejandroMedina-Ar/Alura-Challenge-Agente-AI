@@ -4,7 +4,7 @@ Embedding Service Module
 This module handles text embedding generation using sentence-transformers.
 Uses multilingual-e5-base model optimized for Spanish and 100+ languages.
 
-Author: TechFlow AI Project
+Author: TechFlow Solutions Project
 License: MIT
 """
 

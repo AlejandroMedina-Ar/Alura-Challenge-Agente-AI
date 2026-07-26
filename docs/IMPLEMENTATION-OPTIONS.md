@@ -7,7 +7,7 @@
 
 ## 🎯 CONTEXTO
 
-El proyecto **TechFlow AI Corporate Knowledge Agent** está completamente especificado y listo para implementación. La filosofía del proyecto es usar **solo herramientas y servicios en free tier** durante la fase de desarrollo/demo.
+El proyecto **TechFlow Solutions Corporate Knowledge Agent** está completamente especificado y listo para implementación. La filosofía del proyecto es usar **solo herramientas y servicios en free tier** durante la fase de desarrollo/demo.
 
 **Originalmente se consideró:** Cursor (descartado - requiere plan Pro para modo agente)
 
@@ -301,5 +301,5 @@ Implementación incremental, validación en cada paso, explicaciones cuando las 
 ---
 
 **Fecha:** 2026-07-25  
-**Proyecto:** TechFlow AI Corporate Knowledge Agent  
+**Proyecto:** TechFlow Solutions Corporate Knowledge Agent  
 **Estado:** Listo para elegir agente y comenzar implementación

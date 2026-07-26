@@ -389,7 +389,7 @@ This document **supersedes** any previous mentions of:
 **ALLOWED:**
 ```python
 # ✅ Streamlit native components
-st.sidebar.title("🤖 TechFlow AI")
+st.sidebar.title("🤖 TechFlow Solutions")
 st.sidebar.metric("Documents", 42)
 st.chat_message("assistant").write("Response")
 ```

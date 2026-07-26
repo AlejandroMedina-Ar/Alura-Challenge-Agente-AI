@@ -1,5 +1,5 @@
 """
-Integration Test Script for TechFlow AI RAG Agent
+Integration Test Script for TechFlow Solutions RAG Agent
 
 This script performs basic integration tests:
 - Module imports
@@ -10,7 +10,7 @@ This script performs basic integration tests:
 
 Run: python test_integration.py
 
-Author: TechFlow AI Project
+Author: TechFlow Solutions Project
 License: MIT
 """
 
@@ -262,7 +262,7 @@ def test_llm_providers():
 def main():
     """Run all integration tests."""
     print("=" * 60)
-    print("TechFlow AI RAG Agent - Integration Tests")
+    print("TechFlow Solutions RAG Agent - Integration Tests")
     print("=" * 60)
     print()
     

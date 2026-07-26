@@ -1,12 +1,12 @@
 """
-Quick Start Script for TechFlow AI RAG Agent
+Quick Start Script for TechFlow Solutions RAG Agent
 
 This script provides a quick way to start the application.
 Performs basic checks before launching Streamlit.
 
 Run: python run.py
 
-Author: TechFlow AI Project
+Author: TechFlow Solutions Project
 License: MIT
 """
 
@@ -54,7 +54,7 @@ def check_requirements():
 
 def run_streamlit():
     """Launch Streamlit application."""
-    print("\n🚀 Starting TechFlow AI RAG Agent...")
+    print("\n🚀 Starting TechFlow Solutions RAG Agent...")
     print("=" * 60)
     print()
     
@@ -79,7 +79,7 @@ def run_streamlit():
 def main():
     """Main entry point."""
     print("=" * 60)
-    print("TechFlow AI RAG Agent - Quick Start")
+    print("TechFlow Solutions RAG Agent - Quick Start")
     print("=" * 60)
     print()
     

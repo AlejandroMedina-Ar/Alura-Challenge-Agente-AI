@@ -12,7 +12,7 @@
 
 # 1. Purpose
 
-This document defines the complete graphical user interface (GUI) specification for the TechFlow AI Corporate Knowledge Agent.
+This document defines the complete graphical user interface (GUI) specification for the TechFlow Solutions Corporate Knowledge Agent.
 
 Its objective is to provide a modern, intuitive and professional user experience inspired by contemporary AI applications such as ChatGPT, Claude, and Perplexity, while maintaining the simplicity and rapid development offered by Streamlit.
 
@@ -149,7 +149,7 @@ The sidebar is the primary navigation and information hub, positioned on the lef
 
 ```
 ┌─────────────────────┐
-│  🤖 TechFlow AI     │
+│  🤖 TechFlow Solutions     │
 │  Corporate Agent    │
 └─────────────────────┘
 ```
@@ -583,7 +583,7 @@ Example:
 ```
 🤖
 
-Welcome to TechFlow AI
+Welcome to TechFlow Solutions
 
 Your intelligent corporate knowledge assistant.
 
@@ -1444,7 +1444,7 @@ Example
 ```
 ────────────────────
 
-TechFlow AI
+TechFlow Solutions
 
 Version 1.0
 
@@ -1613,7 +1613,7 @@ Maintainability
 
 # 60. Final Notes
 
-This specification defines the complete graphical interface for Version 1 of the TechFlow AI Corporate Knowledge Agent.
+This specification defines the complete graphical interface for Version 1 of the TechFlow Solutions Corporate Knowledge Agent.
 
 Its purpose is to ensure a consistent, maintainable and professional implementation while preserving the simplicity.
 

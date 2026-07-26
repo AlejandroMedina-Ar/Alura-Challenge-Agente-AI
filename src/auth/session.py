@@ -4,7 +4,7 @@ Session Management Module
 This module manages user sessions using Streamlit session_state.
 Handles authentication state, user info, and session lifecycle.
 
-Author: TechFlow AI Project
+Author: TechFlow Solutions Project
 License: MIT
 """
 

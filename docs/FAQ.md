@@ -1,14 +1,14 @@
 # ❓ Frequently Asked Questions (FAQ)
 
-**Common questions about TechFlow AI RAG Agent**
+**Common questions about TechFlow Solutions RAG Agent**
 
 ---
 
 ## General Questions
 
-### What is TechFlow AI?
+### What is TechFlow Solutions?
 
-TechFlow AI is a RAG-powered (Retrieval-Augmented Generation) knowledge agent that allows you to chat with your document collection using natural language. It combines document search with AI language models to provide accurate, context-aware responses.
+TechFlow Solutions is a RAG-powered (Retrieval-Augmented Generation) knowledge agent that allows you to chat with your document collection using natural language. It combines document search with AI language models to provide accurate, context-aware responses.
 
 ### What does RAG mean?
 
@@ -438,7 +438,7 @@ See `docs/DEPLOYMENT.md` for details.
 
 ### vs. ChatGPT?
 
-**TechFlow AI:**
+**TechFlow Solutions:**
 - ✅ Uses YOUR documents
 - ✅ Privacy (local storage)
 - ✅ Free tier
@@ -456,7 +456,7 @@ See `docs/DEPLOYMENT.md` for details.
 
 ### vs. Microsoft Copilot?
 
-**TechFlow AI:**
+**TechFlow Solutions:**
 - ✅ 100% free
 - ✅ Full control
 - ✅ Local data
@@ -470,7 +470,7 @@ See `docs/DEPLOYMENT.md` for details.
 
 ### vs. Building from scratch?
 
-**TechFlow AI:**
+**TechFlow Solutions:**
 - ✅ Ready to use
 - ✅ Tested and working
 - ✅ Good architecture

@@ -12,7 +12,7 @@
 
 # 1. Purpose
 
-This document defines the configurable settings used by the TechFlow AI Corporate Knowledge Agent.
+This document defines the configurable settings used by the TechFlow Solutions Corporate Knowledge Agent.
 
 The objective is to centralize all application configuration, allowing developers to switch providers, models and deployment environments without modifying the source code.
 

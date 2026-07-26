@@ -1,6 +1,6 @@
-# 📖 TechFlow AI - User Guide
+# 📖 TechFlow Solutions - User Guide
 
-**Complete guide for using the TechFlow AI RAG Agent**
+**Complete guide for using the TechFlow Solutions RAG Agent**
 
 ---
 

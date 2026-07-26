@@ -4,7 +4,7 @@ RAG Pipeline Module
 This module orchestrates the complete RAG workflow.
 Coordinates embedding, retrieval, and prompt building.
 
-Author: TechFlow AI Project
+Author: TechFlow Solutions Project
 License: MIT
 """
 

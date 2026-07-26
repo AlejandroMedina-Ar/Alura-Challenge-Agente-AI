@@ -4,7 +4,7 @@ Módulo de Componentes
 Este módulo proporciona componentes de UI reutilizables para Streamlit.
 Incluye botones, tarjetas, formularios y otros elementos de UI.
 
-Autor: TechFlow AI Project
+Autor: TechFlow Solutions Project
 Licencia: MIT
 """
 
@@ -26,7 +26,7 @@ def render_header(title: str, subtitle: str = None) -> None:
         subtitle: Subtítulo opcional
     
     Ejemplo:
-        >>> render_header("TechFlow AI", "Agente RAG")
+        >>> render_header("TechFlow Solutions", "Agente RAG")
     """
     st.title(title)
     if subtitle:

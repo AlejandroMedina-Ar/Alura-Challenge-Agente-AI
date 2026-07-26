@@ -4,7 +4,7 @@ Módulo de Chat
 Este módulo implementa la interfaz de chat para interacciones con el usuario.
 Maneja la visualización de mensajes, respuestas en streaming e historial de conversación.
 
-Autor: TechFlow AI Project
+Autor: TechFlow Solutions Project
 Licencia: MIT
 """
 
@@ -259,7 +259,7 @@ def export_chat_history() -> None:
         return
     
     # Format chat history as text
-    export_text = "# TechFlow AI - Exportación de Chat\n\n"
+    export_text = "# TechFlow Solutions - Exportación de Chat\n\n"
     
     for message in st.session_state.chat_history:
         role = message['role'].upper()

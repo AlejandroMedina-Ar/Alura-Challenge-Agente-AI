@@ -9,7 +9,7 @@ Modules:
 - metadata_repository: Document metadata management
 - config_repository: Runtime configuration management
 
-Author: TechFlow AI Project
+Author: TechFlow Solutions Project
 License: MIT
 """
 

@@ -4,7 +4,7 @@ Config Repository Module
 This module manages runtime configuration stored in config.json.
 Provides CRUD operations for user preferences and app settings.
 
-Author: TechFlow AI Project
+Author: TechFlow Solutions Project
 License: MIT
 """
 

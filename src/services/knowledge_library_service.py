@@ -4,7 +4,7 @@ Knowledge Library Service Module
 This module provides business logic for knowledge library document management.
 Handles document upload, deletion, listing, and metadata operations.
 
-Author: TechFlow AI Project
+Author: TechFlow Solutions Project
 License: MIT
 """
 

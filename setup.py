@@ -1,5 +1,5 @@
 """
-Setup Script for TechFlow AI RAG Agent
+Setup Script for TechFlow Solutions RAG Agent
 
 This script initializes the project:
 - Creates necessary directories
@@ -9,7 +9,7 @@ This script initializes the project:
 
 Run: python setup.py
 
-Author: TechFlow AI Project
+Author: TechFlow Solutions Project
 License: MIT
 """
 
@@ -37,7 +37,7 @@ from src.utils import get_logger, setup_logging
 def main():
     """Run setup process."""
     print("=" * 60)
-    print("TechFlow AI RAG Agent - Setup")
+    print("TechFlow Solutions RAG Agent - Setup")
     print("=" * 60)
     print()
     

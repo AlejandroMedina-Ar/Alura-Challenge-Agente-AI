@@ -8,7 +8,7 @@
 
 # Purpose
 
-This document defines canonical terminology and naming conventions used throughout the TechFlow AI Corporate Knowledge Agent project.
+This document defines canonical terminology and naming conventions used throughout the TechFlow Solutions Corporate Knowledge Agent project.
 
 Use this glossary to resolve naming conflicts and ensure consistency across all documentation and code.
 

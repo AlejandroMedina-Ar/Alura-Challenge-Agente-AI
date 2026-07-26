@@ -4,7 +4,7 @@ Configuration Service Module
 This module provides business logic for runtime configuration management.
 Handles LLM, RAG, and UI configuration.
 
-Author: TechFlow AI Project
+Author: TechFlow Solutions Project
 License: MIT
 """
 

@@ -4,7 +4,7 @@ Base LLM Provider Module
 This module defines the abstract base class for all LLM providers.
 All provider implementations must inherit from BaseProvider.
 
-Author: TechFlow AI Project
+Author: TechFlow Solutions Project
 License: MIT
 """
 

@@ -1,10 +1,10 @@
 """
 Google Gemini LLM Provider Module
 
-This module implements the Google Gemini provider for the TechFlow AI project.
+This module implements the Google Gemini provider for the TechFlow Solutions project.
 Uses Gemini 2.0 Flash (free tier) as the primary LLM provider.
 
-Author: TechFlow AI Project
+Author: TechFlow Solutions Project
 License: MIT
 """
 

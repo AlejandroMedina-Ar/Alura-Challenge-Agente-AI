@@ -4,7 +4,7 @@ Indexing Service Module
 This module provides business logic for document indexing.
 Coordinates chunking, embedding, and vector store operations.
 
-Author: TechFlow AI Project
+Author: TechFlow Solutions Project
 License: MIT
 """
 

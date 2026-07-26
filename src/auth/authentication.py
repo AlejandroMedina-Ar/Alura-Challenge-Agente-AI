@@ -4,7 +4,7 @@ Authentication Module
 This module handles user authentication for the admin panel.
 Uses simple password-based authentication with bcrypt hashing.
 
-Author: TechFlow AI Project
+Author: TechFlow Solutions Project
 License: MIT
 """
 

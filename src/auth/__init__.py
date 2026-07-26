@@ -7,7 +7,7 @@ Modules:
 - authentication: Password verification and login
 - session: Session state management in Streamlit
 
-Author: TechFlow AI Project
+Author: TechFlow Solutions Project
 License: MIT
 """
 

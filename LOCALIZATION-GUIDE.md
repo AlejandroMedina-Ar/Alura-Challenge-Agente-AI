@@ -1,4 +1,4 @@
-# Guía de Localización - TechFlow AI RAG Agent
+# Guía de Localización - TechFlow Solutions RAG Agent
 
 ## 📋 Estado de Localización
 
@@ -66,7 +66,7 @@
 1. **Textos de UI (YA COMPLETADO)**
    ```python
    # ✅ Traducido
-   st.title("🤖 TechFlow AI")
+   st.title("🤖 TechFlow Solutions")
    st.markdown("### Agente de Conocimiento con RAG")
    st.button("Subir Documento")
    st.error("❌ Error al cargar archivo")

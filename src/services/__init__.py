@@ -11,7 +11,7 @@ Modules:
 - indexing_service: Document chunking, embedding, vector store
 - chat_service: RAG pipeline + LLM invocation with fallback
 
-Author: TechFlow AI Project
+Author: TechFlow Solutions Project
 License: MIT
 """
 
