@@ -94,13 +94,13 @@ Version 1 includes:
 - Source attribution
 - Password-protected Administrator Panel
 - Cloud deployment
-- Configurable LLM provider
+- Dual LLM provider with automatic fallback (Gemini primary, Cohere fallback)
 
 ---
 
 # Out of Scope
 
-The following features are intentionally excluded from Version 1:
+The following features are intentionally excluded from v1:
 
 - User registration
 - Multiple administrator accounts
@@ -109,11 +109,13 @@ The following features are intentionally excluded from Version 1:
 - Voice interaction
 - REST API
 - Mobile applications
-- Docker orchestration
+- Docker containers (orchestration or standalone)
 - Kubernetes
 - Multi-agent systems
-- Conversation history
+- Persistent conversation history (saved chats across sessions)
 - Analytics dashboards
+
+**Note on Conversation Memory:** v1 includes session-based conversation memory (current chat only) using Streamlit session state. Persistent conversation history (saved chats across sessions) is explicitly out of scope.
 
 These capabilities may be considered in future versions.
 
@@ -236,6 +238,12 @@ The application can be deployed using free-tier cloud services.
 
 ---
 
+### Multi-language Support
+
+Documents in English, Spanish, and Portuguese are supported. Language detection is automatic but does not affect processing in v1 (future enhancement: language-specific embedding models).
+
+---
+
 # 9. Supported Knowledge Assets
 
 Version 1 supports:
@@ -261,7 +269,7 @@ Support for additional formats may be added in future versions.
 | AI Framework    | LangChain                          |
 | Vector Database | ChromaDB                           |
 | Embeddings      | HuggingFace Sentence Transformers  |
-| LLM Provider    | OpenRouter                         |
+| LLM Provider    | Google Gemini (primary), Cohere (fallback) |
 | Configuration   | python-dotenv                      |
 | Version Control | Git                                |
 | Repository      | GitHub                             |
@@ -281,7 +289,7 @@ Core principles include:
 - Rapid development
 - Maintainability
 - AI-assisted software engineering
-- Free-tier first
+- Free-tier first (Gemini free tier as primary LLM)
 - Configuration over hardcoding
 
 Detailed architectural principles are documented in:
@@ -310,13 +318,13 @@ These constraints guide all implementation decisions.
 
 # 13. Stable Decisions
 
-Version 1 intentionally fixes several high-level project decisions.
+v1 intentionally fixes several high-level project decisions.
 
 - Python is the implementation language.
 - Streamlit is the user interface.
 - LangChain orchestrates the AI workflow.
 - ChromaDB stores vector embeddings.
-- OpenRouter is the default LLM provider.
+- Google Gemini is the primary LLM provider with Cohere as automatic fallback.
 - Knowledge Assets are uploaded dynamically.
 - Administrative functions are password protected.
 

@@ -105,11 +105,13 @@ Technology:
 Responsible for:
 
 - Business workflows
-- Session state
+- Session state (temporary in-memory conversation context during active session only)
 - Service orchestration
 - Request routing
 
 This layer contains no UI code.
+
+**Note:** "Session state" refers to temporary conversation memory during the current active session using Streamlit session state. It does NOT include persistent conversation history across sessions, which is explicitly out of scope for v1.
 
 ---
 
@@ -146,35 +148,137 @@ Infrastructure components should be replaceable without affecting higher layers.
 The system is organized into independent services.
 
 ```
-src/
+techflow-rag-agent/
 
-services/
+├── src/
 
-    auth_service.py
+│   ├── app.py
 
-    chat_service.py
+│   ├── ui/
 
-    knowledge_library_service.py
+│   │   ├── chat.py
 
-    embedding_service.py
+│   │   ├── sidebar.py
 
-    retrieval_service.py
+│   │   ├── admin_panel.py
 
-    prompt_service.py
+│   │   ├── settings_panel.py
 
-    llm_service.py
+│   │   ├── components.py
 
-    rag_pipeline.py
+│   │   └── theme.py
 
-utils/
+│   │
 
-config/
+│   ├── services/
 
-pages/
+│   │   ├── authentication_service.py
 
-assets/
+│   │   ├── chat_service.py
 
-data/
+│   │   ├── knowledge_library_service.py
+
+│   │   ├── indexing_service.py
+
+│   │   └── configuration_service.py
+
+│   │
+
+│   ├── rag/
+
+│   │   ├── pipeline.py
+
+│   │   ├── retriever.py
+
+│   │   ├── chunker.py
+
+│   │   ├── embedding_service.py
+
+│   │   ├── vector_store.py
+
+│   │   └── prompt_builder.py
+
+│   │
+
+│   ├── llm/
+
+│   │   ├── base_provider.py
+
+│   │   ├── gemini_provider.py
+
+│   │   └── cohere_provider.py
+
+│   │
+
+│   ├── storage/
+
+│   │   ├── document_repository.py
+
+│   │   ├── metadata_repository.py
+
+│   │   ├── config_repository.py
+
+│   │   └── file_manager.py
+
+│   │
+
+│   ├── auth/
+
+│   │   ├── authentication.py
+
+│   │   └── session.py
+
+│   │
+
+│   ├── config/
+
+│   │   ├── settings.py
+
+│   │   ├── constants.py
+
+│   │   └── paths.py
+
+│   │
+
+│   └── utils/
+
+│       ├── logger.py
+
+│       ├── helpers.py
+
+│       ├── validators.py
+
+│       └── exceptions.py
+
+│
+
+├── assets/
+
+│   ├── css/
+
+│   └── images/
+
+│
+
+├── data/
+
+│   ├── knowledge_library/
+
+│   ├── chromadb/
+
+│   ├── logs/
+
+│   └── config.json
+
+│
+
+├── specs/
+
+├── architecture/
+
+├── prompts/
+
+└── requirements.txt
 ```
 
 Each service owns a single business responsibility.
@@ -305,27 +409,23 @@ The architecture intentionally supports future replacement of:
 
 LLM Provider
 
-- OpenRouter
-- OpenAI
-- Gemini
-- Ollama
-- Claude
-- Cohere
+- Google Gemini (default, v1)
+- Cohere (fallback, v1)
+- Future providers (not supported in v1): OpenAI, Claude, Groq, Ollama
 
 Vector Database
 
-- ChromaDB
+- ChromaDB (default, v1)
+- Future alternatives (not supported in v1): Pinecone, Weaviate, Qdrant
 
 Embedding Models
 
-- HuggingFace
-- Nomic
-- E5
-- BGE
+- HuggingFace Sentence Transformers (default: intfloat/multilingual-e5-base, v1)
+- Future alternatives (not supported in v1): intfloat/multilingual-e5-large, OpenAI embeddings, Nomic
 
 Document Loaders
 
-- Additional file formats
+- Additional file formats (future)
 
 These replacements should require minimal code changes.
 
@@ -357,7 +457,11 @@ Sensitive information must never be hardcoded.
 
 ### Local Embeddings
 
-Embeddings are generated locally whenever possible.
+Embeddings are generated locally whenever possible using multilingual models optimized for Spanish.
+
+### Dual LLM Provider Strategy
+
+Google Gemini is the primary LLM provider with Cohere as automatic fallback.
 
 ---
 
@@ -444,6 +548,10 @@ The detailed behavior of each module is defined in:
 - specs/006-deployment.md
 
 If a conflict exists, the individual specification takes precedence over this document.
+
+For terminology and naming conventions, refer to:
+
+- architecture/Glossary.md
 
 ---
 

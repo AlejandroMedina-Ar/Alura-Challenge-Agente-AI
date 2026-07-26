@@ -139,20 +139,24 @@ services/
 
 chat_service.py
 
-knowledge_base_service.py
+knowledge_library_service.py
 
 authentication_service.py
 
 configuration_service.py
+
+indexing_service.py
 ```
 
 Responsibilities:
 
-- Coordinate workflows.
-- Validate operations.
-- Connect UI with lower-level modules.
+- Coordinate workflows
+- Validate operations
+- Connect UI with lower-level modules
 
 Services should not know how the interface is implemented.
+
+**Note:** Service naming follows the pattern `<domain>_service.py`. `authentication_service.py` acts as an Application Layer facade that uses `auth/authentication.py` for core authentication logic.
 
 ---
 
@@ -165,6 +169,8 @@ Example:
 ```text
 rag/
 
+pipeline.py
+
 retriever.py
 
 chunker.py
@@ -173,19 +179,21 @@ embedding_service.py
 
 vector_store.py
 
-pipeline.py
-
+prompt_builder.py
 ```
 
 Responsibilities:
 
-- Chunk documents.
-- Generate embeddings.
-- Query ChromaDB.
-- Retrieve context.
-- Build prompts.
+- Orchestrate RAG workflow (pipeline.py)
+- Chunk documents
+- Generate embeddings
+- Query ChromaDB
+- Retrieve context
+- Build prompts with system instructions, context, and user question
 
 The RAG module should remain independent from the UI.
+
+**Note:** `pipeline.py` acts as the primary orchestrator, coordinating embedding_service, retriever, and prompt_builder. It does NOT invoke the LLM directly; that responsibility belongs to chat_service.
 
 ---
 
@@ -200,16 +208,17 @@ llm/
 
 base_provider.py
 
-openrouter_provider.py
+gemini_provider.py
 
-ollama_provider.py
+cohere_provider.py
 ```
 
 Responsibilities:
 
-- Connect to LLM providers.
-- Send prompts.
-- Receive responses.
+- Connect to LLM providers (Gemini primary, Cohere fallback)
+- Send prompts
+- Receive responses
+- Handle provider-specific errors and fallback logic
 
 The rest of the application should communicate only through this abstraction layer.
 
@@ -229,16 +238,21 @@ document_repository.py
 metadata_repository.py
 
 config_repository.py
+
+file_manager.py
 ```
 
 Responsibilities:
 
-- Read files.
-- Write files.
-- Manage metadata.
-- Persist configuration.
+- Read files from data/knowledge_library/documents/ (document_repository.py)
+- Write files to data/knowledge_library/documents/ (document_repository.py)
+- Manage asset metadata in data/knowledge_library/metadata/ (metadata_repository.py)
+- Persist runtime configuration to data/config.json (config_repository.py - does NOT handle .env)
+- General file operations (file_manager.py)
 
 Business logic should never manipulate files directly.
+
+**Note:** `config/settings.py` is responsible for reading `.env` and providing configuration values, but NOT for persisting them.
 
 ---
 
@@ -357,6 +371,10 @@ Services → Storage
 Services → LLM
 
 Services → Auth
+
+RAG → Storage (for document loading)
+
+Authentication Service → Auth (authentication_service.py → auth/authentication.py)
 
 All modules → Config
 

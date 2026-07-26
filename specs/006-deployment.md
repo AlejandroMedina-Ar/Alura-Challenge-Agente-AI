@@ -35,11 +35,12 @@ This specification does not cover:
 
 - Kubernetes
 - Docker Swarm
+- Docker containers (v1 deploys as native Python applications only)
 - CI/CD pipelines
 - Load balancing
 - Multi-server deployments
 
-These topics are outside the scope of Version 1.
+These topics are outside the scope of v1.
 
 ---
 
@@ -69,7 +70,7 @@ Version 1 officially supports:
 
 Future versions may support:
 
-- Docker
+- Docker (single container, no orchestration)
 - Railway
 - OCI Cloud Service
 - Azure App Service
@@ -102,7 +103,11 @@ Install Requirements
 
 ↓
 
-Configure .env
+Copy .env.example to .env
+
+↓
+
+Configure .env (API keys, passwords)
 
 ↓
 
@@ -122,9 +127,13 @@ cd techflow-rag-agent
 
 python -m venv .venv
 
-source .venv/bin/activate
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 
 pip install -r requirements.txt
+
+cp .env.example .env
+
+# Edit .env with your API keys and passwords
 
 streamlit run src/app.py
 ```
@@ -138,26 +147,44 @@ The deployment expects the following structure:
 ```
 techflow-rag-agent/
 
-src/
+├── src/
 
-assets/
+│   ├── app.py
 
-data/
+│   ├── ui/
 
-specs/
+│   ├── services/
 
-architecture/
+│   ├── rag/
 
-prompts/
+│   ├── llm/
 
-requirements.txt
+│   ├── storage/
 
-README.md
+│   ├── auth/
 
-.env.example
+│   ├── config/
+
+│   └── utils/
+
+├── assets/
+
+├── data/  (created at runtime)
+
+├── specs/
+
+├── architecture/
+
+├── prompts/
+
+├── requirements.txt
+
+├── .env.example
+
+└── README.md
 ```
 
-The application should create missing runtime directories automatically when possible.
+The application should create missing runtime directories (data/, data/logs/, data/chromadb/, data/knowledge_library/) automatically when possible.
 
 ---
 
@@ -170,27 +197,41 @@ Required:
 ```
 ADMIN_PASSWORD
 
-LLM_PROVIDER
+GEMINI_API_KEY (or COHERE_API_KEY - at least one)
 
-LLM_MODEL
+EMBEDDING_MODEL
+```
 
+Recommended (for full functionality):
 
+```
+GEMINI_API_KEY
+
+COHERE_API_KEY
+
+GEMINI_MODEL
+
+COHERE_MODEL
 ```
 
 Optional:
 
 ```
-LLM_API_KEY
-
-OLLAMA_BASE_URL
-
 CHROMA_DB_PATH
+
+CHUNK_SIZE
+
+CHUNK_OVERLAP
 
 TEMPERATURE
 
 MAX_CONTEXT_CHUNKS
 
 MAX_OUTPUT_TOKENS
+
+LOG_LEVEL
+
+LOG_FILE
 ```
 
 Sensitive values should never be committed to Git.
@@ -206,21 +247,27 @@ Recommended structure:
 ```
 data/
 
-knowledge_library/
+    knowledge_library/
 
-chromadb/
+        documents/
 
-logs/
+        metadata/
 
-config.json
+    chromadb/
+
+    logs/
+
+    config.json
 ```
 
 This directory contains:
 
 - Uploaded Knowledge Assets
-- ChromaDB
-- Logs
+- ChromaDB persistent storage
+- Application logs
 - Runtime configuration
+
+**Note:** The `data/` directory is created automatically at runtime if it doesn't exist.
 
 ---
 
@@ -292,13 +339,17 @@ Manual setup should be minimized.
 
 During startup, verify:
 
-- Required directories exist
+- Required directories exist (create if missing: data/, data/logs/, data/chromadb/, data/knowledge_library/)
 - Environment variables are valid
+- At least one LLM provider key is configured (GEMINI_API_KEY or COHERE_API_KEY)
 - ChromaDB is available
 - Embedding model can be loaded
-- LLM provider is configured
 
 If validation fails, display a clear error message.
+
+**Warning conditions (non-blocking):**
+- Only one LLM provider configured (warn that fallback is unavailable)
+- Optional configuration missing (use defaults)
 
 ---
 
@@ -372,14 +423,16 @@ The application is intended for educational use and small-scale deployments.
 
 This specification is complete when:
 
-- The application runs locally.
-- The application runs on Streamlit Community Cloud.
-- The application runs on Render.
-- Environment variables are loaded correctly.
-- Runtime directories are created automatically.
-- ChromaDB initializes successfully.
-- Uploaded assets persist correctly.
-- Startup validation detects configuration problems.
+- The application runs locally
+- The application runs on Streamlit Community Cloud
+- The application runs on Render
+- Environment variables are loaded correctly
+- Runtime directories are created automatically
+- ChromaDB initializes successfully
+- Uploaded assets persist correctly
+- Startup validation detects configuration problems
+- The application warns (but continues) if only one LLM provider is configured
+- Both Gemini and Cohere providers work correctly
 
 ---
 

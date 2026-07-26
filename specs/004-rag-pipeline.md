@@ -68,7 +68,7 @@ Build Prompt
 
 ↓
 
-Send to LLM
+Send to LLM (Gemini primary, Cohere fallback)
 
 ↓
 
@@ -80,6 +80,19 @@ Display Sources
 ```
 
 Each step should remain independent and modular.
+
+---
+
+## 3.1 Pipeline Orchestration
+
+The `rag/pipeline.py` module acts as the primary orchestrator of the RAG workflow. It receives a user question from `chat_service.py` and coordinates the following steps:
+
+1. Call `embedding_service.generate_query_embedding(question)`
+2. Call `retriever.search(embedding, top_k=MAX_CONTEXT_CHUNKS)`
+3. Call `prompt_builder.build_rag_prompt(question, retrieved_chunks)`
+4. Return the prompt to `chat_service.py`, which then calls `llm_service.generate_response(prompt)`
+
+**Responsibility boundary:** `rag/pipeline.py` handles everything EXCEPT the final LLM invocation, which remains the responsibility of `chat_service.py` to allow future conversation management features and provider fallback logic.
 
 ---
 
@@ -119,7 +132,7 @@ The user question should be converted into an embedding using the same embedding
 Default model:
 
 ```
-BAAI/bge-small-en-v1.5
+intfloat/multilingual-e5-base
 ```
 
 This ensures compatibility between stored vectors and query vectors.
@@ -132,9 +145,9 @@ After generating the query embedding, perform a similarity search against Chroma
 
 Recommended default:
 
-Top K = 4
+MAX_CONTEXT_CHUNKS = 4
 
-The number of retrieved chunks should remain configurable.
+The number of retrieved chunks should remain configurable via environment variables (see SPEC-005).
 
 Only the most relevant chunks should be returned.
 
@@ -167,11 +180,11 @@ This information will later be shown as references.
 
 The prompt sent to the LLM should contain:
 
-System Instructions
+System Prompt
 
 Retrieved Context
 
-Conversation History (optional)
+Conversation History (current session only, using Streamlit session state)
 
 User Question
 
@@ -189,6 +202,8 @@ Answer
 
 The LLM should answer only using the retrieved context whenever possible.
 
+**Token Limit Handling:** If the constructed prompt exceeds the LLM's context window (checked via provider-specific token counter), the system should dynamically reduce `MAX_CONTEXT_CHUNKS` or truncate chunks to fit within limits.
+
 ---
 
 # 10. LLM Invocation
@@ -201,7 +216,9 @@ The pipeline simply sends:
 - Temperature
 - Max Tokens
 
-The provider implementation is defined in SPEC-005.
+Provider implementation and fallback logic are defined in SPEC-005.
+
+The LLM invocation is handled by `chat_service.py`, which uses `llm_service` to call the appropriate provider (Gemini primary, Cohere fallback).
 
 ---
 
@@ -237,11 +254,113 @@ Source attribution increases user confidence and transparency.
 
 # 13. Conversation Memory
 
-Version 1 includes lightweight conversation memory.
+v1 includes lightweight conversation memory during the current session only.
 
 The current chat session should preserve previous messages using Streamlit session state.
 
-Conversation history should not persist after the application is closed.
+Conversation history should not persist after the application is closed or the browser is refreshed.
+
+**Scope Clarification:** "Session-based conversation memory" (temporary, current chat) is included in v1. "Persistent conversation history" (saved chats across sessions) is explicitly out of scope for v1.
+
+---
+
+# 13.1 LLM Provider Fallback Strategy
+
+v1 implements a dual-provider architecture with automatic fallback for reliability and cost optimization.
+
+## Primary Provider: Google Gemini (Free Tier)
+
+Default model: `gemini-2.0-flash-exp` or equivalent free-tier model
+
+Used for all requests under normal conditions.
+
+## Fallback Provider: Cohere
+
+Used automatically when Gemini encounters errors or limitations.
+
+## Fallback Triggers
+
+The system switches to Cohere when Gemini experiences:
+
+1. **Rate Limit Errors** (429 status code or equivalent)
+2. **Quota Exceeded** (free tier daily/monthly limits)
+3. **API Timeout** (request exceeds 30 seconds)
+4. **Service Unavailable** (503 status code)
+5. **Authentication Errors** (invalid API key)
+6. **Model Not Available** (model deprecation or unavailability)
+
+## Retry Strategy
+
+Before switching to fallback:
+
+1. First request fails → Log error
+2. Retry once with exponential backoff (2 seconds delay)
+3. Second failure → Switch to Cohere fallback
+4. Log fallback event with reason
+
+**No retries** for authentication errors or invalid API keys (immediate fallback).
+
+## User Notification
+
+Fallback is **transparent and automatic**. Users are NOT notified during normal operation.
+
+However, the system status indicator in the sidebar should reflect the active provider:
+
+```
+🟢 LLM: Gemini
+
+or
+
+🟡 LLM: Cohere (fallback active)
+```
+
+## Logging
+
+All fallback events should be logged with:
+
+- Timestamp
+- Original error from Gemini
+- Reason for fallback
+- Active provider after fallback
+
+Example log entry:
+
+```
+[2026-07-25 14:32:18] WARNING - Gemini rate limit exceeded (429). Switching to Cohere fallback.
+[2026-07-25 14:32:19] INFO - LLM request successful using Cohere.
+```
+
+## Fallback Duration
+
+Once triggered, the fallback provider remains active for:
+
+- Current request only (request-level fallback), OR
+- 5 minutes (session-level fallback if Gemini is experiencing ongoing issues)
+
+After 5 minutes, the system automatically attempts to use Gemini again.
+
+## Configuration
+
+Both API keys must be configured in `.env`:
+
+```
+GEMINI_API_KEY=your_gemini_key
+COHERE_API_KEY=your_cohere_key
+```
+
+If either key is missing, the application should warn during startup but continue with available provider(s).
+
+## Error Handling if Both Fail
+
+If both Gemini AND Cohere fail:
+
+1. Log critical error
+2. Display user-friendly message:
+   ```
+   ⚠ AI services temporarily unavailable.
+   Please try again in a few moments.
+   ```
+3. Do NOT expose technical error details to users
 
 ---
 
@@ -251,11 +370,44 @@ Possible errors include:
 
 - No relevant documents found
 - Empty Knowledge Base
-- LLM unavailable
+- LLM unavailable (both Gemini and Cohere)
 - Embedding generation failed
 - ChromaDB unavailable
+- ChromaDB initialization failure
+- ChromaDB collection corruption
+- Disk full (ChromaDB persistence)
 
 Friendly messages should be displayed instead of technical errors.
+
+## Empty Knowledge Base
+
+If a user submits a question but the Knowledge Library contains no indexed documents (count = 0), the system must NOT invoke the LLM.
+
+Instead, display exactly this message:
+
+```
+Por favor agregar al menos 2 documentos para poder indexarlos
+```
+
+This validates that the Knowledge Base has sufficient content before attempting retrieval.
+
+## ChromaDB Error Handling
+
+Specific ChromaDB failure scenarios:
+
+**Initialization Failure:**
+Display: "Vector database initialization failed. Please check logs and restart the application."
+
+**Collection Corruption:**
+Display: "Knowledge Base index corrupted. Administrator should rebuild the index."
+
+**Disk Full:**
+Display: "Storage space exhausted. Please free disk space or contact administrator."
+
+**Connection Lost:**
+Display: "Knowledge Base temporarily unavailable. Retrying..."
+
+All ChromaDB errors should be logged with full stack traces for debugging.
 
 ---
 

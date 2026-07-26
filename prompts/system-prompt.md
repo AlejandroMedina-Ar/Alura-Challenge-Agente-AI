@@ -24,6 +24,8 @@ Your responsibility is to implement the existing design.
 
 Build a Retrieval-Augmented Generation (RAG) application capable of answering questions using a corporate knowledge base.
 
+The application uses Google Gemini as the primary LLM provider (free tier) with Cohere as automatic fallback for reliability.
+
 The application must remain:
 
 - Simple
@@ -170,8 +172,8 @@ Secrets belong exclusively inside:
 
 Examples:
 
-- API Keys
-- Passwords
+- API Keys (GEMINI_API_KEY, COHERE_API_KEY)
+- Passwords (ADMIN_PASSWORD)
 - Tokens
 
 Operational configuration belongs inside:
@@ -182,10 +184,9 @@ data/config.json
 
 Examples:
 
-- LLM provider
-- Model
+- Model selection
 - Temperature
-- Top K
+- MAX_CONTEXT_CHUNKS
 - Theme
 - Logging level
 
@@ -363,7 +364,7 @@ Do not implement features outside the documented specifications.
 Examples include:
 
 - Multi-agent systems
-- Docker orchestration
+- Docker containers (v1 is native Python deployment)
 - Kubernetes
 - User registration
 - Multiple administrator accounts
@@ -372,6 +373,7 @@ Examples include:
 - REST APIs
 - Analytics dashboards
 - Mobile applications
+- Persistent conversation history (saved chats across sessions)
 
 Unless the specifications are updated, these features must remain excluded.
 

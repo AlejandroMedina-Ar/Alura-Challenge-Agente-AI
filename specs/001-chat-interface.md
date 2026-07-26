@@ -149,7 +149,7 @@ Center
 Right Side
 
 - Theme Selector
-- Current AI Model (optional)
+- Current AI Model (Gemini / Cohere)
 - Administrator Status
 
 Example
@@ -159,7 +159,7 @@ Example
 
                                🌙 Dark ▼
 
-                               🧠 Gemini 2.5 Flash
+                               🧠 Gemini 2.0 Flash
 
                                👤 Administrator
 ```
@@ -181,7 +181,7 @@ Available themes
 
 The application always starts using:
 
-Tokyo Night Dark
+Tokyo Night (Dark)
 
 No user configuration is required.
 
@@ -235,7 +235,7 @@ The design should communicate:
 
 ## Primary Theme
 
-Tokyo Night
+Tokyo Night (Dark)
 
 Primary Background
 
@@ -437,7 +437,7 @@ Chunks
 
 Embedding
 
-BAAI/bge-small-en-v1.5
+intfloat/multilingual-e5-base
 
 Database
 
@@ -842,11 +842,11 @@ Benefits
 
 # 33. Conversation Persistence
 
-Conversation history exists only during the current Streamlit session.
+Conversation history exists only during the current Streamlit session (session-based conversation memory).
 
 Refreshing the browser clears the conversation.
 
-Persistent chat history is intentionally excluded from Version 1.
+Persistent chat history (saved chats across sessions) is intentionally excluded from v1.
 
 ---
 
@@ -1125,7 +1125,7 @@ Chunks
 
 Embedding Model
 
-BAAI/bge-small-en-v1.5
+intfloat/multilingual-e5-base
 
 Vector Database
 
@@ -1217,11 +1217,11 @@ Knowledge Base
 
 🧠 Embeddings
 
-BAAI/bge-small-en-v1.5
+intfloat/multilingual-e5-base
 
-🤖 LLM
+🧠 LLM
 
-Gemini 2.5 Flash
+Gemini 2.0 Flash
 
 💾 Database
 

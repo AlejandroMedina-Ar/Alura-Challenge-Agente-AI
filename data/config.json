@@ -1,0 +1,19 @@
+{
+  "theme": "tokyonight",
+
+  "appearance": "dark",
+
+  "llm_provider": "openrouter",
+
+  "model": "openai/gpt-4.1-mini",
+
+  "temperature": 0.2,
+
+  "max_tokens": 1500,
+
+  "top_k": 5,
+
+  "show_sources": true,
+
+  "logging": "INFO"
+}

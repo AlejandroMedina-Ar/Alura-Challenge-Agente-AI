@@ -107,11 +107,14 @@ Business logic belongs inside services.
 Examples:
 
 - ChatService
-- KnowledgeBaseService
+- KnowledgeLibraryService
 - AuthenticationService
 - ConfigurationService
+- IndexingService
 
 Services should not depend on the UI.
+
+**Service Naming Convention:** Use `<domain>_service.py` format consistently (e.g., `authentication_service.py`, not `auth_service.py`).
 
 ---
 
@@ -130,6 +133,11 @@ Secrets belong only inside:
 ```
 .env
 ```
+
+Examples:
+- ADMIN_PASSWORD
+- GEMINI_API_KEY
+- COHERE_API_KEY
 
 Runtime settings belong only inside:
 
@@ -226,6 +234,8 @@ data/knowledge_library/metadata/
 
 Document processing must remain independent from chat functionality.
 
+**Terminology:** Use "Knowledge Asset" in technical documentation and code, "Document" in user-facing UI.
+
 ---
 
 # ChromaDB
@@ -242,24 +252,28 @@ Always use the project's vector service.
 
 # LLM Providers
 
-The project supports multiple providers.
+The project uses a dual-provider architecture.
 
-Default provider:
+Primary provider:
 
-- OpenRouter
+- Google Gemini (free tier)
 
-Future compatible providers:
+Fallback provider:
+
+- Cohere
+
+Future compatible providers (not supported in v1):
 
 - OpenAI
-- Gemini
 - Claude
-- Cohere
 - Groq
-- Ollama
+- Ollama (local)
 
 Never write provider-specific code that prevents future migration.
 
-Use an abstraction layer.
+Use an abstraction layer (llm/base_provider.py).
+
+Implement automatic fallback logic as specified in SPEC-004 Section 13.1.
 
 ---
 

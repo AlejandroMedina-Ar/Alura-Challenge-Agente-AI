@@ -273,13 +273,15 @@ Supported Extension
 
 Readable Format
 
-Non-empty Content
+Non-empty Content (reject files with 0 bytes or only whitespace)
 
 Maximum Size
 
 No Corruption Detected
 
 Rejected files should never reach the indexing pipeline.
+
+**Empty Document Policy:** Files with 0 bytes or containing only whitespace characters must be rejected during validation. The administrator should receive a clear error message: "Document '{filename}' is empty and cannot be indexed. Please upload a document with actual content."
 
 ---
 
@@ -369,7 +371,7 @@ indexed: true
 
 chunk_count: 214
 
-embedding_model: BAAI/bge-small-en-v1.5
+embedding_model: intfloat/multilingual-e5-base
 
 last_indexed: 2026-07-24 18:43
 ```
@@ -387,26 +389,28 @@ Suggested directory structure
 ```
 data/
 
-knowledge_library/
+    knowledge_library/
 
-documents/
+        documents/
 
-metadata/
+        metadata/
 
-chromadb/
+    chromadb/
 
-logs/
+    logs/
+
+    config.json
 ```
 
 Responsibilities
 
 documents/
 
-Original uploaded files.
+Original uploaded files (document_repository.py).
 
 metadata/
 
-Structured metadata.
+Structured asset metadata (metadata_repository.py).
 
 chromadb/
 
@@ -415,6 +419,10 @@ Persistent vector database.
 logs/
 
 Upload and indexing logs.
+
+config.json
+
+Runtime configuration (config_repository.py).
 
 ---
 
@@ -427,27 +435,49 @@ Recommended structure
 ```
 techflow-rag-agent/
 
-src/
+├── src/
 
-data/
+│   ├── app.py
 
-knowledge_library/
+│   ├── ui/
 
-documents/
+│   ├── services/
 
-metadata/
+│   ├── rag/
 
-chromadb/
+│   ├── llm/
 
-logs/
+│   ├── storage/
 
-assets/
+│   ├── auth/
 
-specs/
+│   ├── config/
 
-architecture/
+│   └── utils/
 
-docs/
+├── assets/
+
+├── data/
+
+│   ├── knowledge_library/
+
+│   │   ├── documents/
+
+│   │   └── metadata/
+
+│   ├── chromadb/
+
+│   ├── logs/
+
+│   └── config.json
+
+├── specs/
+
+├── architecture/
+
+├── prompts/
+
+└── requirements.txt
 ```
 
 The project should remain easy to navigate and maintain.
@@ -472,13 +502,15 @@ Every asset should be uniquely identifiable.
 
 Scalability
 
-The architecture should support future growth without structural changes.
+The architecture should support growth within defined limits. v1 enforces a hard limit of 5000 knowledge assets.
 
 Simplicity
 
 The administrator should never need to understand embeddings or vector databases.
 
 The application should hide technical complexity whenever possible.
+
+**Document Limit Policy:** The Knowledge Library enforces a maximum of 5000 knowledge assets. When this limit is reached, new uploads will be rejected with the following message: "Maximum document limit reached (5000). Please delete existing documents before uploading new ones." This limit ensures optimal performance and manageable resource usage in v1.
 
 ---
 
@@ -638,7 +670,7 @@ Version 1 uses local embedding generation.
 Recommended default model:
 
 ```
-BAAI/bge-small-en-v1.5
+intfloat/multilingual-e5-base
 ```
 
 Advantages:
@@ -647,6 +679,7 @@ Advantages:
 - Fast
 - High quality
 - Excellent retrieval performance
+- Multilingual support (100+ languages including Spanish)
 - No API cost
 
 The embedding model should be configurable.
@@ -729,7 +762,7 @@ chunk: 17
 
 language: English
 
-embedding_model: BAAI/bge-small-en-v1.5
+embedding_model: intfloat/multilingual-e5-base
 ```
 
 Metadata enables source attribution during answer generation.
@@ -939,7 +972,7 @@ Knowledge Library
 
 🧠 Embedding Model
 
-BAAI/bge-small-en-v1.5
+intfloat/multilingual-e5-base
 
 💾 Vector Database
 
