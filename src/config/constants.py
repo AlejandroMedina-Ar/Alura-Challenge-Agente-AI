@@ -96,12 +96,16 @@ FILE_SIZE_LIMITS: Final[dict[FileFormat, int]] = {
 
 class LLMProvider(Enum):
     """Supported LLM providers."""
+    OLLAMA = "ollama"
+    OPENROUTER = "openrouter"
     GEMINI = "gemini"
     COHERE = "cohere"
 
 
 # Provider display names
 PROVIDER_NAMES: Final[dict[LLMProvider, str]] = {
+    LLMProvider.OLLAMA: "Ollama (Local)",
+    LLMProvider.OPENROUTER: "OpenRouter",
     LLMProvider.GEMINI: "Google Gemini",
     LLMProvider.COHERE: "Cohere Command",
 }

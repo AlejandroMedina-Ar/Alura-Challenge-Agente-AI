@@ -57,6 +57,7 @@ from .exceptions import (
     EmptyKnowledgeLibraryError,
     DuplicateDocumentError,
     DocumentNotFoundError,
+    MetadataNotFoundError,
     IndexingError,
     
     # LLM
@@ -175,6 +176,7 @@ __all__ = [
     'EmptyKnowledgeLibraryError',
     'DuplicateDocumentError',
     'DocumentNotFoundError',
+    'MetadataNotFoundError',
     'IndexingError',
     
     # Exceptions - LLM

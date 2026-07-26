@@ -106,6 +106,39 @@ class FileCorruptedError(FileError):
         super().__init__(message)
 
 
+class WriteError(FileError):
+    """Raised when a write operation fails."""
+    
+    def __init__(self, filepath: str, reason: str = None):
+        self.filepath = filepath
+        message = f"Failed to write file: {filepath}"
+        if reason:
+            message += f" ({reason})"
+        super().__init__(message)
+
+
+class ReadError(FileError):
+    """Raised when a read operation fails."""
+    
+    def __init__(self, filepath: str, reason: str = None):
+        self.filepath = filepath
+        message = f"Failed to read file: {filepath}"
+        if reason:
+            message += f" ({reason})"
+        super().__init__(message)
+
+
+class DeleteError(FileError):
+    """Raised when a delete operation fails."""
+    
+    def __init__(self, filepath: str, reason: str = None):
+        self.filepath = filepath
+        message = f"Failed to delete file: {filepath}"
+        if reason:
+            message += f" ({reason})"
+        super().__init__(message)
+
+
 # ==========================================
 # AUTHENTICATION ERRORS
 # ==========================================
@@ -172,6 +205,14 @@ class DocumentNotFoundError(KnowledgeLibraryError):
     def __init__(self, filename: str):
         self.filename = filename
         super().__init__(f"Document '{filename}' not found in knowledge library")
+
+
+class MetadataNotFoundError(KnowledgeLibraryError):
+    """Raised when metadata is not found for a document."""
+    
+    def __init__(self, document_name: str):
+        self.document_name = document_name
+        super().__init__(f"Metadata not found for document: {document_name}")
 
 
 class IndexingError(KnowledgeLibraryError):
