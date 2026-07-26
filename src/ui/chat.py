@@ -1,11 +1,11 @@
 """
-Chat Module
+Módulo de Chat
 
-This module implements the chat interface for user interactions.
-Handles message display, streaming responses, and conversation history.
+Este módulo implementa la interfaz de chat para interacciones con el usuario.
+Maneja la visualización de mensajes, respuestas en streaming e historial de conversación.
 
-Author: TechFlow AI Project
-License: MIT
+Autor: TechFlow AI Project
+Licencia: MIT
 """
 
 import streamlit as st
@@ -32,12 +32,12 @@ logger = get_logger()
 
 def render_chat_page() -> None:
     """
-    Render main chat page.
+    Renderiza la página principal de chat.
     
-    Example:
+    Ejemplo:
         >>> render_chat_page()
     """
-    render_header("💬 Chat", "Ask questions about your knowledge library")
+    render_header("💬 Chat", "Haz preguntas sobre tu biblioteca de conocimiento")
     
     # Check if knowledge library is ready
     if not is_knowledge_library_ready():
@@ -56,10 +56,10 @@ def render_chat_page() -> None:
 
 def is_knowledge_library_ready() -> bool:
     """
-    Check if knowledge library has indexed documents.
+    Verifica si la biblioteca de conocimiento tiene documentos indexados.
     
-    Returns:
-        bool: True if ready for chat
+    Retorna:
+        bool: True si está lista para el chat
     """
     try:
         indexing_service = get_indexing_service()
@@ -72,20 +72,20 @@ def is_knowledge_library_ready() -> bool:
 
 def render_empty_knowledge_library() -> None:
     """
-    Render empty state when no documents are indexed.
+    Renderiza estado vacío cuando no hay documentos indexados.
     """
     render_empty_state(
         icon="📚",
-        title="Knowledge Library is Empty",
-        message="Upload and index documents to start chatting",
-        action_label="Go to Knowledge Library",
+        title="La Biblioteca de Conocimiento está Vacía",
+        message="Sube e indexa documentos para comenzar a chatear",
+        action_label="Ir a Biblioteca de Conocimiento",
         action_callback=lambda: st.session_state.update({'current_page': 'Knowledge'})
     )
 
 
 def initialize_chat_history() -> None:
     """
-    Initialize chat history in session state.
+    Inicializa el historial de chat en el estado de sesión.
     """
     if 'chat_history' not in st.session_state:
         st.session_state.chat_history = []
@@ -94,7 +94,7 @@ def initialize_chat_history() -> None:
 
 def display_chat_messages() -> None:
     """
-    Display all chat messages from history.
+    Muestra todos los mensajes de chat del historial.
     """
     for message in st.session_state.chat_history:
         role = message['role']
@@ -106,10 +106,10 @@ def display_chat_messages() -> None:
 
 def handle_chat_input() -> None:
     """
-    Handle chat input and response generation.
+    Maneja la entrada de chat y la generación de respuestas.
     """
     # Chat input
-    user_input = st.chat_input("Ask a question about your documents...")
+    user_input = st.chat_input("Haz una pregunta sobre tus documentos...")
     
     if user_input:
         # Add user message to history
@@ -146,7 +146,7 @@ def handle_chat_input() -> None:
                 )
                 
             except EmptyKnowledgeLibraryError:
-                error_msg = "⚠️ Knowledge library is empty. Please upload documents first."
+                error_msg = "⚠️ La biblioteca de conocimiento está vacía. Por favor sube documentos primero."
                 response_placeholder.error(error_msg)
                 st.session_state.chat_history.append({
                     'role': 'assistant',
@@ -154,7 +154,7 @@ def handle_chat_input() -> None:
                 })
             
             except LLMError as e:
-                error_msg = f"❌ LLM Error: {str(e)}"
+                error_msg = f"❌ Error de LLM: {str(e)}"
                 response_placeholder.error(error_msg)
                 st.session_state.chat_history.append({
                     'role': 'assistant',
@@ -163,7 +163,7 @@ def handle_chat_input() -> None:
                 logger.error(f"LLM error in chat", error=str(e))
             
             except Exception as e:
-                error_msg = f"❌ An error occurred: {str(e)}"
+                error_msg = f"❌ Ocurrió un error: {str(e)}"
                 response_placeholder.error(error_msg)
                 st.session_state.chat_history.append({
                     'role': 'assistant',
@@ -177,14 +177,14 @@ def generate_streaming_response(
     placeholder
 ) -> str:
     """
-    Generate streaming response from chat service.
+    Genera respuesta en streaming desde el servicio de chat.
     
     Args:
-        user_input: User query
-        placeholder: Streamlit placeholder for response
+        user_input: Consulta del usuario
+        placeholder: Placeholder de Streamlit para la respuesta
     
-    Returns:
-        str: Complete response text
+    Retorna:
+        str: Texto completo de la respuesta
     """
     chat_service = get_chat_service()
     
@@ -220,30 +220,30 @@ def generate_streaming_response(
 
 def render_chat_controls() -> None:
     """
-    Render chat control buttons (clear, export, etc.).
+    Renderiza botones de control de chat (limpiar, exportar, etc.).
     """
     with st.sidebar:
-        st.markdown("### 💬 Chat Controls")
+        st.markdown("### 💬 Controles de Chat")
         
         col1, col2 = st.columns(2)
         
         with col1:
-            if st.button("🗑️ Clear", use_container_width=True, key="clear_chat"):
+            if st.button("🗑️ Limpiar", use_container_width=True, key="clear_chat"):
                 clear_chat_history()
         
         with col2:
-            if st.button("💾 Export", use_container_width=True, key="export_chat"):
+            if st.button("💾 Exportar", use_container_width=True, key="export_chat"):
                 export_chat_history()
         
         # Chat statistics
         if st.session_state.get('chat_history'):
             message_count = len(st.session_state.chat_history)
-            st.caption(f"Messages: {message_count}")
+            st.caption(f"Mensajes: {message_count}")
 
 
 def clear_chat_history() -> None:
     """
-    Clear chat history.
+    Limpia el historial de chat.
     """
     st.session_state.chat_history = []
     logger.info("Chat history cleared")
@@ -252,14 +252,14 @@ def clear_chat_history() -> None:
 
 def export_chat_history() -> None:
     """
-    Export chat history to text file.
+    Exporta el historial de chat a un archivo de texto.
     """
     if not st.session_state.get('chat_history'):
-        st.warning("No chat history to export")
+        st.warning("No hay historial de chat para exportar")
         return
     
     # Format chat history as text
-    export_text = "# TechFlow AI - Chat Export\n\n"
+    export_text = "# TechFlow AI - Exportación de Chat\n\n"
     
     for message in st.session_state.chat_history:
         role = message['role'].upper()
@@ -268,7 +268,7 @@ def export_chat_history() -> None:
     
     # Create download button
     st.download_button(
-        label="📥 Download Chat",
+        label="📥 Descargar Chat",
         data=export_text,
         file_name="techflow_chat_export.txt",
         mime="text/plain",
@@ -280,11 +280,11 @@ def export_chat_history() -> None:
 
 def render_chat_with_controls() -> None:
     """
-    Render chat page with sidebar controls.
+    Renderiza página de chat con controles en la barra lateral.
     
-    Complete chat interface with controls.
+    Interfaz completa de chat con controles.
     
-    Example:
+    Ejemplo:
         >>> render_chat_with_controls()
     """
     # Render controls in sidebar
@@ -296,10 +296,10 @@ def render_chat_with_controls() -> None:
 
 def get_chat_statistics() -> dict:
     """
-    Get chat statistics.
+    Obtiene estadísticas del chat.
     
-    Returns:
-        dict: Chat statistics
+    Retorna:
+        dict: Estadísticas del chat
     """
     history = st.session_state.get('chat_history', [])
     
@@ -316,39 +316,39 @@ def get_chat_statistics() -> dict:
 
 def render_chat_info_panel() -> None:
     """
-    Render chat information panel.
+    Renderiza panel de información del chat.
     
-    Shows RAG status and chat capabilities.
+    Muestra estado de RAG y capacidades del chat.
     """
-    with st.expander("ℹ️ About this Chat", expanded=False):
+    with st.expander("ℹ️ Acerca de este Chat", expanded=False):
         st.markdown("""
-        ### How it works
+        ### Cómo funciona
         
-        1. **Ask a question** about your uploaded documents
-        2. **RAG Pipeline** retrieves relevant context
-        3. **AI responds** based on your knowledge library
+        1. **Haz una pregunta** sobre tus documentos subidos
+        2. **Pipeline RAG** recupera el contexto relevante
+        3. **IA responde** basándose en tu biblioteca de conocimiento
         
-        ### Features
-        - 🔍 Context-aware responses
-        - 📚 Multi-document search
-        - 💬 Conversation history
-        - ⚡ Streaming responses
+        ### Características
+        - 🔍 Respuestas contextuales
+        - 📚 Búsqueda en múltiples documentos
+        - 💬 Historial de conversación
+        - ⚡ Respuestas en streaming
         
-        ### Tips
-        - Be specific in your questions
-        - Reference document names if needed
-        - Use clear, concise language
+        ### Consejos
+        - Sé específico en tus preguntas
+        - Referencias nombres de documentos si es necesario
+        - Usa lenguaje claro y conciso
         """)
         
         # Display current RAG stats
         chat_service = get_chat_service()
         stats = chat_service.get_chat_stats()
         
-        st.markdown("### Current Configuration")
-        st.text(f"Provider: {stats['primary_provider']}")
-        st.text(f"Temperature: {stats['temperature']}")
+        st.markdown("### Configuración Actual")
+        st.text(f"Proveedor: {stats['primary_provider']}")
+        st.text(f"Temperatura: {stats['temperature']}")
         st.text(f"Top-K: {stats['top_k']}")
-        st.text(f"Vector Store: {stats['vector_store_count']} chunks")
+        st.text(f"Vector Store: {stats['vector_store_count']} fragmentos")
 
 
 # Convenience: Allow direct import

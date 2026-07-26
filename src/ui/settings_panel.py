@@ -1,11 +1,11 @@
 """
-Settings Panel Module
+Módulo de Panel de Configuración
 
-This module implements the settings interface.
-Allows configuration of LLM, RAG, and UI settings.
+Este módulo implementa la interfaz de configuración.
+Permite configuración de LLM, RAG y ajustes de UI.
 
-Author: TechFlow AI Project
-License: MIT
+Autor: TechFlow AI Project
+Licencia: MIT
 """
 
 import streamlit as st
@@ -30,19 +30,19 @@ logger = get_logger()
 
 def render_settings_panel() -> None:
     """
-    Render main settings panel page.
+    Renderiza la página principal del panel de configuración.
     
-    Example:
+    Ejemplo:
         >>> render_settings_panel()
     """
-    render_header("⚙️ Settings", "Configure LLM, RAG, and UI preferences")
+    render_header("⚙️ Configuración", "Configura LLM, RAG y preferencias de UI")
     
     # Render tabs
     tabs = render_tabs([
-        "🤖 LLM Settings",
-        "🔍 RAG Settings",
-        "🎨 UI Settings",
-        "📋 Configuration"
+        "🤖 Configuración LLM",
+        "🔍 Configuración RAG",
+        "🎨 Configuración UI",
+        "📋 Configuración"
     ])
     
     with tabs[0]:
@@ -60,30 +60,30 @@ def render_settings_panel() -> None:
 
 def render_llm_settings_tab() -> None:
     """
-    Render LLM settings configuration tab.
+    Renderiza la pestaña de configuración de LLM.
     """
-    st.markdown("### 🤖 LLM Configuration")
+    st.markdown("### 🤖 Configuración de LLM")
     
     config_service = get_configuration_service()
     current_config = config_service.get_llm_config()
     
     # Provider selection
-    st.markdown("#### Provider")
+    st.markdown("#### Proveedor")
     
     provider = render_select_box(
-        label="LLM Provider",
+        label="Proveedor de LLM",
         options=['gemini', 'cohere'],
         default_index=0 if current_config.get('provider') == 'gemini' else 1,
-        help_text="Primary LLM provider (automatic fallback enabled)",
+        help_text="Proveedor de LLM primario (respaldo automático habilitado)",
         key="llm_provider_select"
     )
     
-    st.info("💡 Fallback: If primary fails, system automatically switches to the other provider")
+    st.info("💡 Respaldo: Si el primario falla, el sistema cambia automáticamente al otro proveedor")
     
     st.divider()
     
     # Model selection
-    st.markdown("#### Model")
+    st.markdown("#### Modelo")
     
     if provider == 'gemini':
         model_options = ['gemini-1.5-flash', 'gemini-1.5-pro']
@@ -93,35 +93,35 @@ def render_llm_settings_tab() -> None:
         default_model = current_config.get('model', 'command-r')
     
     model = render_select_box(
-        label="Model",
+        label="Modelo",
         options=model_options,
         default_index=model_options.index(default_model) if default_model in model_options else 0,
-        help_text=f"Available models for {provider}",
+        help_text=f"Modelos disponibles para {provider}",
         key="llm_model_select"
     )
     
     st.divider()
     
     # API Key
-    st.markdown("#### API Key")
+    st.markdown("#### Clave API")
     
     current_key = current_config.get('api_key', '')
     masked_key = f"{'*' * 20}{current_key[-4:]}" if current_key else ""
     
     api_key = render_text_input(
-        label="API Key",
-        placeholder=masked_key or "Enter your API key",
-        help_text="Your LLM provider API key (stored securely)",
+        label="Clave API",
+        placeholder=masked_key or "Ingresa tu clave API",
+        help_text="Tu clave API del proveedor LLM (almacenada de forma segura)",
         password=True,
         key="llm_api_key_input"
     )
     
-    st.caption("⚠️ API keys are stored in local configuration")
+    st.caption("⚠️ Las claves API se almacenan en la configuración local")
     
     st.divider()
     
     # Save button
-    if render_button("💾 Save LLM Settings", button_type="primary"):
+    if render_button("💾 Guardar Configuración LLM", button_type="primary"):
         save_llm_settings(
             config_service,
             provider,
@@ -137,13 +137,13 @@ def save_llm_settings(
     api_key: str = None
 ) -> None:
     """
-    Save LLM settings.
+    Guarda la configuración de LLM.
     
     Args:
-        config_service: ConfigurationService instance
-        provider: Provider name
-        model: Model name
-        api_key: API key (optional)
+        config_service: Instancia de ConfigurationService
+        provider: Nombre del proveedor
+        model: Nombre del modelo
+        api_key: Clave API (opcional)
     """
     try:
         success = config_service.update_llm_config(
@@ -153,11 +153,11 @@ def save_llm_settings(
         )
         
         if success:
-            render_info_message("✅ LLM settings saved successfully", "success")
+            render_info_message("✅ Configuración LLM guardada exitosamente", "success")
             logger.info(f"LLM settings updated", provider=provider, model=model)
             st.rerun()
         else:
-            render_info_message("❌ Failed to save LLM settings", "error")
+            render_info_message("❌ Fallo al guardar configuración LLM", "error")
             
     except Exception as e:
         render_info_message(f"❌ Error: {str(e)}", "error")
@@ -166,73 +166,73 @@ def save_llm_settings(
 
 def render_rag_settings_tab() -> None:
     """
-    Render RAG settings configuration tab.
+    Renderiza la pestaña de configuración de RAG.
     """
-    st.markdown("### 🔍 RAG Configuration")
+    st.markdown("### 🔍 Configuración de RAG")
     
     config_service = get_configuration_service()
     current_config = config_service.get_rag_config()
     
     # Chunking settings
-    with render_expander("📄 Chunking Settings", expanded=True):
+    with render_expander("📄 Configuración de Fragmentación", expanded=True):
         chunk_size = render_number_input(
-            label="Chunk Size",
+            label="Tamaño de Fragmento",
             min_value=128,
             max_value=2048,
             value=current_config.get('chunk_size', 512),
             step=64,
-            help_text="Size of text chunks (128-2048 characters)",
+            help_text="Tamaño de los fragmentos de texto (128-2048 caracteres)",
             key="chunk_size_input"
         )
         
         chunk_overlap = render_number_input(
-            label="Chunk Overlap",
+            label="Superposición de Fragmentos",
             min_value=0,
             max_value=512,
             value=current_config.get('chunk_overlap', 50),
             step=10,
-            help_text="Overlap between chunks (0-512 characters)",
+            help_text="Superposición entre fragmentos (0-512 caracteres)",
             key="chunk_overlap_input"
         )
         
-        st.caption(f"💡 Effective chunk: {chunk_size} chars with {chunk_overlap} overlap")
+        st.caption(f"💡 Fragmento efectivo: {chunk_size} caracteres con {chunk_overlap} de superposición")
     
     st.divider()
     
     # Retrieval settings
-    with render_expander("🔍 Retrieval Settings", expanded=True):
+    with render_expander("🔍 Configuración de Recuperación", expanded=True):
         top_k = render_number_input(
             label="Top K",
             min_value=1,
             max_value=20,
             value=current_config.get('top_k', 5),
             step=1,
-            help_text="Number of chunks to retrieve (1-20)",
+            help_text="Número de fragmentos a recuperar (1-20)",
             key="top_k_input"
         )
         
-        st.caption(f"💡 Will retrieve {top_k} most relevant chunks per query")
+        st.caption(f"💡 Recuperará los {top_k} fragmentos más relevantes por consulta")
     
     st.divider()
     
     # LLM generation settings
-    with render_expander("🤖 Generation Settings", expanded=True):
+    with render_expander("🤖 Configuración de Generación", expanded=True):
         temperature = render_slider(
-            label="Temperature",
+            label="Temperatura",
             min_value=0.0,
             max_value=2.0,
             value=float(current_config.get('temperature', 0.7)),
             step=0.1,
-            help_text="Creativity level (0.0=focused, 2.0=creative)",
+            help_text="Nivel de creatividad (0.0=enfocado, 2.0=creativo)",
             key="temperature_input"
         )
         
-        st.caption(f"💡 Current: {temperature} ({'Focused' if temperature < 0.5 else 'Balanced' if temperature < 1.0 else 'Creative'})")
+        st.caption(f"💡 Actual: {temperature} ({'Enfocado' if temperature < 0.5 else 'Equilibrado' if temperature < 1.0 else 'Creativo'})")
     
     st.divider()
     
     # Save button
-    if render_button("💾 Save RAG Settings", button_type="primary"):
+    if render_button("💾 Guardar Configuración RAG", button_type="primary"):
         save_rag_settings(
             config_service,
             chunk_size,
@@ -250,14 +250,14 @@ def save_rag_settings(
     temperature: float
 ) -> None:
     """
-    Save RAG settings.
+    Guarda la configuración de RAG.
     
     Args:
-        config_service: ConfigurationService instance
-        chunk_size: Chunk size
-        chunk_overlap: Chunk overlap
-        top_k: Top K value
-        temperature: Temperature value
+        config_service: Instancia de ConfigurationService
+        chunk_size: Tamaño del fragmento
+        chunk_overlap: Superposición del fragmento
+        top_k: Valor Top K
+        temperature: Valor de temperatura
     """
     try:
         success = config_service.update_rag_config(
@@ -268,14 +268,14 @@ def save_rag_settings(
         )
         
         if success:
-            render_info_message("✅ RAG settings saved successfully", "success")
+            render_info_message("✅ Configuración RAG guardada exitosamente", "success")
             logger.info(f"RAG settings updated")
             st.rerun()
         else:
-            render_info_message("❌ Failed to save RAG settings", "error")
+            render_info_message("❌ Fallo al guardar configuración RAG", "error")
             
     except ConfigurationError as e:
-        render_info_message(f"❌ Validation error: {str(e)}", "error")
+        render_info_message(f"❌ Error de validación: {str(e)}", "error")
         logger.error(f"RAG settings validation failed", error=str(e))
     
     except Exception as e:
@@ -285,50 +285,50 @@ def save_rag_settings(
 
 def render_ui_settings_tab() -> None:
     """
-    Render UI settings tab.
+    Renderiza la pestaña de configuración de UI.
     """
-    st.markdown("### 🎨 UI Preferences")
+    st.markdown("### 🎨 Preferencias de UI")
     
     config_service = get_configuration_service()
     current_theme = config_service.get_theme()
     
     # Theme selection
-    st.markdown("#### Theme")
+    st.markdown("#### Tema")
     
     theme = render_select_box(
-        label="Color Theme",
+        label="Tema de Color",
         options=['light', 'dark'],
         default_index=0 if current_theme == 'light' else 1,
-        help_text="Application color theme",
+        help_text="Tema de color de la aplicación",
         key="theme_select"
     )
     
-    st.caption(f"Current theme: {current_theme.title()} {'☀️' if current_theme == 'light' else '🌙'}")
+    st.caption(f"Tema actual: {current_theme.title()} {'☀️' if current_theme == 'light' else '🌙'}")
     
     st.divider()
     
     # Save button
-    if render_button("💾 Save UI Settings", button_type="primary"):
+    if render_button("💾 Guardar Configuración UI", button_type="primary"):
         save_ui_settings(config_service, theme)
 
 
 def save_ui_settings(config_service, theme: str) -> None:
     """
-    Save UI settings.
+    Guarda la configuración de UI.
     
     Args:
-        config_service: ConfigurationService instance
-        theme: Theme name
+        config_service: Instancia de ConfigurationService
+        theme: Nombre del tema
     """
     try:
         success = config_service.set_theme(theme)
         
         if success:
-            render_info_message("✅ UI settings saved successfully", "success")
+            render_info_message("✅ Configuración UI guardada exitosamente", "success")
             logger.info(f"UI settings updated", theme=theme)
             st.rerun()
         else:
-            render_info_message("❌ Failed to save UI settings", "error")
+            render_info_message("❌ Fallo al guardar configuración UI", "error")
             
     except Exception as e:
         render_info_message(f"❌ Error: {str(e)}", "error")
@@ -336,52 +336,52 @@ def save_ui_settings(config_service, theme: str) -> None:
 
 def render_configuration_tab() -> None:
     """
-    Render configuration management tab.
+    Renderiza la pestaña de gestión de configuración.
     """
-    st.markdown("### 📋 Configuration Management")
+    st.markdown("### 📋 Gestión de Configuración")
     
     config_service = get_configuration_service()
     
     # Validation
-    st.markdown("#### ✅ Validation")
+    st.markdown("#### ✅ Validación")
     
-    if render_button("🔍 Validate Configuration", use_container_width=True):
+    if render_button("🔍 Validar Configuración", use_container_width=True):
         is_valid, errors = config_service.validate_configuration()
         
         if is_valid:
-            render_info_message("✅ Configuration is valid", "success")
+            render_info_message("✅ La configuración es válida", "success")
         else:
-            render_info_message("❌ Configuration has errors:", "error")
+            render_info_message("❌ La configuración tiene errores:", "error")
             for error in errors:
                 st.error(f"• {error}")
     
     st.divider()
     
     # Export
-    st.markdown("#### 📥 Export Configuration")
+    st.markdown("#### 📥 Exportar Configuración")
     
-    st.caption("Export current configuration (API keys will be redacted)")
+    st.caption("Exportar configuración actual (las claves API serán censuradas)")
     
-    if render_button("📥 Export Config", use_container_width=True):
+    if render_button("📥 Exportar Config", use_container_width=True):
         export_configuration(config_service)
     
     st.divider()
     
     # Reset
-    st.markdown("#### 🔄 Reset Configuration")
+    st.markdown("#### 🔄 Restablecer Configuración")
     
-    st.warning("⚠️ This will reset all settings to default values")
+    st.warning("⚠️ Esto restablecerá todos los ajustes a sus valores predeterminados")
     
-    if render_button("🔄 Reset to Defaults", use_container_width=True):
+    if render_button("🔄 Restablecer a Predeterminados", use_container_width=True):
         reset_configuration(config_service)
 
 
 def export_configuration(config_service) -> None:
     """
-    Export configuration to JSON.
+    Exporta la configuración a JSON.
     
     Args:
-        config_service: ConfigurationService instance
+        config_service: Instancia de ConfigurationService
     """
     import json
     
@@ -389,34 +389,34 @@ def export_configuration(config_service) -> None:
     config_json = json.dumps(config, indent=2)
     
     st.download_button(
-        label="💾 Download config.json",
+        label="💾 Descargar config.json",
         data=config_json,
         file_name="techflow_config_export.json",
         mime="application/json"
     )
     
-    render_info_message("✅ Configuration exported", "success")
+    render_info_message("✅ Configuración exportada", "success")
 
 
 def reset_configuration(config_service) -> None:
     """
-    Reset configuration to defaults.
+    Restablece la configuración a valores predeterminados.
     
     Args:
-        config_service: ConfigurationService instance
+        config_service: Instancia de ConfigurationService
     """
-    st.warning("Are you sure? This cannot be undone.")
+    st.warning("¿Estás seguro? Esto no se puede deshacer.")
     
-    if st.button("Confirm Reset"):
+    if st.button("Confirmar Restablecimiento"):
         try:
             success = config_service.reset_to_defaults()
             
             if success:
-                render_info_message("✅ Configuration reset to defaults", "success")
+                render_info_message("✅ Configuración restablecida a valores predeterminados", "success")
                 logger.warning("Configuration reset to defaults")
                 st.rerun()
             else:
-                render_info_message("❌ Failed to reset configuration", "error")
+                render_info_message("❌ Fallo al restablecer configuración", "error")
                 
         except Exception as e:
             render_info_message(f"❌ Error: {str(e)}", "error")

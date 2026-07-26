@@ -1,11 +1,11 @@
 """
-Admin Panel Module
+Módulo de Panel de Administración
 
-This module implements the admin panel interface.
-Provides document management, indexing controls, and system statistics.
+Este módulo implementa la interfaz del panel de administración.
+Proporciona gestión de documentos, controles de indexación y estadísticas del sistema.
 
-Author: TechFlow AI Project
-License: MIT
+Autor: TechFlow AI Project
+Licencia: MIT
 """
 
 import streamlit as st
@@ -40,19 +40,19 @@ logger = get_logger()
 
 def render_admin_panel() -> None:
     """
-    Render main admin panel page.
+    Renderiza la página principal del panel de administración.
     
-    Example:
+    Ejemplo:
         >>> render_admin_panel()
     """
-    render_header("🔧 Admin Panel", "Manage documents and view system stats")
+    render_header("🔧 Panel de Administración", "Administra documentos y visualiza estadísticas del sistema")
     
     # Render tabs
     tabs = render_tabs([
         "📊 Dashboard",
-        "📚 Documents",
-        "⚡ Indexing",
-        "🧪 Testing"
+        "📚 Documentos",
+        "⚡ Indexación",
+        "🧪 Pruebas"
     ])
     
     with tabs[0]:
@@ -70,9 +70,9 @@ def render_admin_panel() -> None:
 
 def render_dashboard_tab() -> None:
     """
-    Render dashboard with system statistics.
+    Renderiza el dashboard con estadísticas del sistema.
     """
-    st.markdown("### 📊 System Overview")
+    st.markdown("### 📊 Vista General del Sistema")
     
     kl_service = get_knowledge_library_service()
     indexing_service = get_indexing_service()
@@ -88,71 +88,71 @@ def render_dashboard_tab() -> None:
     
     with cols[0]:
         render_metric_card(
-            label="Total Documents",
+            label="Total de Documentos",
             value=str(storage_stats['total_documents']),
-            help_text="Total uploaded documents"
+            help_text="Total de documentos subidos"
         )
     
     with cols[1]:
         render_metric_card(
-            label="Indexed Documents",
+            label="Documentos Indexados",
             value=str(storage_stats['indexed_documents']),
-            help_text="Documents indexed and ready"
+            help_text="Documentos indexados y listos"
         )
     
     with cols[2]:
         render_metric_card(
-            label="Total Chunks",
+            label="Total de Fragmentos",
             value=str(indexing_stats['total_chunks']),
-            help_text="Total indexed chunks"
+            help_text="Total de fragmentos indexados"
         )
     
     with cols[3]:
         render_metric_card(
-            label="Storage Used",
+            label="Almacenamiento Usado",
             value=f"{storage_stats['total_size_mb']:.2f} MB",
-            help_text="Total storage used"
+            help_text="Almacenamiento total usado"
         )
     
     st.divider()
     
     # System status
-    st.markdown("### ⚙️ System Status")
+    st.markdown("### ⚙️ Estado del Sistema")
     
     cols = render_columns(2)
     
     with cols[0]:
-        st.markdown("**RAG Pipeline**")
+        st.markdown("**Pipeline RAG**")
         if chat_stats['rag_ready']:
-            st.success("✅ Ready")
+            st.success("✅ Listo")
         else:
-            st.warning("⚠️ No documents indexed")
+            st.warning("⚠️ Sin documentos indexados")
         
-        st.caption(f"Vector Store: {chat_stats['vector_store_count']} chunks")
-        st.caption(f"Embedding Dim: {indexing_stats['embedding_dimension']}")
+        st.caption(f"Vector Store: {chat_stats['vector_store_count']} fragmentos")
+        st.caption(f"Dim. Embedding: {indexing_stats['embedding_dimension']}")
     
     with cols[1]:
-        st.markdown("**LLM Configuration**")
-        st.info(f"🤖 Provider: {chat_stats['primary_provider'].title()}")
-        st.caption(f"Temperature: {chat_stats['temperature']}")
+        st.markdown("**Configuración de LLM**")
+        st.info(f"🤖 Proveedor: {chat_stats['primary_provider'].title()}")
+        st.caption(f"Temperatura: {chat_stats['temperature']}")
         st.caption(f"Top-K: {chat_stats['top_k']}")
 
 
 def render_documents_tab() -> None:
     """
-    Render documents management tab.
+    Renderiza la pestaña de gestión de documentos.
     """
-    st.markdown("### 📚 Document Management")
+    st.markdown("### 📚 Gestión de Documentos")
     
     kl_service = get_knowledge_library_service()
     
     # Upload section
-    st.markdown("#### ⬆️ Upload Document")
+    st.markdown("#### ⬆️ Subir Documento")
     
     uploaded_file = render_file_uploader(
-        label="Choose a document",
+        label="Selecciona un documento",
         accepted_types=['txt', 'pdf', 'md', 'docx'],
-        help_text="Supported: TXT, PDF, MD, DOCX (Max 10MB)",
+        help_text="Soportados: TXT, PDF, MD, DOCX (Máx 10MB)",
         key="admin_file_upload"
     )
     
@@ -162,15 +162,15 @@ def render_documents_tab() -> None:
     st.divider()
     
     # Documents list
-    st.markdown("#### 📄 Uploaded Documents")
+    st.markdown("#### 📄 Documentos Subidos")
     
     documents = kl_service.list_documents()
     
     if not documents:
         render_empty_state(
             icon="📄",
-            title="No Documents",
-            message="Upload your first document to get started"
+            title="Sin Documentos",
+            message="Sube tu primer documento para comenzar"
         )
     else:
         render_documents_table(documents, kl_service)
@@ -178,11 +178,11 @@ def render_documents_tab() -> None:
 
 def handle_file_upload(uploaded_file, kl_service) -> None:
     """
-    Handle file upload process.
+    Maneja el proceso de carga de archivos.
     
     Args:
-        uploaded_file: Streamlit uploaded file
-        kl_service: KnowledgeLibraryService instance
+        uploaded_file: Archivo subido de Streamlit
+        kl_service: Instancia de KnowledgeLibraryService
     """
     filename = uploaded_file.name
     file_size = uploaded_file.size
@@ -191,13 +191,13 @@ def handle_file_upload(uploaded_file, kl_service) -> None:
     # Check if exists
     if kl_service.document_exists(filename):
         render_info_message(
-            f"Document '{filename}' already exists",
+            f"El documento '{filename}' ya existe",
             "warning"
         )
         return
     
     # Upload
-    with render_spinner(f"Uploading {filename}..."):
+    with render_spinner(f"Subiendo {filename}..."):
         try:
             # Save uploaded file temporarily
             import tempfile
@@ -219,7 +219,7 @@ def handle_file_upload(uploaded_file, kl_service) -> None:
             os.unlink(tmp_path)
             
             render_info_message(
-                f"✅ Document '{filename}' uploaded successfully!",
+                f"✅ ¡Documento '{filename}' subido exitosamente!",
                 "success"
             )
             
@@ -229,19 +229,19 @@ def handle_file_upload(uploaded_file, kl_service) -> None:
             
         except DocumentAlreadyExistsError:
             render_info_message(
-                f"Document '{filename}' already exists",
+                f"El documento '{filename}' ya existe",
                 "warning"
             )
         
         except InvalidDocumentError as e:
             render_info_message(
-                f"❌ Invalid document: {str(e)}",
+                f"❌ Documento inválido: {str(e)}",
                 "error"
             )
         
         except Exception as e:
             render_info_message(
-                f"❌ Upload failed: {str(e)}",
+                f"❌ Carga fallida: {str(e)}",
                 "error"
             )
             logger.error(f"Upload failed", filename=filename, error=str(e))
@@ -249,11 +249,11 @@ def handle_file_upload(uploaded_file, kl_service) -> None:
 
 def render_documents_table(documents: list[dict], kl_service) -> None:
     """
-    Render documents table with actions.
+    Renderiza tabla de documentos con acciones.
     
     Args:
-        documents: List of document metadata
-        kl_service: KnowledgeLibraryService instance
+        documents: Lista de metadatos de documentos
+        kl_service: Instancia de KnowledgeLibraryService
     """
     for doc in documents:
         doc_id = doc['doc_id']
@@ -269,23 +269,23 @@ def render_documents_table(documents: list[dict], kl_service) -> None:
             
             with col1:
                 st.markdown(f"**📄 {filename}**")
-                st.caption(f"Size: {file_size / 1024:.1f} KB | Uploaded: {upload_date}")
+                st.caption(f"Tamaño: {file_size / 1024:.1f} KB | Subido: {upload_date}")
                 
                 if indexed:
-                    st.success(f"✅ Indexed ({chunk_count} chunks)")
+                    st.success(f"✅ Indexado ({chunk_count} fragmentos)")
                 else:
-                    st.warning("⚠️ Not indexed")
+                    st.warning("⚠️ No indexado")
             
             with col2:
-                if st.button("🗑️ Delete", key=f"delete_{doc_id}"):
+                if st.button("🗑️ Eliminar", key=f"delete_{doc_id}"):
                     handle_document_delete(doc_id, filename, kl_service)
             
             with col3:
                 if not indexed:
-                    if st.button("⚡ Index", key=f"index_{doc_id}"):
+                    if st.button("⚡ Indexar", key=f"index_{doc_id}"):
                         handle_document_index(doc_id, filename)
                 else:
-                    if st.button("🔄 Re-index", key=f"reindex_{doc_id}"):
+                    if st.button("🔄 Re-indexar", key=f"reindex_{doc_id}"):
                         handle_document_reindex(doc_id, filename)
             
             st.divider()
@@ -293,14 +293,14 @@ def render_documents_table(documents: list[dict], kl_service) -> None:
 
 def handle_document_delete(doc_id: str, filename: str, kl_service) -> None:
     """
-    Handle document deletion.
+    Maneja la eliminación de documentos.
     
     Args:
-        doc_id: Document ID
-        filename: Document filename
-        kl_service: KnowledgeLibraryService instance
+        doc_id: ID del documento
+        filename: Nombre del archivo del documento
+        kl_service: Instancia de KnowledgeLibraryService
     """
-    with render_spinner(f"Deleting {filename}..."):
+    with render_spinner(f"Eliminando {filename}..."):
         try:
             # Remove from index first
             indexing_service = get_indexing_service()
@@ -310,7 +310,7 @@ def handle_document_delete(doc_id: str, filename: str, kl_service) -> None:
             kl_service.delete_document(doc_id)
             
             render_info_message(
-                f"✅ Document '{filename}' deleted successfully",
+                f"✅ Documento '{filename}' eliminado exitosamente",
                 "success"
             )
             
@@ -320,7 +320,7 @@ def handle_document_delete(doc_id: str, filename: str, kl_service) -> None:
             
         except Exception as e:
             render_info_message(
-                f"❌ Delete failed: {str(e)}",
+                f"❌ Eliminación fallida: {str(e)}",
                 "error"
             )
             logger.error(f"Delete failed", filename=filename, error=str(e))
@@ -328,19 +328,19 @@ def handle_document_delete(doc_id: str, filename: str, kl_service) -> None:
 
 def handle_document_index(doc_id: str, filename: str) -> None:
     """
-    Handle document indexing.
+    Maneja la indexación de documentos.
     
     Args:
-        doc_id: Document ID
-        filename: Document filename
+        doc_id: ID del documento
+        filename: Nombre del archivo del documento
     """
-    with render_spinner(f"Indexing {filename}..."):
+    with render_spinner(f"Indexando {filename}..."):
         try:
             indexing_service = get_indexing_service()
             result = indexing_service.index_document(doc_id, filename)
             
             render_info_message(
-                f"✅ Indexed {result['chunk_count']} chunks from '{filename}'",
+                f"✅ Indexados {result['chunk_count']} fragmentos de '{filename}'",
                 "success"
             )
             
@@ -350,7 +350,7 @@ def handle_document_index(doc_id: str, filename: str) -> None:
             
         except Exception as e:
             render_info_message(
-                f"❌ Indexing failed: {str(e)}",
+                f"❌ Indexación fallida: {str(e)}",
                 "error"
             )
             logger.error(f"Indexing failed", filename=filename, error=str(e))
@@ -358,19 +358,19 @@ def handle_document_index(doc_id: str, filename: str) -> None:
 
 def handle_document_reindex(doc_id: str, filename: str) -> None:
     """
-    Handle document re-indexing.
+    Maneja la re-indexación de documentos.
     
     Args:
-        doc_id: Document ID
-        filename: Document filename
+        doc_id: ID del documento
+        filename: Nombre del archivo del documento
     """
-    with render_spinner(f"Re-indexing {filename}..."):
+    with render_spinner(f"Re-indexando {filename}..."):
         try:
             indexing_service = get_indexing_service()
             result = indexing_service.reindex_document(doc_id, filename)
             
             render_info_message(
-                f"✅ Re-indexed {result['chunk_count']} chunks from '{filename}'",
+                f"✅ Re-indexados {result['chunk_count']} fragmentos de '{filename}'",
                 "success"
             )
             
@@ -380,16 +380,16 @@ def handle_document_reindex(doc_id: str, filename: str) -> None:
             
         except Exception as e:
             render_info_message(
-                f"❌ Re-indexing failed: {str(e)}",
+                f"❌ Re-indexación fallida: {str(e)}",
                 "error"
             )
 
 
 def render_indexing_tab() -> None:
     """
-    Render indexing operations tab.
+    Renderiza la pestaña de operaciones de indexación.
     """
-    st.markdown("### ⚡ Indexing Operations")
+    st.markdown("### ⚡ Operaciones de Indexación")
     
     indexing_service = get_indexing_service()
     
@@ -399,27 +399,27 @@ def render_indexing_tab() -> None:
     cols = render_columns(3)
     
     with cols[0]:
-        st.metric("Indexed", stats['indexed_documents'])
+        st.metric("Indexados", stats['indexed_documents'])
     
     with cols[1]:
-        st.metric("Pending", stats['pending_documents'])
+        st.metric("Pendientes", stats['pending_documents'])
     
     with cols[2]:
-        st.metric("Total Chunks", stats['total_chunks'])
+        st.metric("Total Fragmentos", stats['total_chunks'])
     
     st.divider()
     
     # Batch operations
-    st.markdown("#### 🔄 Batch Operations")
+    st.markdown("#### 🔄 Operaciones por Lotes")
     
     col1, col2 = st.columns(2)
     
     with col1:
-        if st.button("⚡ Index All Pending", type="primary", use_container_width=True):
+        if st.button("⚡ Indexar Todos los Pendientes", type="primary", use_container_width=True):
             handle_batch_index_all()
     
     with col2:
-        if st.button("🗑️ Clear All Indexes", use_container_width=True):
+        if st.button("🗑️ Limpiar Todos los Índices", use_container_width=True):
             handle_clear_all_indexes()
     
     st.divider()
@@ -428,26 +428,26 @@ def render_indexing_tab() -> None:
     pending = indexing_service.get_pending_documents()
     
     if pending:
-        st.markdown(f"#### ⏳ Pending Documents ({len(pending)})")
+        st.markdown(f"#### ⏳ Documentos Pendientes ({len(pending)})")
         
         for doc in pending:
             st.text(f"📄 {doc['filename']}")
     else:
-        st.success("✅ All documents are indexed")
+        st.success("✅ Todos los documentos están indexados")
 
 
 def handle_batch_index_all() -> None:
     """
-    Handle batch indexing of all pending documents.
+    Maneja la indexación por lotes de todos los documentos pendientes.
     """
     indexing_service = get_indexing_service()
     pending = indexing_service.get_pending_documents()
     
     if not pending:
-        render_info_message("No pending documents to index", "info")
+        render_info_message("No hay documentos pendientes para indexar", "info")
         return
     
-    with render_spinner(f"Indexing {len(pending)} documents..."):
+    with render_spinner(f"Indexando {len(pending)} documentos..."):
         try:
             docs_to_index = [
                 {'doc_id': doc['doc_id'], 'filename': doc['filename']}
@@ -457,12 +457,12 @@ def handle_batch_index_all() -> None:
             result = indexing_service.batch_index_documents(docs_to_index)
             
             render_info_message(
-                f"✅ Indexed {result['success_count']}/{result['total']} documents",
+                f"✅ Indexados {result['success_count']}/{result['total']} documentos",
                 "success" if result['failed_count'] == 0 else "warning"
             )
             
             if result['errors']:
-                with st.expander("Show Errors"):
+                with st.expander("Mostrar Errores"):
                     for error in result['errors']:
                         st.error(error)
             
@@ -471,73 +471,73 @@ def handle_batch_index_all() -> None:
             st.rerun()
             
         except Exception as e:
-            render_info_message(f"❌ Batch indexing failed: {str(e)}", "error")
+            render_info_message(f"❌ Indexación por lotes fallida: {str(e)}", "error")
 
 
 def handle_clear_all_indexes() -> None:
     """
-    Handle clearing all indexes.
+    Maneja la limpieza de todos los índices.
     """
-    st.warning("⚠️ This will remove all chunks from the vector store!")
+    st.warning("⚠️ ¡Esto eliminará todos los fragmentos del vector store!")
     
-    if st.button("Confirm Clear All"):
-        with render_spinner("Clearing all indexes..."):
+    if st.button("Confirmar Limpiar Todo"):
+        with render_spinner("Limpiando todos los índices..."):
             try:
                 indexing_service = get_indexing_service()
                 indexing_service.clear_all_indexes()
                 
-                render_info_message("✅ All indexes cleared", "success")
+                render_info_message("✅ Todos los índices limpiados", "success")
                 logger.warning("All indexes cleared via admin panel")
                 
                 st.rerun()
                 
             except Exception as e:
-                render_info_message(f"❌ Clear failed: {str(e)}", "error")
+                render_info_message(f"❌ Limpieza fallida: {str(e)}", "error")
 
 
 def render_testing_tab() -> None:
     """
-    Render testing tab for LLM providers.
+    Renderiza la pestaña de pruebas para proveedores de LLM.
     """
-    st.markdown("### 🧪 Provider Testing")
+    st.markdown("### 🧪 Prueba de Proveedores")
     
     chat_service = get_chat_service()
     
-    st.markdown("Test LLM provider connectivity:")
+    st.markdown("Prueba la conectividad de proveedores de LLM:")
     
     col1, col2 = st.columns(2)
     
     with col1:
-        if st.button("🧪 Test Gemini", type="primary", use_container_width=True):
+        if st.button("🧪 Probar Gemini", type="primary", use_container_width=True):
             test_provider_connectivity('gemini', chat_service)
     
     with col2:
-        if st.button("🧪 Test Cohere", use_container_width=True):
+        if st.button("🧪 Probar Cohere", use_container_width=True):
             test_provider_connectivity('cohere', chat_service)
 
 
 def test_provider_connectivity(provider: str, chat_service) -> None:
     """
-    Test LLM provider connectivity.
+    Prueba la conectividad del proveedor de LLM.
     
     Args:
-        provider: Provider name
-        chat_service: ChatService instance
+        provider: Nombre del proveedor
+        chat_service: Instancia de ChatService
     """
-    with render_spinner(f"Testing {provider}..."):
+    with render_spinner(f"Probando {provider}..."):
         result = chat_service.test_provider(provider)
         
         if result['success']:
             render_info_message(
-                f"✅ {provider.title()} is working! (Response time: {result['response_time']:.2f}s)",
+                f"✅ ¡{provider.title()} está funcionando! (Tiempo de respuesta: {result['response_time']:.2f}s)",
                 "success"
             )
             
-            with st.expander("Show Response"):
+            with st.expander("Mostrar Respuesta"):
                 st.text(result['response'])
         else:
             render_info_message(
-                f"❌ {provider.title()} test failed: {result['message']}",
+                f"❌ Prueba de {provider.title()} falló: {result['message']}",
                 "error"
             )
 

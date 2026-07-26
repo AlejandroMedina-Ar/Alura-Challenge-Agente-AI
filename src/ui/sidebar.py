@@ -1,11 +1,11 @@
 """
-Sidebar Module
+Módulo de Barra Lateral
 
-This module handles sidebar navigation and user info display.
-Provides menu navigation and session information.
+Este módulo maneja la navegación de la barra lateral y la visualización de información del usuario.
+Proporciona navegación de menú e información de sesión.
 
-Author: TechFlow AI Project
-License: MIT
+Autor: TechFlow AI Project
+Licencia: MIT
 """
 
 import streamlit as st
@@ -20,12 +20,12 @@ logger = get_logger()
 
 def render_sidebar() -> str:
     """
-    Render sidebar with navigation menu.
+    Renderiza la barra lateral con menú de navegación.
     
-    Returns:
-        str: Selected page/menu item
+    Retorna:
+        str: Página/ítem de menú seleccionado
     
-    Example:
+    Ejemplo:
         >>> selected_page = render_sidebar()
         >>> if selected_page == "Chat":
         ...     render_chat_page()
@@ -33,7 +33,7 @@ def render_sidebar() -> str:
     with st.sidebar:
         # App branding
         st.markdown("# 🤖 TechFlow AI")
-        st.caption("RAG-Powered Knowledge Agent")
+        st.caption("Agente de Conocimiento con RAG")
         st.divider()
         
         # User info section
@@ -41,16 +41,16 @@ def render_sidebar() -> str:
         st.divider()
         
         # Navigation menu
-        st.markdown("### 📋 Menu")
+        st.markdown("### 📋 Menú")
         
         menu_items = {
             "💬 Chat": "Chat",
-            "📚 Knowledge Library": "Knowledge",
-            "⚙️ Settings": "Settings"
+            "📚 Biblioteca de Conocimiento": "Knowledge",
+            "⚙️ Configuración": "Settings"
         }
         
         selected = st.radio(
-            label="Navigation",
+            label="Navegación",
             options=list(menu_items.keys()),
             label_visibility="collapsed",
             key="navigation_menu"
@@ -72,11 +72,11 @@ def render_sidebar() -> str:
 
 def render_user_info() -> None:
     """
-    Render user information section.
+    Renderiza la sección de información del usuario.
     
-    Shows authentication status and user details.
+    Muestra el estado de autenticación y detalles del usuario.
     
-    Example:
+    Ejemplo:
         >>> render_user_info()
     """
     auth_service = get_authentication_service()
@@ -86,39 +86,39 @@ def render_user_info() -> None:
         username = user.get('username', 'Admin')
         role = user.get('role', 'admin')
         
-        st.markdown(f"**👤 User:** {username}")
-        st.markdown(f"**🔑 Role:** {role.title()}")
+        st.markdown(f"**👤 Usuario:** {username}")
+        st.markdown(f"**🔑 Rol:** {role.title()}")
         
         # Session duration
         duration = auth_service.get_session_duration()
         if duration:
-            st.caption(f"Session: {duration}")
+            st.caption(f"Sesión: {duration}")
         
         # Logout button
-        if st.button("🚪 Logout", key="logout_btn", use_container_width=True):
+        if st.button("🚪 Cerrar Sesión", key="logout_btn", use_container_width=True):
             auth_service.logout()
             st.rerun()
     else:
-        st.info("Not authenticated")
+        st.info("No autenticado")
 
 
 def render_theme_toggle() -> None:
     """
-    Render theme toggle section.
+    Renderiza la sección de cambio de tema.
     
-    Example:
+    Ejemplo:
         >>> render_theme_toggle()
     """
     config_service = get_configuration_service()
     current_theme = config_service.get_theme()
     
-    st.markdown("### 🎨 Theme")
+    st.markdown("### 🎨 Tema")
     
     col1, col2 = st.columns(2)
     
     with col1:
         if st.button(
-            f"☀️ Light",
+            f"☀️ Claro",
             key="theme_light",
             disabled=(current_theme == 'light'),
             use_container_width=True
@@ -128,7 +128,7 @@ def render_theme_toggle() -> None:
     
     with col2:
         if st.button(
-            f"🌙 Dark",
+            f"🌙 Oscuro",
             key="theme_dark",
             disabled=(current_theme == 'dark'),
             use_container_width=True
@@ -136,37 +136,37 @@ def render_theme_toggle() -> None:
             config_service.set_theme('dark')
             st.rerun()
     
-    st.caption(f"Current: {current_theme.title()} {get_theme_icon(current_theme)}")
+    st.caption(f"Actual: {current_theme.title()} {get_theme_icon(current_theme)}")
 
 
 def render_sidebar_footer() -> None:
     """
-    Render sidebar footer with app info.
+    Renderiza el pie de la barra lateral con información de la aplicación.
     
-    Example:
+    Ejemplo:
         >>> render_sidebar_footer()
     """
     st.markdown("---")
-    st.caption("TechFlow AI RAG Agent")
-    st.caption("Version 1.0.0")
+    st.caption("TechFlow AI Agente RAG")
+    st.caption("Versión 1.0.0")
     st.caption("© 2024 TechFlow")
 
 
 def render_admin_sidebar() -> str:
     """
-    Render admin sidebar with additional admin options.
+    Renderiza la barra lateral de admin con opciones adicionales de administración.
     
-    Returns:
-        str: Selected page
+    Retorna:
+        str: Página seleccionada
     
-    Example:
+    Ejemplo:
         >>> selected = render_admin_sidebar()
     """
     with st.sidebar:
         # App branding
         st.markdown("# 🤖 TechFlow AI")
-        st.caption("RAG-Powered Knowledge Agent")
-        st.caption("🛡️ Admin Panel")
+        st.caption("Agente de Conocimiento con RAG")
+        st.caption("🛡️ Panel de Admin")
         st.divider()
         
         # User info
@@ -174,17 +174,17 @@ def render_admin_sidebar() -> str:
         st.divider()
         
         # Admin navigation
-        st.markdown("### 📋 Admin Menu")
+        st.markdown("### 📋 Menú Admin")
         
         admin_menu = {
             "💬 Chat": "Chat",
-            "📚 Knowledge Library": "Knowledge",
-            "🔧 Admin Panel": "Admin",
-            "⚙️ Settings": "Settings"
+            "📚 Biblioteca de Conocimiento": "Knowledge",
+            "🔧 Panel de Administración": "Admin",
+            "⚙️ Configuración": "Settings"
         }
         
         selected = st.radio(
-            label="Navigation",
+            label="Navegación",
             options=list(admin_menu.keys()),
             label_visibility="collapsed",
             key="admin_navigation_menu"
@@ -205,17 +205,17 @@ def render_admin_sidebar() -> str:
 
 def render_compact_sidebar() -> None:
     """
-    Render compact sidebar for login page.
+    Renderiza barra lateral compacta para la página de login.
     
-    Example:
+    Ejemplo:
         >>> render_compact_sidebar()
     """
     with st.sidebar:
         st.markdown("# 🤖 TechFlow AI")
-        st.caption("RAG-Powered Knowledge Agent")
+        st.caption("Agente de Conocimiento con RAG")
         st.divider()
         
-        st.info("Please log in to continue")
+        st.info("Por favor inicia sesión para continuar")
         
         st.divider()
         render_sidebar_footer()
@@ -223,12 +223,12 @@ def render_compact_sidebar() -> None:
 
 def get_navigation_state() -> str:
     """
-    Get current navigation state from session.
+    Obtiene el estado de navegación actual de la sesión.
     
-    Returns:
-        str: Current page
+    Retorna:
+        str: Página actual
     
-    Example:
+    Ejemplo:
         >>> page = get_navigation_state()
         >>> print(page)
         'Chat'
@@ -241,12 +241,12 @@ def get_navigation_state() -> str:
 
 def set_navigation_state(page: str) -> None:
     """
-    Set navigation state in session.
+    Establece el estado de navegación en la sesión.
     
     Args:
-        page: Page to navigate to
+        page: Página a la que navegar
     
-    Example:
+    Ejemplo:
         >>> set_navigation_state('Settings')
     """
     st.session_state.current_page = page
@@ -255,9 +255,9 @@ def set_navigation_state(page: str) -> None:
 
 def render_quick_stats() -> None:
     """
-    Render quick statistics in sidebar.
+    Renderiza estadísticas rápidas en la barra lateral.
     
-    Example:
+    Ejemplo:
         >>> render_quick_stats()
     """
     from src.services import get_knowledge_library_service, get_indexing_service
@@ -269,27 +269,27 @@ def render_quick_stats() -> None:
         stats = kl_service.get_storage_stats()
         indexing_stats = indexing_service.get_indexing_stats()
         
-        st.markdown("### 📊 Quick Stats")
+        st.markdown("### 📊 Estadísticas Rápidas")
         
         col1, col2 = st.columns(2)
         
         with col1:
             st.metric(
-                label="Documents",
+                label="Documentos",
                 value=stats['total_documents']
             )
         
         with col2:
             st.metric(
-                label="Chunks",
+                label="Fragmentos",
                 value=indexing_stats['total_chunks']
             )
         
-        st.caption(f"Indexed: {stats['indexed_documents']}/{stats['total_documents']}")
+        st.caption(f"Indexados: {stats['indexed_documents']}/{stats['total_documents']}")
         
     except Exception as e:
         logger.error(f"Failed to render quick stats", error=str(e))
-        st.caption("Stats unavailable")
+        st.caption("Estadísticas no disponibles")
 
 
 # Convenience: Allow direct import

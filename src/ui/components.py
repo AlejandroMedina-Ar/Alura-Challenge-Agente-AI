@@ -1,11 +1,11 @@
 """
-Components Module
+Módulo de Componentes
 
-This module provides reusable UI components for Streamlit.
-Includes buttons, cards, forms, and other UI elements.
+Este módulo proporciona componentes de UI reutilizables para Streamlit.
+Incluye botones, tarjetas, formularios y otros elementos de UI.
 
-Author: TechFlow AI Project
-License: MIT
+Autor: TechFlow AI Project
+Licencia: MIT
 """
 
 import streamlit as st
@@ -19,14 +19,14 @@ logger = get_logger()
 
 def render_header(title: str, subtitle: str = None) -> None:
     """
-    Render page header with title and optional subtitle.
+    Renderiza encabezado de página con título y subtítulo opcional.
     
     Args:
-        title: Page title
-        subtitle: Optional subtitle
+        title: Título de la página
+        subtitle: Subtítulo opcional
     
-    Example:
-        >>> render_header("TechFlow AI", "RAG Agent")
+    Ejemplo:
+        >>> render_header("TechFlow AI", "Agente RAG")
     """
     st.title(title)
     if subtitle:
@@ -41,16 +41,16 @@ def render_metric_card(
     help_text: str = None
 ) -> None:
     """
-    Render metric card.
+    Renderiza tarjeta de métrica.
     
     Args:
-        label: Metric label
-        value: Metric value
-        delta: Optional delta/change value
-        help_text: Optional help tooltip
+        label: Etiqueta de la métrica
+        value: Valor de la métrica
+        delta: Valor delta/cambio opcional
+        help_text: Texto de ayuda opcional
     
-    Example:
-        >>> render_metric_card("Documents", "42", "+5", "Total indexed")
+    Ejemplo:
+        >>> render_metric_card("Documentos", "42", "+5", "Total indexados")
     """
     st.metric(
         label=label,
@@ -65,14 +65,14 @@ def render_info_message(
     message_type: str = "info"
 ) -> None:
     """
-    Render info message box.
+    Renderiza caja de mensaje informativo.
     
     Args:
-        message: Message text
-        message_type: Type ('info', 'success', 'warning', 'error')
+        message: Texto del mensaje
+        message_type: Tipo ('info', 'success', 'warning', 'error')
     
-    Example:
-        >>> render_info_message("Upload successful!", "success")
+    Ejemplo:
+        >>> render_info_message("¡Carga exitosa!", "success")
     """
     if message_type == "success":
         st.success(message)
@@ -85,28 +85,28 @@ def render_info_message(
 
 
 def render_file_uploader(
-    label: str = "Upload Document",
+    label: str = "Subir Documento",
     accepted_types: list = None,
     help_text: str = None,
     key: str = None
 ) -> Optional:
     """
-    Render file uploader component.
+    Renderiza componente de carga de archivos.
     
     Args:
-        label: Uploader label
-        accepted_types: List of accepted file extensions
-        help_text: Optional help text
-        key: Optional widget key
+        label: Etiqueta del cargador
+        accepted_types: Lista de extensiones de archivo aceptadas
+        help_text: Texto de ayuda opcional
+        key: Clave de widget opcional
     
-    Returns:
-        UploadedFile or None
+    Retorna:
+        UploadedFile o None
     
-    Example:
+    Ejemplo:
         >>> file = render_file_uploader(
-        ...     "Upload PDF",
+        ...     "Subir PDF",
         ...     accepted_types=['pdf'],
-        ...     help_text="Max 10MB"
+        ...     help_text="Máx 10MB"
         ... )
     """
     if accepted_types is None:
@@ -128,20 +128,20 @@ def render_text_input(
     password: bool = False
 ) -> str:
     """
-    Render text input field.
+    Renderiza campo de entrada de texto.
     
     Args:
-        label: Input label
-        placeholder: Placeholder text
-        help_text: Optional help text
-        key: Optional widget key
-        password: Whether to mask input
+        label: Etiqueta del input
+        placeholder: Texto de marcador de posición
+        help_text: Texto de ayuda opcional
+        key: Clave de widget opcional
+        password: Si se debe enmascarar la entrada
     
-    Returns:
-        str: Input value
+    Retorna:
+        str: Valor de entrada
     
-    Example:
-        >>> name = render_text_input("Your name", placeholder="John Doe")
+    Ejemplo:
+        >>> name = render_text_input("Tu nombre", placeholder="Juan Pérez")
     """
     input_type = "password" if password else "default"
     
@@ -162,22 +162,22 @@ def render_text_area(
     key: str = None
 ) -> str:
     """
-    Render text area field.
+    Renderiza campo de área de texto.
     
     Args:
-        label: Text area label
-        placeholder: Placeholder text
-        height: Height in pixels
-        help_text: Optional help text
-        key: Optional widget key
+        label: Etiqueta del área de texto
+        placeholder: Texto de marcador de posición
+        height: Altura en píxeles
+        help_text: Texto de ayuda opcional
+        key: Clave de widget opcional
     
-    Returns:
-        str: Text area content
+    Retorna:
+        str: Contenido del área de texto
     
-    Example:
+    Ejemplo:
         >>> question = render_text_area(
-        ...     "Your question",
-        ...     placeholder="What is RAG?",
+        ...     "Tu pregunta",
+        ...     placeholder="¿Qué es RAG?",
         ...     height=100
         ... )
     """
@@ -199,22 +199,22 @@ def render_button(
     key: str = None
 ) -> bool:
     """
-    Render button.
+    Renderiza botón.
     
     Args:
-        label: Button label
-        on_click: Optional click handler
-        button_type: Type ('primary' or 'secondary')
-        disabled: Whether button is disabled
-        help_text: Optional help text
-        key: Optional widget key
+        label: Etiqueta del botón
+        on_click: Manejador de clic opcional
+        button_type: Tipo ('primary' o 'secondary')
+        disabled: Si el botón está deshabilitado
+        help_text: Texto de ayuda opcional
+        key: Clave de widget opcional
     
-    Returns:
-        bool: True if clicked
+    Retorna:
+        bool: True si se hizo clic
     
-    Example:
-        >>> if render_button("Submit", button_type="primary"):
-        ...     st.success("Submitted!")
+    Ejemplo:
+        >>> if render_button("Enviar", button_type="primary"):
+        ...     st.success("¡Enviado!")
     """
     return st.button(
         label=label,
@@ -234,21 +234,21 @@ def render_select_box(
     key: str = None
 ) -> any:
     """
-    Render select box dropdown.
+    Renderiza menú desplegable de selección.
     
     Args:
-        label: Select box label
-        options: List of options
-        default_index: Default selected index
-        help_text: Optional help text
-        key: Optional widget key
+        label: Etiqueta del select box
+        options: Lista de opciones
+        default_index: Índice seleccionado por defecto
+        help_text: Texto de ayuda opcional
+        key: Clave de widget opcional
     
-    Returns:
-        Selected option
+    Retorna:
+        Opción seleccionada
     
-    Example:
+    Ejemplo:
         >>> provider = render_select_box(
-        ...     "LLM Provider",
+        ...     "Proveedor LLM",
         ...     options=['gemini', 'cohere']
         ... )
     """
@@ -271,23 +271,23 @@ def render_slider(
     key: str = None
 ) -> float:
     """
-    Render slider input.
+    Renderiza entrada deslizante.
     
     Args:
-        label: Slider label
-        min_value: Minimum value
-        max_value: Maximum value
-        value: Default value
-        step: Step increment
-        help_text: Optional help text
-        key: Optional widget key
+        label: Etiqueta del slider
+        min_value: Valor mínimo
+        max_value: Valor máximo
+        value: Valor por defecto
+        step: Incremento del paso
+        help_text: Texto de ayuda opcional
+        key: Clave de widget opcional
     
-    Returns:
-        float: Selected value
+    Retorna:
+        float: Valor seleccionado
     
-    Example:
+    Ejemplo:
         >>> temp = render_slider(
-        ...     "Temperature",
+        ...     "Temperatura",
         ...     min_value=0.0,
         ...     max_value=2.0,
         ...     value=0.7,
@@ -315,21 +315,21 @@ def render_number_input(
     key: str = None
 ) -> int:
     """
-    Render number input field.
+    Renderiza campo de entrada numérica.
     
     Args:
-        label: Input label
-        min_value: Minimum value
-        max_value: Maximum value
-        value: Default value
-        step: Step increment
-        help_text: Optional help text
-        key: Optional widget key
+        label: Etiqueta del input
+        min_value: Valor mínimo
+        max_value: Valor máximo
+        value: Valor por defecto
+        step: Incremento del paso
+        help_text: Texto de ayuda opcional
+        key: Clave de widget opcional
     
-    Returns:
-        int: Input value
+    Retorna:
+        int: Valor de entrada
     
-    Example:
+    Ejemplo:
         >>> top_k = render_number_input(
         ...     "Top K",
         ...     min_value=1,
@@ -355,19 +355,19 @@ def render_checkbox(
     key: str = None
 ) -> bool:
     """
-    Render checkbox.
+    Renderiza casilla de verificación.
     
     Args:
-        label: Checkbox label
-        value: Default value
-        help_text: Optional help text
-        key: Optional widget key
+        label: Etiqueta del checkbox
+        value: Valor por defecto
+        help_text: Texto de ayuda opcional
+        key: Clave de widget opcional
     
-    Returns:
-        bool: Checkbox state
+    Retorna:
+        bool: Estado del checkbox
     
-    Example:
-        >>> stream = render_checkbox("Stream response", value=True)
+    Ejemplo:
+        >>> stream = render_checkbox("Respuesta en streaming", value=True)
     """
     return st.checkbox(
         label=label,
@@ -382,35 +382,35 @@ def render_expander(
     expanded: bool = False
 ) -> st.expander:
     """
-    Render expander/collapsible section.
+    Renderiza sección expandible/colapsable.
     
     Args:
-        label: Expander label
-        expanded: Whether expanded by default
+        label: Etiqueta del expander
+        expanded: Si está expandido por defecto
     
-    Returns:
-        st.expander: Expander context
+    Retorna:
+        st.expander: Contexto del expander
     
-    Example:
-        >>> with render_expander("Advanced Settings"):
-        ...     st.write("Advanced options here")
+    Ejemplo:
+        >>> with render_expander("Configuración Avanzada"):
+        ...     st.write("Opciones avanzadas aquí")
     """
     return st.expander(label=label, expanded=expanded)
 
 
-def render_spinner(message: str = "Loading...") -> st.spinner:
+def render_spinner(message: str = "Cargando...") -> st.spinner:
     """
-    Render loading spinner.
+    Renderiza spinner de carga.
     
     Args:
-        message: Loading message
+        message: Mensaje de carga
     
-    Returns:
-        st.spinner: Spinner context
+    Retorna:
+        st.spinner: Contexto del spinner
     
-    Example:
-        >>> with render_spinner("Indexing document..."):
-        ...     # Long operation
+    Ejemplo:
+        >>> with render_spinner("Indexando documento..."):
+        ...     # Operación larga
         ...     time.sleep(2)
     """
     return st.spinner(message)
@@ -421,55 +421,55 @@ def render_progress_bar(
     text: str = None
 ) -> None:
     """
-    Render progress bar.
+    Renderiza barra de progreso.
     
     Args:
-        progress: Progress value (0.0 to 1.0)
-        text: Optional progress text
+        progress: Valor de progreso (0.0 a 1.0)
+        text: Texto de progreso opcional
     
-    Example:
-        >>> render_progress_bar(0.5, "50% complete")
+    Ejemplo:
+        >>> render_progress_bar(0.5, "50% completado")
     """
     st.progress(progress, text=text)
 
 
 def render_tabs(tab_labels: list[str]) -> list:
     """
-    Render tabs.
+    Renderiza pestañas.
     
     Args:
-        tab_labels: List of tab labels
+        tab_labels: Lista de etiquetas de pestañas
     
-    Returns:
-        list: List of tab contexts
+    Retorna:
+        list: Lista de contextos de pestañas
     
-    Example:
-        >>> tabs = render_tabs(["Chat", "Documents", "Settings"])
+    Ejemplo:
+        >>> tabs = render_tabs(["Chat", "Documentos", "Configuración"])
         >>> with tabs[0]:
-        ...     st.write("Chat content")
+        ...     st.write("Contenido del chat")
     """
     return st.tabs(tab_labels)
 
 
 def render_columns(num_columns: int, gap: str = "small") -> list:
     """
-    Render columns layout.
+    Renderiza diseño de columnas.
     
     Args:
-        num_columns: Number of columns
-        gap: Gap size ('small', 'medium', 'large')
+        num_columns: Número de columnas
+        gap: Tamaño del espacio ('small', 'medium', 'large')
     
-    Returns:
-        list: List of column contexts
+    Retorna:
+        list: Lista de contextos de columnas
     
-    Example:
+    Ejemplo:
         >>> cols = render_columns(3)
         >>> with cols[0]:
         ...     st.metric("Docs", "42")
         >>> with cols[1]:
-        ...     st.metric("Chunks", "210")
+        ...     st.metric("Fragmentos", "210")
         >>> with cols[2]:
-        ...     st.metric("Queries", "156")
+        ...     st.metric("Consultas", "156")
     """
     return st.columns(num_columns, gap=gap)
 
@@ -482,21 +482,21 @@ def render_empty_state(
     action_callback: Callable = None
 ) -> None:
     """
-    Render empty state placeholder.
+    Renderiza marcador de estado vacío.
     
     Args:
-        icon: Emoji icon
-        title: Empty state title
-        message: Empty state message
-        action_label: Optional action button label
-        action_callback: Optional action callback
+        icon: Icono emoji
+        title: Título del estado vacío
+        message: Mensaje del estado vacío
+        action_label: Etiqueta del botón de acción opcional
+        action_callback: Callback de acción opcional
     
-    Example:
+    Ejemplo:
         >>> render_empty_state(
         ...     icon="📄",
-        ...     title="No documents",
-        ...     message="Upload your first document to get started",
-        ...     action_label="Upload Document"
+        ...     title="Sin documentos",
+        ...     message="Sube tu primer documento para comenzar",
+        ...     action_label="Subir Documento"
         ... )
     """
     st.markdown(
@@ -521,23 +521,23 @@ def render_data_table(
     columns: list[str] = None
 ) -> None:
     """
-    Render data table.
+    Renderiza tabla de datos.
     
     Args:
-        data: List of data dictionaries
-        columns: Optional column names to display
+        data: Lista de diccionarios de datos
+        columns: Nombres de columnas opcionales a mostrar
     
-    Example:
+    Ejemplo:
         >>> data = [
-        ...     {'name': 'Doc1', 'size': '1.2MB'},
-        ...     {'name': 'Doc2', 'size': '0.8MB'}
+        ...     {'nombre': 'Doc1', 'tamaño': '1.2MB'},
+        ...     {'nombre': 'Doc2', 'tamaño': '0.8MB'}
         ... ]
         >>> render_data_table(data)
     """
     import pandas as pd
     
     if not data:
-        st.info("No data to display")
+        st.info("No hay datos para mostrar")
         return
     
     df = pd.DataFrame(data)
