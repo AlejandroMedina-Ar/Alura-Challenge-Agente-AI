@@ -1,15 +1,15 @@
 ###############################################################
-# TechFlow AI Corporate Knowledge Agent
+# Agente de Conocimiento Corporativo TechFlow Solutions
 #
-# Requirements
+# Requisitos
 #
-# Python Version:
+# Versión de Python:
 Python 3.11+
 #
 ###############################################################
 
 # ============================================================
-# User Interface
+# Interfaz de Usuario
 # ============================================================
 
 streamlit==1.47.1
@@ -25,7 +25,7 @@ langchain-openai==0.3.30
 langchain-text-splitters==0.3.9
 
 # ============================================================
-# Vector Database
+# Base de Datos Vectorial
 # ============================================================
 
 chromadb==1.0.16
@@ -37,7 +37,7 @@ chromadb==1.0.16
 sentence-transformers==5.0.0
 
 # ============================================================
-# Document Loaders
+# Cargadores de Documentos
 # ============================================================
 
 PyMuPDF>=1.23.0
@@ -45,30 +45,30 @@ python-docx==1.2.0
 beautifulsoup4==4.13.4
 markdown==3.8.2
 
-# Language detection
+# Detección de idioma
 langdetect>=1.0.9
 
 # ============================================================
-# AI Providers
+# Proveedores de IA
 # ============================================================
 
-# Google Gemini (primary LLM provider)
+# Google Gemini (proveedor LLM primario)
 google-generativeai>=0.8.0
 
-# Cohere (fallback LLM provider)
+# Cohere (proveedor LLM de respaldo)
 cohere>=5.11.0
 
-# OpenAI (for potential future use, retained for compatibility)
+# OpenAI (para uso futuro potencial, retenido por compatibilidad)
 openai==1.99.9
 
 # ============================================================
-# Token Counting
+# Conteo de Tokens
 # ============================================================
 
 tiktoken==0.10.0
 
 # ============================================================
-# Configuration
+# Configuración
 # ============================================================
 
 python-dotenv==1.1.1
@@ -80,7 +80,7 @@ python-dotenv==1.1.1
 requests==2.32.4
 
 # ============================================================
-# Data Processing
+# Procesamiento de Datos
 # ============================================================
 
 pandas==2.3.1

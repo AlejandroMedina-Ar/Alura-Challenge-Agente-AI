@@ -1,112 +1,112 @@
-# Contributing to TechFlow AI RAG Agent
+# Contribuir al Agente RAG de TechFlow Solutions
 
-Thank you for your interest in contributing to TechFlow AI! This document provides guidelines and instructions for contributing.
-
----
-
-## Table of Contents
-
-1. [Code of Conduct](#code-of-conduct)
-2. [Getting Started](#getting-started)
-3. [Development Setup](#development-setup)
-4. [How to Contribute](#how-to-contribute)
-5. [Coding Standards](#coding-standards)
-6. [Testing](#testing)
-7. [Documentation](#documentation)
-8. [Pull Request Process](#pull-request-process)
+¡Gracias por tu interés en contribuir a TechFlow Solutions! Este documento proporciona pautas e instrucciones para contribuir.
 
 ---
 
-## Code of Conduct
+## Tabla de Contenidos
 
-### Our Pledge
-
-We are committed to providing a welcoming and inspiring community for all. Please be respectful and constructive in your interactions.
-
-### Expected Behavior
-
-- Be respectful and inclusive
-- Welcome newcomers
-- Be patient and helpful
-- Focus on what's best for the community
-- Show empathy towards others
-
-### Unacceptable Behavior
-
-- Harassment or discriminatory language
-- Personal attacks
-- Trolling or insulting comments
-- Publishing others' private information
-- Any conduct that could reasonably be considered inappropriate
+1. [Código de Conducta](#código-de-conducta)
+2. [Primeros Pasos](#primeros-pasos)
+3. [Configuración de Desarrollo](#configuración-de-desarrollo)
+4. [Cómo Contribuir](#cómo-contribuir)
+5. [Estándares de Código](#estándares-de-código)
+6. [Pruebas](#pruebas)
+7. [Documentación](#documentación)
+8. [Proceso de Pull Request](#proceso-de-pull-request)
 
 ---
 
-## Getting Started
+## Código de Conducta
 
-### Prerequisites
+### Nuestro Compromiso
 
-- Python 3.9 or higher
+Estamos comprometidos a proporcionar una comunidad acogedora e inspiradora para todos. Por favor, sé respetuoso y constructivo en tus interacciones.
+
+### Comportamiento Esperado
+
+- Sé respetuoso e inclusivo
+- Da la bienvenida a los nuevos participantes
+- Sé paciente y servicial
+- Enfócate en lo mejor para la comunidad
+- Muestra empatía hacia los demás
+
+### Comportamiento Inaceptable
+
+- Acoso o lenguaje discriminatorio
+- Ataques personales
+- Trolling o comentarios insultantes
+- Publicar información privada de otros
+- Cualquier conducta que razonablemente pueda considerarse inapropiada
+
+---
+
+## Primeros Pasos
+
+### Prerequisitos
+
+- Python 3.9 o superior
 - Git
-- Basic knowledge of Python, Streamlit, and RAG concepts
-- Familiarity with the project architecture (see [Architecture](architecture/Architecture.md))
+- Conocimiento básico de Python, Streamlit y conceptos RAG
+- Familiaridad con la arquitectura del proyecto (ver [Arquitectura](architecture/Architecture.md))
 
-### First Contributions
+### Primeras Contribuciones
 
-Good first issues are labeled with `good first issue` on GitHub. These are typically:
-- Documentation improvements
-- Bug fixes
-- Small feature additions
-- Test coverage improvements
+Los buenos primeros issues están etiquetados con `good first issue` en GitHub. Estos típicamente incluyen:
+- Mejoras en la documentación
+- Corrección de bugs
+- Adición de funcionalidades pequeñas
+- Mejoras en la cobertura de tests
 
 ---
 
-## Development Setup
+## Configuración de Desarrollo
 
-### 1. Fork and Clone
+### 1. Fork y Clone
 
 ```bash
-# Fork the repository on GitHub
-# Then clone your fork
-git clone https://github.com/YOUR-USERNAME/Alura-Challenge-Agente-AI.git
+# Haz fork del repositorio en GitHub
+# Luego clona tu fork
+git clone https://github.com/TU-USUARIO/Alura-Challenge-Agente-AI.git
 cd Alura-Challenge-Agente-AI
 
-# Add upstream remote
+# Agrega el remote upstream
 git remote add upstream https://github.com/AlejandroMedina-Ar/Alura-Challenge-Agente-AI.git
 ```
 
-### 2. Create Virtual Environment
+### 2. Crear Entorno Virtual
 
 ```bash
 python -m venv venv
 source venv/bin/activate  # Linux/Mac
-# or
+# o
 venv\Scripts\activate  # Windows
 ```
 
-### 3. Install Dependencies
+### 3. Instalar Dependencias
 
 ```bash
-# Install requirements
+# Instalar requirements
 pip install -r requirements.txt
 
-# Install development dependencies (optional)
+# Instalar dependencias de desarrollo (opcional)
 pip install black flake8 isort pytest pytest-cov
 ```
 
-### 4. Configure Environment
+### 4. Configurar Entorno
 
 ```bash
 cp .env.example .env
-# Edit .env with your API keys
+# Edita .env con tus claves API
 ```
 
-### 5. Run Setup
+### 5. Ejecutar Setup
 
 ```bash
 python setup.py
 ```
 
-### 6. Run Tests
+### 6. Ejecutar Tests
 
 ```bash
 python test_integration.py
@@ -114,40 +114,40 @@ python test_integration.py
 
 ---
 
-## How to Contribute
+## Cómo Contribuir
 
-### Reporting Bugs
+### Reportar Bugs
 
-**Before submitting a bug report:**
-1. Check existing issues to avoid duplicates
-2. Test with the latest version
-3. Verify it's not a configuration issue
+**Antes de enviar un reporte de bug:**
+1. Verifica los issues existentes para evitar duplicados
+2. Prueba con la última versión
+3. Verifica que no sea un problema de configuración
 
-**Bug report should include:**
-- Clear, descriptive title
-- Steps to reproduce
-- Expected vs actual behavior
-- Screenshots (if applicable)
-- Environment info (OS, Python version)
-- Relevant logs (remove sensitive data)
+**El reporte de bug debe incluir:**
+- Título claro y descriptivo
+- Pasos para reproducir
+- Comportamiento esperado vs comportamiento actual
+- Capturas de pantalla (si aplica)
+- Información del entorno (SO, versión de Python)
+- Logs relevantes (elimina datos sensibles)
 
-**Example:**
+**Ejemplo:**
 ```markdown
-**Bug:** Chat doesn't respond when no documents indexed
+**Bug:** El chat no responde cuando no hay documentos indexados
 
-**Steps to reproduce:**
-1. Fresh install
+**Pasos para reproducir:**
+1. Instalación limpia
 2. Login
-3. Go to Chat page
-4. Type a question
+3. Ir a página de Chat
+4. Escribir una pregunta
 
-**Expected:** Error message or empty state
-**Actual:** Application crashes
+**Esperado:** Mensaje de error o estado vacío
+**Actual:** La aplicación crashea
 
-**Environment:**
-- OS: Ubuntu 22.04
+**Entorno:**
+- SO: Ubuntu 22.04
 - Python: 3.11.2
-- Browser: Chrome 120
+- Navegador: Chrome 120
 
 **Logs:**
 ```
@@ -155,51 +155,51 @@ python test_integration.py
 ```
 ```
 
-### Suggesting Features
+### Sugerir Funcionalidades
 
-**Feature requests should include:**
-- Clear description of the feature
-- Use cases and benefits
-- Potential implementation approach
-- Any alternatives considered
+**Las solicitudes de funcionalidades deben incluir:**
+- Descripción clara de la funcionalidad
+- Casos de uso y beneficios
+- Enfoque potencial de implementación
+- Alternativas consideradas
 
-**Example:**
+**Ejemplo:**
 ```markdown
-**Feature:** Document versioning
+**Funcionalidad:** Versionado de documentos
 
-**Description:**
-Allow multiple versions of the same document to coexist in the knowledge library.
+**Descripción:**
+Permitir que múltiples versiones del mismo documento coexistan en la biblioteca de conocimiento.
 
-**Use case:**
-- Track document changes over time
-- Compare different versions
-- Rollback to previous versions
+**Caso de uso:**
+- Rastrear cambios en documentos a lo largo del tiempo
+- Comparar diferentes versiones
+- Revertir a versiones anteriores
 
-**Implementation ideas:**
-- Add version field to metadata
-- Store versions as separate docs with naming convention
-- Add UI to manage versions
+**Ideas de implementación:**
+- Agregar campo de versión a metadatos
+- Almacenar versiones como docs separados con convención de nombres
+- Agregar UI para gestionar versiones
 
-**Alternatives:**
-- Manual renaming (current workaround)
-- External version control
+**Alternativas:**
+- Renombrado manual (workaround actual)
+- Control de versiones externo
 ```
 
-### Contributing Code
+### Contribuir Código
 
-1. **Create a branch:**
+1. **Crear una rama:**
    ```bash
-   git checkout -b feature/your-feature-name
-   # or
-   git checkout -b bugfix/issue-number
+   git checkout -b feature/nombre-de-tu-funcionalidad
+   # o
+   git checkout -b bugfix/numero-de-issue
    ```
 
-2. **Make changes:**
-   - Follow coding standards (see below)
-   - Add/update tests
-   - Update documentation
+2. **Hacer cambios:**
+   - Seguir estándares de código (ver abajo)
+   - Agregar/actualizar tests
+   - Actualizar documentación
 
-3. **Test your changes:**
+3. **Probar tus cambios:**
    ```bash
    python test_integration.py
    ```
@@ -207,34 +207,34 @@ Allow multiple versions of the same document to coexist in the knowledge library
 4. **Commit:**
    ```bash
    git add .
-   git commit -m "Description of changes"
+   git commit -m "Descripción de los cambios"
    ```
 
 5. **Push:**
    ```bash
-   git push origin feature/your-feature-name
+   git push origin feature/nombre-de-tu-funcionalidad
    ```
 
-6. **Create Pull Request:**
-   - Go to GitHub
-   - Click "New Pull Request"
-   - Fill in the template
-   - Link related issues
+6. **Crear Pull Request:**
+   - Ir a GitHub
+   - Clic en "New Pull Request"
+   - Completar el template
+   - Vincular issues relacionados
 
 ---
 
-## Coding Standards
+## Estándares de Código
 
-### Python Style Guide
+### Guía de Estilo Python
 
-Follow **PEP 8** with these specifics:
+Seguir **PEP 8** con estas especificaciones:
 
-**Formatting:**
-- 4 spaces for indentation (no tabs)
-- Max line length: 100 characters
-- Use trailing commas in multi-line structures
+**Formato:**
+- 4 espacios para indentación (sin tabs)
+- Longitud máxima de línea: 100 caracteres
+- Usar comas finales en estructuras multi-línea
 
-**Example:**
+**Ejemplo:**
 ```python
 def process_document(
     file_path: str,
@@ -242,53 +242,53 @@ def process_document(
     chunk_overlap: int = 50
 ) -> dict:
     """
-    Process a document for indexing.
+    Procesa un documento para indexación.
     
     Args:
-        file_path: Path to document
-        chunk_size: Size of chunks
-        chunk_overlap: Overlap between chunks
+        file_path: Ruta al documento
+        chunk_size: Tamaño de los fragmentos
+        chunk_overlap: Superposición entre fragmentos
     
     Returns:
-        dict: Processing results
+        dict: Resultados del procesamiento
     """
-    # Implementation
+    # Implementación
     pass
 ```
 
 ### Type Hints
 
-**Always use type hints:**
+**Siempre usar type hints:**
 ```python
-# Good
+# Bueno
 def add_numbers(a: int, b: int) -> int:
     return a + b
 
-# Bad
+# Malo
 def add_numbers(a, b):
     return a + b
 ```
 
 ### Docstrings
 
-**Use Google-style docstrings:**
+**Usar docstrings estilo Google:**
 ```python
 def function_name(param1: str, param2: int) -> bool:
     """
-    Brief description of function.
+    Descripción breve de la función.
     
-    Longer description if needed, explaining what the
-    function does in more detail.
+    Descripción más larga si es necesaria, explicando qué
+    hace la función con más detalle.
     
     Args:
-        param1: Description of param1
-        param2: Description of param2
+        param1: Descripción de param1
+        param2: Descripción de param2
     
     Returns:
-        Description of return value
+        Descripción del valor de retorno
     
     Raises:
-        ValueError: When param1 is empty
+        ValueError: Cuando param1 está vacío
     
     Example:
         >>> function_name("test", 42)
@@ -297,15 +297,15 @@ def function_name(param1: str, param2: int) -> bool:
     pass
 ```
 
-### Naming Conventions
+### Convenciones de Nombres
 
-- **Functions/Variables:** `snake_case`
-- **Classes:** `PascalCase`
-- **Constants:** `UPPER_SNAKE_CASE`
-- **Private:** `_leading_underscore`
+- **Funciones/Variables:** `snake_case`
+- **Clases:** `PascalCase`
+- **Constantes:** `UPPER_SNAKE_CASE`
+- **Privados:** `_guion_bajo_inicial`
 
 ```python
-# Good
+# Bueno
 class DocumentProcessor:
     MAX_FILE_SIZE = 10_000_000
     
@@ -316,42 +316,42 @@ class DocumentProcessor:
         pass
 ```
 
-### Code Organization
+### Organización del Código
 
-**Import order:**
-1. Standard library
-2. Third-party packages
-3. Local modules
+**Orden de imports:**
+1. Biblioteca estándar
+2. Paquetes de terceros
+3. Módulos locales
 
 ```python
-# Standard library
+# Biblioteca estándar
 import os
 from pathlib import Path
 
-# Third-party
+# Terceros
 import streamlit as st
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
-# Local
+# Locales
 from src.config import DATA_DIR
 from src.utils import get_logger
 ```
 
-### Error Handling
+### Manejo de Errores
 
-**Use specific exceptions:**
+**Usar excepciones específicas:**
 ```python
-# Good
+# Bueno
 try:
     result = process_document(path)
 except FileNotFoundError:
-    logger.error(f"File not found: {path}")
+    logger.error(f"Archivo no encontrado: {path}")
     raise DocumentNotFoundError(path)
 except PermissionError:
-    logger.error(f"Permission denied: {path}")
+    logger.error(f"Permiso denegado: {path}")
     raise
 
-# Bad
+# Malo
 try:
     result = process_document(path)
 except Exception as e:
@@ -360,152 +360,152 @@ except Exception as e:
 
 ### Logging
 
-**Use appropriate log levels:**
+**Usar niveles de log apropiados:**
 ```python
-logger.debug(f"Processing document", filename=filename)
-logger.info(f"Document indexed", doc_id=doc_id, chunks=42)
-logger.warning(f"Large document", size_mb=size/1024/1024)
-logger.error(f"Indexing failed", error=str(e), exc_info=True)
+logger.debug(f"Procesando documento", filename=filename)
+logger.info(f"Documento indexado", doc_id=doc_id, chunks=42)
+logger.warning(f"Documento grande", size_mb=size/1024/1024)
+logger.error(f"Indexación falló", error=str(e), exc_info=True)
 ```
 
 ---
 
-## Testing
+## Pruebas
 
-### Running Tests
+### Ejecutar Tests
 
 ```bash
-# Run all integration tests
+# Ejecutar todos los tests de integración
 python test_integration.py
 
-# Run specific test
+# Ejecutar test específico
 python -m pytest tests/test_specific.py
 
-# Run with coverage
+# Ejecutar con cobertura
 pytest --cov=src --cov-report=html
 ```
 
-### Writing Tests
+### Escribir Tests
 
-**Test structure:**
+**Estructura de test:**
 ```python
 def test_function_name():
-    """Test description."""
-    # Arrange
+    """Descripción del test."""
+    # Preparar (Arrange)
     input_data = "test"
     expected = "result"
     
-    # Act
+    # Actuar (Act)
     result = function_to_test(input_data)
     
-    # Assert
+    # Afirmar (Assert)
     assert result == expected
 ```
 
-**Test naming:**
-- `test_<function>_<scenario>_<expected>`
-- Example: `test_upload_document_duplicate_raises_error`
+**Nombres de test:**
+- `test_<funcion>_<escenario>_<esperado>`
+- Ejemplo: `test_upload_document_duplicate_raises_error`
 
 ---
 
-## Documentation
+## Documentación
 
-### When to Update Documentation
+### Cuándo Actualizar Documentación
 
-- Adding new features
-- Changing existing functionality
-- Fixing bugs that affect usage
-- Adding configuration options
+- Al agregar nuevas funcionalidades
+- Al cambiar funcionalidad existente
+- Al corregir bugs que afecten el uso
+- Al agregar opciones de configuración
 
-### What to Document
+### Qué Documentar
 
-1. **User Guide** (`docs/USER-GUIDE.md`)
-   - How to use new features
-   - Configuration changes
-   - New workflows
+1. **Guía de Usuario** (`docs/USER-GUIDE.md`)
+   - Cómo usar nuevas funcionalidades
+   - Cambios de configuración
+   - Nuevos flujos de trabajo
 
-2. **Technical Docs** (`docs/TECHNICAL-DOCS.md`)
-   - API changes
-   - Architecture updates
-   - New modules
+2. **Documentación Técnica** (`docs/TECHNICAL-DOCS.md`)
+   - Cambios en API
+   - Actualizaciones de arquitectura
+   - Nuevos módulos
 
 3. **FAQ** (`docs/FAQ.md`)
-   - Common issues
-   - New troubleshooting steps
+   - Problemas comunes
+   - Nuevos pasos de troubleshooting
 
 4. **README** (`README.md`)
-   - Major changes
-   - New features (high-level)
+   - Cambios mayores
+   - Nuevas funcionalidades (alto nivel)
 
 5. **Changelog** (`CHANGELOG.md`)
-   - All changes
-   - Follow Keep a Changelog format
+   - Todos los cambios
+   - Seguir formato Keep a Changelog
 
 ---
 
-## Pull Request Process
+## Proceso de Pull Request
 
-### Before Submitting
+### Antes de Enviar
 
 **Checklist:**
-- [ ] Code follows style guide
-- [ ] Tests pass locally
-- [ ] Added/updated tests for changes
-- [ ] Updated relevant documentation
-- [ ] Commits are clean and descriptive
-- [ ] Branch is up-to-date with main
+- [ ] El código sigue la guía de estilo
+- [ ] Los tests pasan localmente
+- [ ] Agregados/actualizados tests para cambios
+- [ ] Actualizada documentación relevante
+- [ ] Commits son limpios y descriptivos
+- [ ] La rama está actualizada con main
 
-### PR Template
+### Template de PR
 
 ```markdown
-## Description
-Brief description of changes
+## Descripción
+Descripción breve de los cambios
 
-## Type of Change
-- [ ] Bug fix
-- [ ] New feature
-- [ ] Breaking change
-- [ ] Documentation update
+## Tipo de Cambio
+- [ ] Corrección de bug
+- [ ] Nueva funcionalidad
+- [ ] Cambio breaking
+- [ ] Actualización de documentación
 
 ## Testing
-- [ ] Integration tests pass
-- [ ] Manual testing completed
-- [ ] Added new tests
+- [ ] Tests de integración pasan
+- [ ] Testing manual completado
+- [ ] Agregados nuevos tests
 
 ## Checklist
-- [ ] Code follows style guide
-- [ ] Documentation updated
-- [ ] No new warnings
-- [ ] Commits are clean
+- [ ] El código sigue la guía de estilo
+- [ ] Documentación actualizada
+- [ ] Sin nuevas advertencias
+- [ ] Commits están limpios
 
-## Related Issues
+## Issues Relacionados
 Fixes #123
 Related to #456
 
-## Screenshots (if applicable)
-[Add screenshots here]
+## Capturas de Pantalla (si aplica)
+[Agregar capturas aquí]
 ```
 
-### Review Process
+### Proceso de Revisión
 
-1. **Automated checks:**
-   - CI/CD pipeline runs tests
-   - Linting checks
-   - Build verification
+1. **Verificaciones automatizadas:**
+   - Pipeline CI/CD ejecuta tests
+   - Verificaciones de linting
+   - Verificación de build
 
-2. **Code review:**
-   - Maintainer reviews code
-   - Requests changes if needed
-   - Approves when ready
+2. **Revisión de código:**
+   - Maintainer revisa el código
+   - Solicita cambios si es necesario
+   - Aprueba cuando está listo
 
 3. **Merge:**
-   - Squash and merge (default)
-   - Maintain clean history
+   - Squash and merge (por defecto)
+   - Mantener historial limpio
 
-### After Merge
+### Después del Merge
 
-- Delete your branch
-- Update your local repo:
+- Elimina tu rama
+- Actualiza tu repo local:
   ```bash
   git checkout main
   git pull upstream main
@@ -513,22 +513,22 @@ Related to #456
 
 ---
 
-## Questions?
+## ¿Preguntas?
 
-- Check [FAQ](docs/FAQ.md)
-- Read [Technical Docs](docs/TECHNICAL-DOCS.md)
-- Ask in GitHub Discussions
-- Open an issue for bugs
-
----
-
-## License
-
-By contributing, you agree that your contributions will be licensed under the MIT License.
+- Revisa el [FAQ](docs/FAQ.md)
+- Lee la [Documentación Técnica](docs/TECHNICAL-DOCS.md)
+- Pregunta en GitHub Discussions
+- Abre un issue para bugs
 
 ---
 
-**Thank you for contributing to TechFlow AI!** 🎉
+## Licencia
 
-**Version:** 1.0.0-beta  
-**Last Updated:** 2026-07-25
+Al contribuir, aceptas que tus contribuciones serán licenciadas bajo la Licencia MIT.
+
+---
+
+**¡Gracias por contribuir a TechFlow Solutions!** 🎉
+
+**Versión:** 1.0.0  
+**Última Actualización:** 2025-01-25

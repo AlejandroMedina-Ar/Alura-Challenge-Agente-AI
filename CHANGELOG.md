@@ -1,202 +1,238 @@
-# Changelog
+# Registro de Cambios
 
-All notable changes to TechFlow AI RAG Agent will be documented in this file.
+Todos los cambios notables del Agente RAG de TechFlow Solutions serán documentados en este archivo.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+El formato está basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/),
+y este proyecto se adhiere a [Semantic Versioning](https://semver.org/lang/es/).
+
+---
+
+## [1.0.0] - 2025-01-25
+
+### 🌍 Localización Completa al Español
+
+#### Agregado
+- **Localización UI** - Interfaz completa en español
+  - Todos los textos visibles traducidos
+  - Mensajes de error/éxito en español
+  - Navegación y menús en español
+  - Prompts del sistema en español
+  
+- **Documentación** - Guías de localización
+  - LOCALIZATION-GUIDE.md - Guía comprehensiva
+  - LOCALIZACION-RESUMEN.md - Resumen ejecutivo
+  - CONTRIBUTING.md traducido al español
+  - CHANGELOG.md traducido al español
+
+#### Cambiado
+- Nombre de compañía actualizado a **TechFlow Solutions**
+- Toda la interfaz de usuario en español
+- Documentación principal en español
+
+#### Archivos Modificados
+- `src/app.py` - Login, navegación, about
+- `src/ui/chat.py` - Interfaz de chat
+- `src/ui/admin_panel.py` - Panel de administración
+- `src/ui/settings_panel.py` - Configuración
+- `src/ui/sidebar.py` - Barra lateral
+- `src/ui/components.py` - Componentes
+- `src/rag/prompt_builder.py` - Prompts del sistema
+- `CONTRIBUTING.md` - Traducido
+- `CHANGELOG.md` - Traducido
+- `requirements.txt` - Comentarios en español
 
 ---
 
 ## [1.0.0-beta] - 2026-07-25
 
-### 🎉 Initial Beta Release
+### 🎉 Lanzamiento Beta Inicial
 
-Complete implementation of TechFlow AI RAG Agent with full functionality.
+Implementación completa del Agente RAG de TechFlow Solutions con funcionalidad completa.
 
-### Added
+### Agregado
 
-#### Core Features
-- **RAG Pipeline** - Complete retrieval-augmented generation workflow
-  - Text chunking with configurable size and overlap
-  - Multilingual E5-base embeddings (768 dimensions)
-  - ChromaDB vector store with persistence
-  - Top-k similarity search
-  - Context-aware prompt building
+#### Funcionalidades Principales
+- **Pipeline RAG** - Flujo completo de generación aumentada por recuperación
+  - Fragmentación de texto con tamaño y superposición configurables
+  - Embeddings E5-base multilingüe (768 dimensiones)
+  - Vector store ChromaDB con persistencia
+  - Búsqueda de similitud top-k
+  - Construcción de prompts consciente del contexto
 
-- **LLM Integration** - Dual provider support with automatic fallback
-  - Google Gemini 1.5 Flash (primary)
-  - Cohere Command-R (fallback)
-  - Streaming responses
-  - OpenAI-compatible message format
+- **Integración LLM** - Soporte dual de proveedores con fallback automático
+  - Google Gemini 1.5 Flash (primario)
+  - Cohere Command-R (respaldo)
+  - Respuestas en streaming
+  - Formato de mensajes compatible con OpenAI
 
-- **Document Management** - Complete CRUD operations
-  - Upload documents (PDF, TXT, MD, DOCX)
-  - View document list with metadata
-  - Delete documents (file + vector index)
-  - Document metadata tracking
+- **Gestión de Documentos** - Operaciones CRUD completas
+  - Subir documentos (PDF, TXT, MD, DOCX)
+  - Ver lista de documentos con metadatos
+  - Eliminar documentos (archivo + índice vectorial)
+  - Seguimiento de metadatos de documentos
 
-- **Indexing System** - Automated document processing
-  - Single document indexing
-  - Batch indexing operations
-  - Re-indexing support
-  - Progress tracking
+- **Sistema de Indexación** - Procesamiento automático de documentos
+  - Indexación de documentos individuales
+  - Operaciones de indexación por lotes
+  - Soporte para re-indexación
+  - Seguimiento de progreso
 
-- **Authentication** - Secure admin access
-  - Password-based authentication (bcrypt)
-  - Session management
-  - Logout functionality
-  - Session duration tracking
+- **Autenticación** - Acceso admin seguro
+  - Autenticación basada en contraseña (bcrypt)
+  - Gestión de sesiones
+  - Funcionalidad de logout
+  - Seguimiento de duración de sesión
 
-- **Configuration** - Runtime configuration management
-  - LLM provider and model selection
-  - RAG parameters (chunk size, overlap, top-k, temperature)
-  - UI theme (light/dark)
-  - Configuration validation
-  - Export/import configuration
+- **Configuración** - Gestión de configuración en tiempo de ejecución
+  - Selección de proveedor y modelo LLM
+  - Parámetros RAG (tamaño fragmento, superposición, top-k, temperatura)
+  - Tema UI (claro/oscuro)
+  - Validación de configuración
+  - Exportar/importar configuración
 
-#### User Interface
-- **Streamlit Web Interface** - Modern, responsive design
-  - Chat page with streaming responses
-  - Knowledge Library management
-  - Admin Panel with dashboard
-  - Settings panel
-  - Sidebar navigation
-  - Light/dark themes
+#### Interfaz de Usuario
+- **Interfaz Web Streamlit** - Diseño moderno y responsivo
+  - Página de chat con respuestas en streaming
+  - Gestión de Biblioteca de Conocimiento
+  - Panel de Admin con dashboard
+  - Panel de configuración
+  - Navegación en barra lateral
+  - Temas claro/oscuro
 
-- **Chat Interface** - Conversational AI
-  - Real-time streaming responses
-  - Conversation history
-  - Source citations
-  - Clear and export chat
-  - Empty state handling
+- **Interfaz de Chat** - IA conversacional
+  - Respuestas en streaming en tiempo real
+  - Historial de conversación
+  - Citaciones de fuentes
+  - Limpiar y exportar chat
+  - Manejo de estado vacío
 
-- **Admin Panel** - System management
-  - Dashboard with metrics
-  - Document upload and management
-  - Indexing operations
-  - Provider connectivity testing
-  - System statistics
+- **Panel de Admin** - Gestión del sistema
+  - Dashboard con métricas
+  - Carga y gestión de documentos
+  - Operaciones de indexación
+  - Prueba de conectividad de proveedores
+  - Estadísticas del sistema
 
-- **Settings Panel** - Configuration UI
-  - LLM settings (provider, model, API key)
-  - RAG settings (chunking, retrieval, generation)
-  - UI settings (theme)
-  - Configuration validation and export
+- **Panel de Configuración** - UI de configuración
+  - Configuración LLM (proveedor, modelo, clave API)
+  - Configuración RAG (fragmentación, recuperación, generación)
+  - Configuración UI (tema)
+  - Validación y exportación de configuración
 
-#### Developer Tools
-- **Setup Script** (`setup.py`) - Automated initialization
-  - Directory structure creation
-  - Configuration initialization
-  - Environment validation
-  - Dependency checking
+#### Herramientas para Desarrolladores
+- **Script de Setup** (`setup.py`) - Inicialización automatizada
+  - Creación de estructura de directorios
+  - Inicialización de configuración
+  - Validación de entorno
+  - Verificación de dependencias
 
-- **Test Suite** (`test_integration.py`) - Integration tests
-  - Module import validation
-  - Configuration testing
-  - Service initialization
-  - RAG pipeline verification
-  - LLM provider connectivity
+- **Suite de Tests** (`test_integration.py`) - Tests de integración
+  - Validación de imports de módulos
+  - Testing de configuración
+  - Inicialización de servicios
+  - Verificación de pipeline RAG
+  - Conectividad de proveedores LLM
 
-- **Quick Start** (`run.py`) - One-command startup
-  - Pre-flight checks
-  - Streamlit auto-launch
-  - Error handling
+- **Quick Start** (`run.py`) - Inicio con un comando
+  - Verificaciones pre-vuelo
+  - Auto-lanzamiento de Streamlit
+  - Manejo de errores
 
-#### Documentation
-- **User Guide** (`docs/USER-GUIDE.md`) - Complete usage instructions
-  - Getting started
-  - Feature walkthroughs
-  - Tips and best practices
+#### Documentación
+- **Guía de Usuario** (`docs/USER-GUIDE.md`) - Instrucciones completas de uso
+  - Primeros pasos
+  - Guías de funcionalidades
+  - Tips y mejores prácticas
   - Troubleshooting
 
-- **Technical Docs** (`docs/TECHNICAL-DOCS.md`) - Developer reference
-  - System architecture
-  - Module reference
-  - API documentation
-  - Data flow diagrams
-  - Deployment guide
+- **Documentación Técnica** (`docs/TECHNICAL-DOCS.md`) - Referencia para desarrolladores
+  - Arquitectura del sistema
+  - Referencia de módulos
+  - Documentación de API
+  - Diagramas de flujo de datos
+  - Guía de deployment
 
-- **FAQ** (`docs/FAQ.md`) - Common questions
-  - General questions
-  - Installation and setup
-  - Usage questions
-  - Technical questions
+- **FAQ** (`docs/FAQ.md`) - Preguntas comunes
+  - Preguntas generales
+  - Instalación y setup
+  - Preguntas de uso
+  - Preguntas técnicas
   - Troubleshooting
 
-#### Styling
-- **Custom CSS Themes** - Beautiful, consistent styling
-  - Light theme (`assets/css/light.css`)
-  - Dark theme (`assets/css/dark.css`)
-  - Custom component styling
-  - Smooth transitions
+#### Estilos
+- **Temas CSS Personalizados** - Estilo hermoso y consistente
+  - Tema claro (`assets/css/light.css`)
+  - Tema oscuro (`assets/css/dark.css`)
+  - Estilo de componentes personalizados
+  - Transiciones suaves
 
-### Architecture
+### Arquitectura
 
-**Layered Architecture:**
+**Arquitectura en Capas:**
 ```
-UI Layer (Streamlit)
+Capa UI (Streamlit)
   ↓
-Services Layer (Business Logic)
+Capa de Servicios (Lógica de Negocio)
   ↓
-Core Modules (RAG, LLM, Auth, Storage)
+Módulos Core (RAG, LLM, Auth, Storage)
   ↓
-Infrastructure (ChromaDB, File System, Config)
+Infraestructura (ChromaDB, Sistema de Archivos, Config)
 ```
 
-**Key Modules:**
-- `src/config/` - Configuration management
-- `src/utils/` - Utilities and helpers
-- `src/storage/` - Data persistence
-- `src/auth/` - Authentication
-- `src/llm/` - LLM providers
-- `src/rag/` - RAG pipeline
-- `src/services/` - Business logic
-- `src/ui/` - User interface
+**Módulos Clave:**
+- `src/config/` - Gestión de configuración
+- `src/utils/` - Utilidades y helpers
+- `src/storage/` - Persistencia de datos
+- `src/auth/` - Autenticación
+- `src/llm/` - Proveedores LLM
+- `src/rag/` - Pipeline RAG
+- `src/services/` - Lógica de negocio
+- `src/ui/` - Interfaz de usuario
 
-### Technical Specifications
+### Especificaciones Técnicas
 
 **Stack:**
 - Python 3.9+
-- Streamlit (UI framework)
-- ChromaDB (vector database)
-- LangChain (text splitting)
+- Streamlit (framework UI)
+- ChromaDB (base de datos vectorial)
+- LangChain (división de texto)
 - Google Gemini API
 - Cohere API
 - Sentence Transformers (embeddings)
 
-**Performance:**
-- Embedding dimension: 768
-- Default chunk size: 512 characters
-- Default chunk overlap: 50 characters
-- Default top-k: 5 chunks
-- Default temperature: 0.7
+**Rendimiento:**
+- Dimensión de embedding: 768
+- Tamaño de fragmento por defecto: 512 caracteres
+- Superposición por defecto: 50 caracteres
+- Top-k por defecto: 5 fragmentos
+- Temperatura por defecto: 0.7
 
-**Limits:**
-- Max file size: 10MB
-- Supported formats: PDF, TXT, MD, DOCX
-- Chunk size range: 128-2048 characters
-- Top-k range: 1-20
-- Temperature range: 0.0-2.0
+**Límites:**
+- Tamaño máximo de archivo: 10MB
+- Formatos soportados: PDF, TXT, MD, DOCX
+- Rango de tamaño de fragmento: 128-2048 caracteres
+- Rango top-k: 1-20
+- Rango de temperatura: 0.0-2.0
 
-### Code Statistics
+### Estadísticas de Código
 
-- **Total Files:** 48
-- **Total Lines:** ~14,980
-- **Modules:** 8 packages
-- **Services:** 5 singletons
-- **UI Components:** 7 modules
+- **Total de Archivos:** 48
+- **Total de Líneas:** ~14,980
+- **Módulos:** 8 paquetes
+- **Servicios:** 5 singletons
+- **Componentes UI:** 7 módulos
 
-### Known Limitations
+### Limitaciones Conocidas
 
-- Single admin user only
-- No multi-user support
-- No document versioning
-- No document previews
-- No OCR for scanned PDFs
-- Internet required for LLM (no offline mode)
-- Limited to text-based documents
+- Solo un usuario admin
+- Sin soporte multi-usuario
+- Sin versionado de documentos
+- Sin vistas previas de documentos
+- Sin OCR para PDFs escaneados
+- Internet requerido para LLM (sin modo offline)
+- Limitado a documentos basados en texto
 
-### Dependencies
+### Dependencias
 
 **Core:**
 - streamlit >= 1.30.0
@@ -206,153 +242,149 @@ Infrastructure (ChromaDB, File System, Config)
 - google-generativeai >= 0.3.0
 - cohere >= 4.0.0
 
-**Utilities:**
+**Utilidades:**
 - python-dotenv >= 1.0.0
 - bcrypt >= 4.0.0
 - PyMuPDF >= 1.23.0
 - python-docx >= 1.0.0
 
-See `requirements.txt` for complete list.
+Ver `requirements.txt` para la lista completa.
 
 ---
 
 ## [0.1.0-alpha] - 2026-07-24
 
-### 🎯 Project Specification Phase
+### 🎯 Fase de Especificación del Proyecto
 
-- Complete project specifications (9 documents)
-- Architecture design and documentation
-- Technical specifications for all modules
-- Build plan with 9 phases
-- Implementation guidelines
+- Especificaciones completas del proyecto (9 documentos)
+- Diseño y documentación de arquitectura
+- Especificaciones técnicas para todos los módulos
+- Plan de construcción con 9 fases
+- Pautas de implementación
 
-### Specifications Created
+### Especificaciones Creadas
 
-- Project Overview
-- Chat Interface specification
-- Knowledge Base Management specification
-- Authentication specification
-- RAG Pipeline specification
-- Configuration specification
-- Deployment specification
+- Vista General del Proyecto
+- Especificación de Interfaz de Chat
+- Especificación de Gestión de Base de Conocimiento
+- Especificación de Autenticación
+- Especificación de Pipeline RAG
+- Especificación de Configuración
+- Especificación de Deployment
 
-### Architecture Documents
+### Documentos de Arquitectura
 
-- System Architecture
-- Source Code Structure
-- Glossary of terms
+- Arquitectura del Sistema
+- Estructura del Código Fuente
+- Glosario de términos
 
-### Planning Documents
+### Documentos de Planificación
 
-- Build Plan (9 phases)
-- Final Summary
-- Project Status
-- Implementation Options
+- Plan de Construcción (9 fases)
+- Resumen Final
+- Estado del Proyecto
+- Opciones de Implementación
 
 ---
 
 ## Roadmap
 
-### [1.0.0] - Planned
+### [1.1.0] - Futuro
 
-**Production Release:**
-- [ ] Complete documentation
-- [ ] Deployment guides
-- [ ] Performance optimization
-- [ ] Security audit
-- [ ] Production-ready configurations
+**Funcionalidades Mejoradas:**
+- [ ] Soporte multi-usuario
+- [ ] Versionado de documentos
+- [ ] Vistas previas de documentos
+- [ ] OCR para PDFs escaneados
+- [ ] Soporte para más formatos de archivo
+- [ ] Exportar conversaciones a PDF
+- [ ] Dashboard de analytics
 
-### [1.1.0] - Future
+### [2.0.0] - Futuro
 
-**Enhanced Features:**
-- [ ] Multi-user support
-- [ ] Document versioning
-- [ ] Document previews
-- [ ] OCR for scanned PDFs
-- [ ] More file format support
-- [ ] Export conversations to PDF
-- [ ] Analytics dashboard
-
-### [2.0.0] - Future
-
-**Advanced Features:**
+**Funcionalidades Avanzadas:**
 - [ ] Web scraping
-- [ ] API endpoints
-- [ ] Webhook integrations
-- [ ] Custom LLM support (Ollama, llama.cpp)
-- [ ] Multi-language UI
-- [ ] Voice input/output
-- [ ] Mobile app
+- [ ] Endpoints API
+- [ ] Integraciones webhook
+- [ ] Soporte LLM personalizado (Ollama, llama.cpp)
+- [ ] UI multi-idioma
+- [ ] Entrada/salida de voz
+- [ ] App móvil
 
 ---
 
-## Development History
+## Historia de Desarrollo
 
-**Phase 0 (Specification):**
-- ✅ Complete project specifications
-- ✅ Architecture design
-- ✅ Build plan creation
+**Fase 0 (Especificación):**
+- ✅ Especificaciones completas del proyecto
+- ✅ Diseño de arquitectura
+- ✅ Creación de plan de construcción
 
-**Phase 1 (Foundations):**
-- ✅ Configuration module
-- ✅ Utilities and helpers
-- ✅ Storage layer
+**Fase 1 (Fundaciones):**
+- ✅ Módulo de configuración
+- ✅ Utilidades y helpers
+- ✅ Capa de almacenamiento
 
-**Phase 2 (Core Logic):**
-- ✅ Authentication system
-- ✅ LLM provider integrations
+**Fase 2 (Lógica Core):**
+- ✅ Sistema de autenticación
+- ✅ Integraciones de proveedores LLM
 
-**Phase 3 (RAG Pipeline):**
-- ✅ Embedding service
-- ✅ Vector store wrapper
-- ✅ Text chunker
-- ✅ Document retriever
-- ✅ Prompt builder
-- ✅ Pipeline orchestration
+**Fase 3 (Pipeline RAG):**
+- ✅ Servicio de embeddings
+- ✅ Wrapper de vector store
+- ✅ Fragmentador de texto
+- ✅ Recuperador de documentos
+- ✅ Constructor de prompts
+- ✅ Orquestación de pipeline
 
-**Phase 4 (Services):**
-- ✅ Authentication service
-- ✅ Configuration service
-- ✅ Knowledge Library service
-- ✅ Indexing service
-- ✅ Chat service
+**Fase 4 (Servicios):**
+- ✅ Servicio de autenticación
+- ✅ Servicio de configuración
+- ✅ Servicio de Biblioteca de Conocimiento
+- ✅ Servicio de indexación
+- ✅ Servicio de chat
 
-**Phase 5 (UI):**
-- ✅ Theme management
-- ✅ Reusable components
-- ✅ Navigation sidebar
-- ✅ Chat interface
-- ✅ Admin panel
-- ✅ Settings panel
-- ✅ Main application
+**Fase 5 (UI):**
+- ✅ Gestión de temas
+- ✅ Componentes reutilizables
+- ✅ Barra lateral de navegación
+- ✅ Interfaz de chat
+- ✅ Panel de admin
+- ✅ Panel de configuración
+- ✅ Aplicación principal
 
-**Phase 6 (Integration):**
-- ✅ CSS themes (light/dark)
-- ✅ Setup script
-- ✅ Integration tests
-- ✅ Quick start script
-- ✅ Documentation updates
+**Fase 6 (Integración):**
+- ✅ Temas CSS (claro/oscuro)
+- ✅ Script de setup
+- ✅ Tests de integración
+- ✅ Script de inicio rápido
+- ✅ Actualizaciones de documentación
 
-**Phase 7 (Documentation):**
-- ✅ User guide
-- ✅ Technical documentation
+**Fase 7 (Documentación):**
+- ✅ Guía de usuario
+- ✅ Documentación técnica
 - ✅ FAQ
 - ✅ Changelog
 
----
-
-## Contributors
-
-**Lead Developer:** TechFlow AI Team  
-**Project:** Alura Challenge - Immersion AI + Google Gemini  
-**Repository:** [GitHub](https://github.com/AlejandroMedina-Ar/Alura-Challenge-Agente-AI)
+**Fase 8 (Localización):**
+- ✅ UI completa en español
+- ✅ Documentación en español
+- ✅ Guías de localización
 
 ---
 
-## License
+## Contribuidores
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+**Desarrollador Principal:** Equipo TechFlow Solutions  
+**Proyecto:** Alura Challenge - Immersion AI + Google Gemini  
+**Repositorio:** [GitHub](https://github.com/AlejandroMedina-Ar/Alura-Challenge-Agente-AI)
 
 ---
 
-**Note:** This changelog follows the [Keep a Changelog](https://keepachangelog.com/) format.
+## Licencia
+
+Este proyecto está licenciado bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para detalles.
+
+---
+
+**Nota:** Este changelog sigue el formato [Keep a Changelog](https://keepachangelog.com/es/).
