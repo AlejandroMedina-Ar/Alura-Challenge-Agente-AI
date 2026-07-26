@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  techflow-ai:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: techflow-ai-rag
+    ports:
+      - "8501:8501"
+    environment:
+      # LLM API Keys (set in .env file)
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - COHERE_API_KEY=${COHERE_API_KEY}
+      
+      # Authentication
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin123}
+      
+      # Logging
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      
+      # Optional: Override defaults
+      - DEFAULT_CHUNK_SIZE=${DEFAULT_CHUNK_SIZE:-512}
+      - DEFAULT_CHUNK_OVERLAP=${DEFAULT_CHUNK_OVERLAP:-50}
+      - DEFAULT_TOP_K=${DEFAULT_TOP_K:-5}
+      - DEFAULT_TEMPERATURE=${DEFAULT_TEMPERATURE:-0.7}
+    
+    volumes:
+      # Persist data between container restarts
+      - ./data/chromadb:/app/data/chromadb
+      - ./data/knowledge_library:/app/data/knowledge_library
+      - ./data/logs:/app/data/logs
+      - ./data/config.json:/app/data/config.json
+    
+    restart: unless-stopped
+    
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    
+    networks:
+      - techflow-network
+
+networks:
+  techflow-network:
+    driver: bridge
