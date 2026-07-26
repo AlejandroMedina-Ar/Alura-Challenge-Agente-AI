@@ -300,6 +300,45 @@ Para dudas de nomenclatura o conflictos: **Glossary.md es la autoridad final**.
 
 ---
 
+## 🎨 **CLARIFICACIÓN DE ARQUITECTURA UI**
+
+### Estado (2026-07-25)
+
+✅ **UI Architecture completamente redefinida**
+
+Después de la auditoría de Cursor, se confirmó que Streamlit NO soporta barras de navegación superiores custom nativamente. El proyecto mantiene su filosofía **Python-only sin HTML custom**.
+
+**Documento detallado:** `UI-ARCHITECTURE-CLARIFICATION.md`
+
+**Cambios aplicados:**
+- ❌ **Eliminada:** Barra de navegación superior custom
+- ✅ **Implementado:** Layout nativo de Streamlit (sidebar + main area)
+- ✅ **Branding:** Logo y nombre de empresa en top de sidebar
+- ✅ **System status:** Métricas en sidebar
+- ✅ **Theme selector:** Via menú hamburguesa (⋮) de Streamlit
+- ✅ **Admin access:** Botones en sidebar
+- ✅ **CSS mínimo:** Solo dark.css y light.css para temas
+
+**Arquitectura final:**
+```
+┌────────────────────────────────────────┐
+│  Streamlit Menu (⋮)      [Settings]   │
+├────────────┬───────────────────────────┤
+│  Sidebar   │   Main Chat Area         │
+│  🤖 Logo   │   [Messages]             │
+│  Status    │   [Input]                │
+│  Admin     │                          │
+└────────────┴───────────────────────────┘
+```
+
+**Documentos actualizados:**
+- `specs/001-chat-interface.md` - Secciones 4, 5, 6, 7 reescritas
+- `prompts/cursor-rules.md` - Nueva sección "UI Implementation Rules"
+- `prompts/system-prompt.md` - Clarificado "Python-only"
+- `UI-ARCHITECTURE-CLARIFICATION.md` - Documento completo creado
+
+---
+
 ## 🔑 API KEYS CONFIGURADAS PARA DESARROLLO
 
 ### Estado Actual (2026-07-25)
@@ -309,18 +348,41 @@ Para dudas de nomenclatura o conflictos: **Glossary.md es la autoridad final**.
 - `COHERE_API_KEY`: Configurada (free tier: 1000 req/mes)
 - `ADMIN_PASSWORD`: "admin123" (cambiar antes de producción)
 
+✅ **Archivo `config.json` creado** con runtime preferences:
+- Límites de tamaño por tipo de archivo
+- UI preferences (theme, sidebar state)
+
 ⚠️ **IMPORTANTE:**
 - Estas son keys de **testing/desarrollo**
 - El archivo `.env` está protegido por `.gitignore` (NO se sube a Git)
 - Antes de deployment a Streamlit Cloud, generar nuevas keys de producción
 - Ver `SECURITY-NOTES.md` para detalles completos sobre manejo de keys
 
-### Para Cursor:
-✅ **Listo para pruebas funcionales** - Cursor puede usar las keys durante implementación para:
-- Probar integración real con Gemini
-- Verificar mecanismo de fallback a Cohere
-- Validar pipeline RAG completo con respuestas reales
-- Testear generación de embeddings
+---
+
+## 🔧 AUDITORÍA DE CURSOR RESUELTA
+
+### Estado (2026-07-25)
+
+✅ **Cursor identificó 20 problemas** (6 críticos, 10 importantes, 4 menores)  
+✅ **Todas las correcciones aplicadas** según decisiones del usuario
+
+**Documento detallado:** `CURSOR-AUDIT-RESOLUTION.md`
+
+**Correcciones principales:**
+- ✅ Umbral KB vacía: 1 documento mínimo (no 0 ni 2)
+- ✅ llm_service.py creado como facade con fallback logic
+- ✅ PyMuPDF reemplaza pypdf
+- ✅ SDKs Gemini y Cohere agregados
+- ✅ Separación .env vs config.json clarificada
+- ✅ document_loader.py agregado a rag/
+- ✅ langdetect agregado para detección de idioma
+- ✅ Fallback duration: session-level (5 minutos)
+- ✅ Token limit algorithm completo con contadores
+- ✅ Duplicados: estrategia SKIP implementada
+- ✅ Límites de tamaño en config.json (PDF: 50MB)
+- ✅ Streaming implementado para ambos providers
+- ✅ Top bar eliminada, uso de menú Streamlit nativo
 
 ---
 
@@ -377,7 +439,7 @@ Antes de pasar a Cursor, confirmar:
 |---------|-------|
 | Documentos auditados | 14 |
 | Documentos modificados | 11 |
-| Documentos creados | 3 (Glossary, AUDIT-CHANGELOG, FINAL-SUMMARY) + 1 (SECURITY-NOTES) |
+| Documentos creados | 3 (Glossary, AUDIT-CHANGELOG, FINAL-SUMMARY) + 2 (SECURITY-NOTES, CURSOR-AUDIT-RESOLUTION) + 1 (config.json) |
 | Conflictos críticos resueltos | 6/6 |
 | Conflictos importantes resueltos | 8/8 |
 | Conflictos menores resueltos | 11/11 |

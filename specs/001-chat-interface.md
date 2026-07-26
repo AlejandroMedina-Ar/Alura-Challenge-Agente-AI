@@ -96,94 +96,184 @@ The learning curve should be practically zero.
 
 # 4. General Layout
 
-The application follows a three-zone layout.
+The application follows Streamlit's native two-zone layout without custom HTML.
 
 ```
-┌──────────────────────────────────────────────────────────────────────────────────────────────┐
-│ 🤖 TechFlow AI Corporate Assistant                         🌙 Theme ▼          👤 Admin      │
-├──────────────────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                              │
-│ ┌─────────────────────────────┐  ┌────────────────────────────────────────────────────────┐ │
-│ │                             │  │                                                        │ │
-│ │ Sidebar                     │  │                Main Chat Area                          │ │
-│ │                             │  │                                                        │ │
-│ │ Navigation                  │  │                                                        │ │
-│ │ Knowledge Base              │  │                                                        │ │
-│ │ Administrator               │  │                                                        │ │
-│ │ System Status               │  │                                                        │ │
-│ │                             │  │                                                        │ │
-│ └─────────────────────────────┘  └────────────────────────────────────────────────────────┘ │
-│                                                                                              │
-├──────────────────────────────────────────────────────────────────────────────────────────────┤
-│ Chat Input                                                             🚀 Send             │
-└──────────────────────────────────────────────────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────────────┐
+│  Streamlit Menu (⋮)                              [Settings]    │
+├────────────────┬───────────────────────────────────────────────┤
+│                │                                               │
+│  Sidebar       │         Main Chat Area                        │
+│                │                                               │
+│  🤖 TechFlow   │    [Chat messages displayed here]            │
+│                │                                               │
+│  Status:       │                                               │
+│  ✓ Ready       │                                               │
+│                │                                               │
+│  Admin Panel   │                                               │
+│  Knowledge     │                                               │
+│  Library       │                                               │
+│                │                                               │
+└────────────────┴───────────────────────────────────────────────┘
 ```
 
-The layout should remain clean and balanced.
-
-The chat interface always occupies most of the available screen.
+**Key principles:**
+- **No custom top bar** - Uses Streamlit's native hamburger menu (⋮)
+- **Python-only** - No custom HTML, minimal CSS (only for dark/light themes)
+- **Streamlit native components** - Leverages built-in sidebar and menu
+- **Clean and balanced** - Chat area occupies most screen space
 
 ---
 
-# 5. Top Navigation Bar
+# 5. Streamlit Menu (⋮)
 
-The application should include a fixed top navigation bar.
+The application uses Streamlit's native hamburger menu for global settings and information.
 
-The bar remains visible during the entire session.
+**Menu contents should include:**
+- Application info (version, about)
+- Theme selector (accessible via Streamlit settings)
+- Documentation links
+- Current LLM model display (read-only info)
+- Administrator status indicator
 
-Its purpose is to provide quick access to global application controls.
+**Implementation:** Use Streamlit's built-in menu system - no custom implementation needed.
 
----
-
-## Components
-
-Left Side
-
-- TechFlow AI Logo
-- Application Name
-
-Center
-
-- Optional page title
-
-Right Side
-
-- Theme Selector
-- Current AI Model (Gemini / Cohere)
-- Administrator Status
-
-Example
-
-```
-🤖 TechFlow AI
-
-                               🌙 Dark ▼
-
-                               🧠 Gemini 2.0 Flash
-
-                               👤 Administrator
-```
+**Note:** Some items (like theme) are automatically included by Streamlit. Additional custom menu items can be added via `st.sidebar` or displayed as info in the sidebar itself.
 
 ---
 
-# 6. Theme Manager
+# 6. Sidebar
 
-The application must support multiple visual themes.
+The sidebar is the primary navigation and information hub, positioned on the left side of the screen.
 
-Available themes
+## Top Section: Branding
 
-- Dark
-- Light
+```
+┌─────────────────────┐
+│  🤖 TechFlow AI     │
+│  Corporate Agent    │
+└─────────────────────┘
+```
+
+**Components:**
+- Company/Product logo (emoji or small image)
+- Application name
+- Optional tagline
+
+**Purpose:** Brand identity and application context
+
+---
+
+## System Status Section
+
+Display key system information:
+
+```
+┌─────────────────────┐
+│  📊 System Status   │
+│                     │
+│  ✓ Ready            │
+│  📚 42 Documents    │
+│  🧠 Gemini 2.0      │
+│  🔄 Cohere Ready    │
+└─────────────────────┘
+```
+
+**Status indicators:**
+- System health (✓ Ready / ⚠ Warning / ❌ Error)
+- Document count in Knowledge Library
+- Active LLM provider (Gemini / Cohere)
+- Fallback status
+
+**Implementation:** Use `st.sidebar.metric()` or `st.sidebar.info()` for clean display
+
+---
+
+## Admin Access Section
+
+```
+┌─────────────────────┐
+│  👤 Administrator   │
+│                     │
+│  🔐 Login          │
+│  or                 │
+│  📚 Knowledge      │
+│  ⚙️  Settings       │
+└─────────────────────┘
+```
+
+**If NOT authenticated:**
+- Show "Admin Login" button
+
+**If authenticated:**
+- Show "Knowledge Library" access
+- Show "Settings" access
+- Show "Logout" button
+
+---
+
+## Navigation (if applicable)
+
+For future multi-page support (out of scope for v1):
+- Home / Chat
+- Knowledge Library (admin only)
+- Settings (admin only)
+
+---
+
+# 7. Theme Manager
+
+The application supports light and dark visual themes using Streamlit's native theme system enhanced with custom CSS.
+
+## Theme Implementation Strategy
+
+**Streamlit Native Themes:**
+- Light mode: Streamlit's default light theme
+- Dark mode: Streamlit's default dark theme
+
+**Custom CSS Enhancement:**
+Two CSS files provide theme-specific styling:
+- `assets/css/light.css` - Light mode customizations
+- `assets/css/dark.css` - Dark mode customizations
+
+**CSS applies:**
+- Tokyo Night color palette for dark mode
+- Professional light mode colors
+- Consistent spacing and typography
+- Chat message styling
+- Sidebar enhancements
+
+**Theme Selection:**
+Users change themes via Streamlit's hamburger menu (⋮) → Settings → Theme
+
+**No custom theme selector needed** - Streamlit handles theme switching natively.
+
+**Implementation:**
+```python
+# Load appropriate CSS based on Streamlit's theme
+def load_theme_css():
+    # Detect current theme from Streamlit
+    theme = st.get_option("theme.base")  # "light" or "dark"
+    
+    if theme == "dark":
+        with open("assets/css/dark.css") as f:
+            st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+    else:
+        with open("assets/css/light.css") as f:
+            st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+```
 
 ---
 
 ## Default Theme
 
-The application always starts using:
+The application starts with **Dark mode** by default (Tokyo Night color scheme via custom CSS).
 
-Tokyo Night (Dark)
+Users can switch to Light mode via Streamlit's settings menu at any time.
 
-No user configuration is required.
+---
+
+## Primary Theme: Tokyo Night (Dark)
 
 ---
 
@@ -847,6 +937,54 @@ Conversation history exists only during the current Streamlit session (session-b
 Refreshing the browser clears the conversation.
 
 Persistent chat history (saved chats across sessions) is intentionally excluded from v1.
+
+---
+
+# 34. Streaming Responses
+
+The chat interface should stream LLM responses in real-time for improved user experience.
+
+**Implementation Status: v1 - REQUIRED**
+
+Streaming is **implemented** for both LLM providers as it is critical for chat UX:
+
+**Gemini Streaming:**
+```python
+# Use streaming API
+response_stream = model.generate_content(prompt, stream=True)
+for chunk in response_stream:
+    yield chunk.text
+```
+
+**Cohere Streaming:**
+```python
+# Use chat_stream method
+response_stream = client.chat_stream(message=prompt)
+for event in response_stream:
+    if event.event_type == "text-generation":
+        yield event.text
+```
+
+**Streamlit Integration:**
+
+Display streaming responses using `st.write_stream()`:
+
+```python
+with st.chat_message("assistant"):
+    response = st.write_stream(stream_llm_response(prompt))
+```
+
+**Fallback Behavior:**
+
+If streaming fails (network issues, API errors):
+1. Log warning: `logger.warning("Streaming failed, using non-streaming mode")`
+2. Generate complete response
+3. Display full response at once
+
+**Benefits:**
+- Lower perceived latency
+- Better UX for long responses
+- Maintains user engagement
 
 ---
 

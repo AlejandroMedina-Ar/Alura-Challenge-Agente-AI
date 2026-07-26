@@ -26,6 +26,8 @@ Build a Retrieval-Augmented Generation (RAG) application capable of answering qu
 
 The application uses Google Gemini as the primary LLM provider (free tier) with Cohere as automatic fallback for reliability.
 
+**UI Technology:** Streamlit (Python-only, no custom HTML)
+
 The application must remain:
 
 - Simple

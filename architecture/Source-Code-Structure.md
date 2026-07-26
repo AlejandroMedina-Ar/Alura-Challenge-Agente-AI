@@ -180,15 +180,18 @@ embedding_service.py
 vector_store.py
 
 prompt_builder.py
+
+document_loader.py
 ```
 
 Responsibilities:
 
 - Orchestrate RAG workflow (pipeline.py)
-- Chunk documents
-- Generate embeddings
-- Query ChromaDB
-- Retrieve context
+- Extract text from documents (document_loader.py - PDF, DOCX, TXT, MD, CSV, JSON, HTML)
+- Chunk documents (chunker.py)
+- Generate embeddings (embedding_service.py)
+- Query ChromaDB (vector_store.py)
+- Retrieve context (retriever.py)
 - Build prompts with system instructions, context, and user question
 
 The RAG module should remain independent from the UI.
@@ -211,16 +214,30 @@ base_provider.py
 gemini_provider.py
 
 cohere_provider.py
+
+llm_service.py
 ```
 
 Responsibilities:
 
+- Define abstract provider interface (base_provider.py)
+- Implement Gemini provider (gemini_provider.py)
+- Implement Cohere provider (cohere_provider.py)
+- Orchestrate fallback logic (llm_service.py)
 - Connect to LLM providers (Gemini primary, Cohere fallback)
 - Send prompts
 - Receive responses
-- Handle provider-specific errors and fallback logic
+- Handle provider-specific errors and automatic fallback
 
-The rest of the application should communicate only through this abstraction layer.
+**llm_service.py** acts as a facade that:
+1. Initializes both Gemini and Cohere providers
+2. Attempts request with Gemini (primary)
+3. Implements retry logic (1 retry with 2s backoff)
+4. Automatically falls back to Cohere on failure
+5. Logs all fallback events
+6. Returns response to chat_service
+
+The rest of the application communicates only through `llm_service.py`, not directly with providers.
 
 ---
 
@@ -253,6 +270,33 @@ Responsibilities:
 Business logic should never manipulate files directly.
 
 **Note:** `config/settings.py` is responsible for reading `.env` and providing configuration values, but NOT for persisting them.
+
+---
+
+## config/
+
+Contains configuration logic.
+
+Example:
+
+```text
+config/
+
+settings.py
+
+constants.py
+
+paths.py
+```
+
+Responsibilities:
+
+- Load environment variables from .env (settings.py)
+- Provide runtime configuration access (settings.py)
+- Define application-wide constants (constants.py)
+- Define and manage project paths (paths.py)
+
+No business logic should exist in this module. Configuration should be read-only during runtime (except for config.json persistence via config_repository).
 
 ---
 

@@ -285,6 +285,67 @@ Rejected files should never reach the indexing pipeline.
 
 ---
 
+# 10.1 Duplicate Detection
+
+When a file with the same name already exists in the Knowledge Library, the system should detect it during validation.
+
+**Duplicate Handling Strategy: SKIP**
+
+The upload should be rejected with a clear message:
+
+```
+Document '{filename}' already exists in the Knowledge Library. 
+Please delete the existing document first or rename the new file before uploading.
+```
+
+**Implementation:**
+
+1. During file validation (before processing), check if `filename` exists in `data/knowledge_library/metadata/`
+2. If exists, raise `DuplicateDocumentError` with the message above
+3. Do NOT process, chunk, or index the duplicate file
+4. Log the skipped upload: `logger.info(f"Upload skipped: duplicate filename '{filename}'")`
+
+**Rationale:** SKIP strategy prevents accidental overwrites and maintains explicit control over document versions. Administrators must manually delete old versions before uploading new ones.
+
+---
+
+# 11. File Size Limits
+
+Each file type should enforce a maximum size to prevent resource exhaustion and ensure reasonable processing times.
+
+**Configuration:** File size limits are stored in `data/config.json` (not `.env`), allowing runtime adjustments without redeployment.
+
+**Default limits (in MB):**
+
+```json
+{
+  "document_processing": {
+    "max_file_size_mb": {
+      "pdf": 50,
+      "docx": 25,
+      "txt": 10,
+      "md": 10,
+      "csv": 25,
+      "json": 10,
+      "html": 10
+    }
+  }
+}
+```
+
+**Validation:**
+
+Files exceeding these limits should be rejected during validation with a clear error message:
+
+```
+Document '{filename}' exceeds maximum size for {file_type} files ({actual_size}MB > {limit}MB).
+Please upload a smaller file or contact administrator to adjust limits.
+```
+
+**Implementation:** Read limits from `config.json` via `storage/config_repository.py` during file validation.
+
+---
+
 # 11. Maximum File Size
 
 Version 1 recommends the following limits.

@@ -40,15 +40,25 @@ sentence-transformers==5.0.0
 # Document Loaders
 # ============================================================
 
-pypdf==5.8.0
+PyMuPDF>=1.23.0
 python-docx==1.2.0
 beautifulsoup4==4.13.4
 markdown==3.8.2
+
+# Language detection
+langdetect>=1.0.9
 
 # ============================================================
 # AI Providers
 # ============================================================
 
+# Google Gemini (primary LLM provider)
+google-generativeai>=0.8.0
+
+# Cohere (fallback LLM provider)
+cohere>=5.11.0
+
+# OpenAI (for potential future use, retained for compatibility)
 openai==1.99.9
 
 # ============================================================

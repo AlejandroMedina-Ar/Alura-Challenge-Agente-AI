@@ -100,6 +100,47 @@ Keep pages clean and lightweight.
 
 ---
 
+# UI Implementation Rules
+
+**Technology:** Streamlit-only (Python)
+
+**Strictly Forbidden:**
+- Custom HTML generation for navigation or layout
+- JavaScript code
+- Complex CSS beyond theming
+- Custom React components
+- iframe embeds
+
+**Allowed:**
+- `assets/css/dark.css` - Dark theme styling only
+- `assets/css/light.css` - Light theme styling only
+- Streamlit native components (`st.sidebar`, `st.chat_message`, etc.)
+- Streamlit's hamburger menu (⋮) for settings
+
+**Layout Strategy:**
+- **NO custom top navigation bar** - Use Streamlit's native menu
+- **Branding in sidebar:** Company logo/name at top of `st.sidebar`
+- **System status in sidebar:** Use `st.sidebar.metric()` or `st.sidebar.info()`
+- **Settings via Streamlit menu:** Theme selection through built-in settings
+
+**Theme Implementation:**
+- Detect Streamlit's theme setting (`st.get_option("theme.base")`)
+- Load appropriate CSS file (dark.css or light.css)
+- Apply via `st.markdown()` with `unsafe_allow_html=True`
+- Default to dark mode (Tokyo Night palette)
+
+**Example:**
+```python
+# Correct: Use Streamlit native components
+st.sidebar.title("🤖 TechFlow AI")
+st.sidebar.info("✓ System Ready")
+
+# Wrong: Custom HTML navigation
+# st.markdown("<div class='topnav'>...</div>", unsafe_allow_html=True)  # FORBIDDEN
+```
+
+---
+
 # Services
 
 Business logic belongs inside services.

@@ -1,19 +1,24 @@
 {
-  "theme": "tokyonight",
-
-  "appearance": "dark",
-
-  "llm_provider": "openrouter",
-
-  "model": "openai/gpt-4.1-mini",
-
-  "temperature": 0.2,
-
-  "max_tokens": 1500,
-
-  "top_k": 5,
-
-  "show_sources": true,
-
-  "logging": "INFO"
+  "_comment": "Runtime configuration for TechFlow AI Corporate Knowledge Agent",
+  "_note": "This file stores user preferences and runtime settings. Secrets and API keys belong in .env",
+  
+  "ui": {
+    "theme": "tokyo_night",
+    "sidebar_state": "expanded"
+  },
+  
+  "document_processing": {
+    "max_file_size_mb": {
+      "pdf": 50,
+      "docx": 25,
+      "txt": 10,
+      "md": 10,
+      "csv": 25,
+      "json": 10,
+      "html": 10
+    }
+  },
+  
+  "version": "1.0.0",
+  "last_updated": "2026-07-25"
 }

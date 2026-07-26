@@ -92,7 +92,7 @@ The `rag/pipeline.py` module acts as the primary orchestrator of the RAG workflo
 3. Call `prompt_builder.build_rag_prompt(question, retrieved_chunks)`
 4. Return the prompt to `chat_service.py`, which then calls `llm_service.generate_response(prompt)`
 
-**Responsibility boundary:** `rag/pipeline.py` handles everything EXCEPT the final LLM invocation, which remains the responsibility of `chat_service.py` to allow future conversation management features and provider fallback logic.
+**Responsibility boundary:** `rag/pipeline.py` handles everything EXCEPT the final LLM invocation, which remains the responsibility of `chat_service.py` (via `llm_service.py`) to allow conversation management features and provider fallback logic.
 
 ---
 
@@ -202,7 +202,49 @@ Answer
 
 The LLM should answer only using the retrieved context whenever possible.
 
-**Token Limit Handling:** If the constructed prompt exceeds the LLM's context window (checked via provider-specific token counter), the system should dynamically reduce `MAX_CONTEXT_CHUNKS` or truncate chunks to fit within limits.
+**Token Limit Handling:** 
+
+Before sending the prompt to the LLM, validate that the total token count does not exceed the model's context window.
+
+**Algorithm:**
+
+1. Calculate token count for each component:
+   - `system_prompt_tokens` = count_tokens(system_prompt)
+   - `question_tokens` = count_tokens(user_question)
+   - `conversation_tokens` = count_tokens(conversation_history)
+   - `context_tokens` = sum([count_tokens(chunk) for chunk in retrieved_chunks])
+
+2. Calculate total: `total_tokens = system_prompt_tokens + question_tokens + conversation_tokens + context_tokens + MAX_OUTPUT_TOKENS`
+
+3. Get model limit:
+   - Gemini 2.0 Flash: 1,000,000 tokens (use conservative 32,000 for prompts)
+   - Cohere Command-R: 128,000 tokens
+
+4. If `total_tokens > model_limit`:
+   - **Strategy 1 (preferred):** Reduce number of context chunks dynamically
+     ```python
+     while total_tokens > model_limit and len(retrieved_chunks) > 1:
+         retrieved_chunks.pop()  # Remove least relevant chunk (last in list)
+         context_tokens = sum([count_tokens(chunk) for chunk in retrieved_chunks])
+         total_tokens = system_prompt_tokens + question_tokens + conversation_tokens + context_tokens + MAX_OUTPUT_TOKENS
+     ```
+   
+   - **Strategy 2 (fallback):** Truncate individual chunks if only 1 chunk remains
+     ```python
+     max_context_tokens = model_limit - system_prompt_tokens - question_tokens - conversation_tokens - MAX_OUTPUT_TOKENS
+     truncated_context = truncate_text(retrieved_chunks[0], max_context_tokens)
+     ```
+
+5. Log warning if context was reduced: `logger.warning(f"Reduced context from {original_chunk_count} to {final_chunk_count} chunks to fit token limit")`
+
+**Token Counting:**
+
+Use provider-specific token counters:
+- **Gemini:** Use `google.generativeai.count_tokens()` method
+- **Cohere:** Use `cohere.Client.tokenize()` method
+- **Fallback:** Use `tiktoken` with `cl100k_base` encoding (approximate)
+
+**Implementation Location:** `rag/prompt_builder.py`
 
 ---
 
@@ -332,12 +374,11 @@ Example log entry:
 
 ## Fallback Duration
 
-Once triggered, the fallback provider remains active for:
+Once triggered, the fallback provider remains active for **5 minutes (session-level fallback)**. This prevents rapid switching between providers during temporary Gemini degradation.
 
-- Current request only (request-level fallback), OR
-- 5 minutes (session-level fallback if Gemini is experiencing ongoing issues)
+After 5 minutes, the system automatically attempts to use Gemini again on the next request.
 
-After 5 minutes, the system automatically attempts to use Gemini again.
+**Implementation:** Track `last_fallback_time` in session state. If `current_time - last_fallback_time < 300 seconds`, use Cohere directly without trying Gemini first.
 
 ## Configuration
 
@@ -381,12 +422,12 @@ Friendly messages should be displayed instead of technical errors.
 
 ## Empty Knowledge Base
 
-If a user submits a question but the Knowledge Library contains no indexed documents (count = 0), the system must NOT invoke the LLM.
+If a user submits a question but the Knowledge Library contains no indexed documents (count < 1), the system must NOT invoke the LLM.
 
 Instead, display exactly this message:
 
 ```
-Por favor agregar al menos 2 documentos para poder indexarlos
+Por favor agregar al menos 1 documento para poder indexarlo
 ```
 
 This validates that the Knowledge Base has sufficient content before attempting retrieval.

@@ -196,7 +196,9 @@ techflow-rag-agent/
 
 │   │   ├── vector_store.py
 
-│   │   └── prompt_builder.py
+│   │   ├── prompt_builder.py
+
+│   │   └── document_loader.py
 
 │   │
 
@@ -206,7 +208,9 @@ techflow-rag-agent/
 
 │   │   ├── gemini_provider.py
 
-│   │   └── cohere_provider.py
+│   │   ├── cohere_provider.py
+
+│   │   └── llm_service.py
 
 │   │
 
