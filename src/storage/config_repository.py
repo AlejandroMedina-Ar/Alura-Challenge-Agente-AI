@@ -39,9 +39,8 @@ class ConfigRepository:
     # Default configuration
     DEFAULT_CONFIG = {
         'llm': {
-            'provider': LLMProvider.OLLAMA.value,
-            'model': 'llama3.2',
-            'base_url': 'http://localhost:11434',
+            'provider': LLMProvider.GEMINI.value,
+            'model': 'gemini-1.5-flash',
             'api_key': ''
         },
         'rag': {
@@ -215,16 +214,15 @@ class ConfigRepository:
         Get LLM provider configuration.
         
         Returns:
-            dict: LLM config (provider, model, base_url, api_key)
+            dict: LLM config (provider, model, api_key)
         
         Example:
             >>> repo = ConfigRepository()
             >>> llm_config = repo.get_llm_config()
             >>> print(llm_config)
             {
-                'provider': 'ollama',
-                'model': 'llama3.2',
-                'base_url': 'http://localhost:11434',
+                'provider': 'gemini',
+                'model': 'gemini-1.5-flash',
                 'api_key': ''
             }
         """
@@ -234,17 +232,15 @@ class ConfigRepository:
         self,
         provider: Optional[str] = None,
         model: Optional[str] = None,
-        base_url: Optional[str] = None,
         api_key: Optional[str] = None
     ) -> bool:
         """
         Update LLM configuration.
         
         Args:
-            provider: LLM provider (ollama, openrouter)
+            provider: LLM provider (gemini, cohere)
             model: Model name
-            base_url: API base URL
-            api_key: API key (for openrouter)
+            api_key: API key
         
         Returns:
             bool: True if saved successfully
@@ -252,9 +248,9 @@ class ConfigRepository:
         Example:
             >>> repo = ConfigRepository()
             >>> repo.set_llm_config(
-            ...     provider='openrouter',
-            ...     model='google/gemini-2.0-flash-exp:free',
-            ...     api_key='sk-or-v1-...'
+            ...     provider='gemini',
+            ...     model='gemini-1.5-flash',
+            ...     api_key='AIza...'
             ... )
         """
         llm_config = self.get_llm_config()
@@ -263,8 +259,6 @@ class ConfigRepository:
             llm_config['provider'] = provider
         if model is not None:
             llm_config['model'] = model
-        if base_url is not None:
-            llm_config['base_url'] = base_url
         if api_key is not None:
             llm_config['api_key'] = api_key
         

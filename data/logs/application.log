@@ -9,3 +9,6 @@
 2026-07-26 17:02:09 - techflow - INFO - Logger initialized - Level: INFO
 2026-07-26 17:02:10 - techflow - INFO - OllamaProvider initialized | model=llama3.2, base_url=http://localhost:11434
 2026-07-26 17:02:14 - techflow - INFO - OpenRouterProvider initialized | model=google/gemini-2.0-flash-exp:free, has_api_key=False
+2026-07-26 17:22:26 - techflow - INFO - Logger initialized - Level: INFO
+2026-07-26 17:22:26 - techflow - WARNING - google-generativeai package not available
+2026-07-26 17:22:26 - techflow - WARNING - cohere package not available

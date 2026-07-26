@@ -884,10 +884,15 @@ Desplegar aplicación a Streamlit Community Cloud.
 **LLM Module (4 archivos):**
 - ✅ `src/llm/__init__.py` - LLM package exports
 - ✅ `src/llm/base_provider.py` - Abstract base provider (220 líneas)
-- ✅ `src/llm/ollama_provider.py` - Ollama local provider (380 líneas)
-- ✅ `src/llm/openrouter_provider.py` - OpenRouter API provider (400 líneas)
+- ✅ `src/llm/gemini_provider.py` - Google Gemini 1.5 Flash provider (420 líneas)
+- ✅ `src/llm/cohere_provider.py` - Cohere Command-R provider (400 líneas)
 
-**Total:** 7 archivos, ~1510 líneas de código
+**Total:** 7 archivos, ~1550 líneas de código
+
+**Corrección importante:**
+- ⚠️ Eliminados providers incorrectos: Ollama y OpenRouter
+- ✅ Implementados providers correctos según specs: Gemini 1.5 Flash y Cohere Command-R
+- ✅ Gemini 1.5 Flash es el modelo actual en free tier (no 2.0 Flash que está deprecated)
 
 **Dependencias instaladas:**
 - ✅ requests (para HTTP calls a LLM APIs)
@@ -897,9 +902,9 @@ Desplegar aplicación a Streamlit Community Cloud.
 - ✅ Authenticator inicializa y detecta password no configurado
 - ✅ SessionManager inicializa (warning esperado: Streamlit no disponible aún)
 - ✅ LLM module se importa correctamente
-- ✅ OllamaProvider inicializa correctamente
-- ✅ OpenRouterProvider inicializa correctamente
-- ✅ Availability checks funcionan (esperado: false sin servicios configurados)
+- ✅ GeminiProvider inicializa correctamente (model: gemini-1.5-flash)
+- ✅ CohereProvider inicializa correctamente (model: command-r)
+- ✅ Availability checks funcionan (esperado: false sin SDKs/API keys configurados)
 
 **Características implementadas:**
 
