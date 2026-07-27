@@ -55,6 +55,47 @@ git pull origin main
 
 ---
 
+### Error: `ImportError: cannot import name 'setup_logging' from 'src.utils'`
+
+**Síntoma:**
+```bash
+python setup.py
+Traceback (most recent call last):
+  File "setup.py", line 27, in <module>
+    from src.utils import get_logger, setup_logging
+ImportError: cannot import name 'setup_logging' from 'src.utils'
+```
+
+**Causa:**
+La función `setup_logging()` no existe en el módulo `src.utils`. El logger se configura automáticamente al llamar a `get_logger()`.
+
+**Solución:**
+Eliminar la importación y llamada a `setup_logging`:
+
+```python
+# ❌ Antiguo (incorrecto)
+from src.utils import get_logger, setup_logging
+
+setup_logging()
+logger = get_logger()
+
+# ✅ Nuevo (correcto)
+from src.utils import get_logger
+
+logger = get_logger()  # El logger se configura automáticamente
+```
+
+**Archivos afectados (ya corregidos):**
+- `setup.py`
+- `test_integration.py`
+
+**Nota:** Este error fue corregido en el commit `1f6839d`. Si sigues viendo este error:
+```bash
+git pull origin main
+```
+
+---
+
 ## Errores de Configuración
 
 ### Error: `.env file not found`
