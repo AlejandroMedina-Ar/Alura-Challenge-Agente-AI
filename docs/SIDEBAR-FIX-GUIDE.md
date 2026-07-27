@@ -6,25 +6,9 @@
 
 ---
 
-## 🔧 Solución Rápida (3 Opciones)
+## 🔧 Solución Rápida (2 Opciones)
 
-### **Opción 1: Usar la Herramienta de Limpieza** ⭐ RECOMENDADO
-
-1. Abrir en tu navegador:
-   ```
-   file:///E:/Test/Alura-Challenge-Agente-AI/clear_sidebar_state.html
-   ```
-   (Ajusta la ruta a tu ubicación del proyecto)
-
-2. Hacer clic en el botón **"Limpiar Estado de Sidebar"**
-
-3. Recargar la aplicación (F5 en http://localhost:8501)
-
-4. ✅ La sidebar debería aparecer
-
----
-
-### **Opción 2: Limpiar Manualmente desde DevTools**
+### **Opción 1: Desde la Consola del Navegador** ⭐ RECOMENDADO
 
 1. En la aplicación (http://localhost:8501), presionar **F12** (abrir DevTools)
 
@@ -59,7 +43,7 @@
 
 ---
 
-### **Opción 3: Limpiar Todo el Caché del Navegador**
+### **Opción 2: Limpiar Todo el Caché del Navegador**
 
 **Chrome/Edge:**
 1. Presionar **Ctrl + Shift + Delete**
@@ -165,9 +149,6 @@ Esto **cambia la página activa EN LA SIDEBAR** a "Biblioteca de Conocimiento".
 }
 ```
 
-### 4. **clear_sidebar_state.html** (NUEVO)
-Herramienta standalone para limpiar el estado de la sidebar sin necesidad de DevTools.
-
 ---
 
 ## ⚠️ Si Aún No Aparece
@@ -177,10 +158,10 @@ Herramienta standalone para limpiar el estado de la sidebar sin necesidad de Dev
 ```bash
 git pull origin main
 git log --oneline -1
-# Debería mostrar: 4666674 fix: forzar sidebar siempre visible
+# Debería mostrar: 85f2315 chore: eliminar clear_sidebar_state.html
 ```
 
-### Paso 2: Limpiar localStorage (usando cualquiera de las 3 opciones arriba)
+### Paso 2: Limpiar localStorage (usando opción 1 o 2 arriba)
 
 ### Paso 3: Forzar recarga completa
 
@@ -249,8 +230,8 @@ Sidebar aria-expanded: true
 
 Marcar cada paso que hayas completado:
 
-- [ ] Git pull de la última versión (commit 4666674)
-- [ ] Limpiado localStorage (opción 1, 2 o 3)
+- [ ] Git pull de la última versión (commit 85f2315)
+- [ ] Limpiado localStorage (opción 1 o 2)
 - [ ] Forzado recarga completa (Ctrl+Shift+R)
 - [ ] Reiniciado servidor (Ctrl+C, python run.py)
 - [ ] Verificado que botón `<<<` NO aparece
@@ -274,5 +255,5 @@ Si después de seguir TODOS los pasos la sidebar aún no aparece:
 ---
 
 **Actualizado:** 2026-07-27  
-**Commit:** 4666674  
+**Commit:** 85f2315  
 **Estado:** ✅ RESUELTO (sidebar forzada siempre visible)
