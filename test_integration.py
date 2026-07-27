@@ -33,7 +33,7 @@ def test_imports():
         print("   ✅ config")
         
         # Utils
-        from src.utils import get_logger, setup_logging
+        from src.utils import get_logger
         print("   ✅ utils")
         
         # Storage

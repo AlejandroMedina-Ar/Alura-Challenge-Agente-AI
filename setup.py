@@ -24,7 +24,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 from src.config import get_paths
 from src.storage import ConfigRepository
 from src.auth import get_authenticator
-from src.utils import get_logger, setup_logging
+from src.utils import get_logger
 
 
 def main():
@@ -35,7 +35,6 @@ def main():
     print()
     
     # Setup logging
-    setup_logging()
     logger = get_logger()
     
     logger.info("Starting setup process")
