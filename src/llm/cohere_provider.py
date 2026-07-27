@@ -2,7 +2,7 @@
 Cohere LLM Provider Module
 
 This module implements the Cohere provider for the TechFlow Solutions project.
-Uses Cohere Command-R-Plus (free tier) as the fallback LLM provider.
+Uses Cohere Command-R7B (FREE tier) as the fallback LLM provider.
 
 Author: TechFlow Solutions Project
 License: MIT
@@ -35,19 +35,19 @@ class CohereProvider(BaseProvider):
     Cohere LLM provider (free tier).
     
     Features:
-    - Command-R-Plus model (free tier)
+    - Command-R7B model (FREE tier, Dec 2024)
     - Streaming support
-    - Large context window (128K tokens)
+    - Good context window (128K tokens)
     - Good multilingual support
     
     Requirements:
     - Cohere SDK (cohere)
-    - Cohere API key (free tier available)
+    - Cohere API key (FREE tier available)
     """
     
     def __init__(
         self,
-        model: str = 'command-r-plus',  # Updated model (command-r deprecated Sept 2025)
+        model: str = 'command-r7b-12-2024',  # FREE tier model
         api_key: Optional[str] = None,
         timeout: int = 30,
         **kwargs
@@ -56,10 +56,18 @@ class CohereProvider(BaseProvider):
         Initialize Cohere provider.
         
         Args:
-            model: Cohere model name (default: command-r-plus)
+            model: Cohere model name (default: command-r7b-12-2024 - FREE tier)
             api_key: Cohere API key
             timeout: Request timeout in seconds
             **kwargs: Additional parameters
+        
+        Note:
+            FREE tier models:
+            - command-r7b-12-2024 (recommended, latest)
+            - command-r (deprecated Sept 2025, DO NOT USE)
+            
+            PAID tier models:
+            - command-r-plus (better quality, paid only)
         
         Example:
             >>> provider = CohereProvider(api_key='...')

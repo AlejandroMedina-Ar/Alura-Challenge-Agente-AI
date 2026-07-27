@@ -85,8 +85,8 @@ class Settings:
         self.COHERE_API_KEY: str = os.getenv('COHERE_API_KEY', '')
         
         # === Model Names ===
-        self.GEMINI_MODEL: str = os.getenv('GEMINI_MODEL', 'gemini-2.0-flash-exp')
-        self.COHERE_MODEL: str = os.getenv('COHERE_MODEL', 'command-r-plus-08-2024')
+        self.GEMINI_MODEL: str = os.getenv('GEMINI_MODEL', 'gemini-1.5-flash')  # FREE tier
+        self.COHERE_MODEL: str = os.getenv('COHERE_MODEL', 'command-r7b-12-2024')  # FREE tier
         self.EMBEDDING_MODEL: str = os.getenv('EMBEDDING_MODEL', 'intfloat/multilingual-e5-base')
         
         # === Authentication ===
