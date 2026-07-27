@@ -160,6 +160,7 @@ class SessionKey:
     """Streamlit session state keys."""
     AUTHENTICATED: Final[str] = "authenticated"
     IS_ADMIN: Final[str] = "is_admin"
+    GUEST_MODE: Final[str] = "guest_mode"
     CONVERSATION_HISTORY: Final[str] = "conversation_history"
     CURRENT_VIEW: Final[str] = "current_view"
     THEME: Final[str] = "theme"

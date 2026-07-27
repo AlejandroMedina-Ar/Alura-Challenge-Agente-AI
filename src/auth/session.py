@@ -73,6 +73,9 @@ class SessionManager:
         if SessionKey.IS_ADMIN not in st.session_state:
             st.session_state[SessionKey.IS_ADMIN] = False
         
+        if SessionKey.GUEST_MODE not in st.session_state:
+            st.session_state[SessionKey.GUEST_MODE] = False
+        
         # User info
         if 'user_info' not in st.session_state:
             st.session_state['user_info'] = None
@@ -129,6 +132,7 @@ class SessionManager:
         # Clear authentication
         st.session_state[SessionKey.AUTHENTICATED] = False
         st.session_state[SessionKey.IS_ADMIN] = False
+        st.session_state[SessionKey.GUEST_MODE] = False
         st.session_state['user_info'] = None
         
         # Clear login metadata

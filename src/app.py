@@ -19,6 +19,7 @@ if str(PROJECT_ROOT) not in sys.path:
 import streamlit as st
 
 from src.services import get_authentication_service, get_configuration_service
+from src.config import SessionKey
 from src.ui import (
     apply_theme,
     load_theme_from_config,
@@ -91,7 +92,7 @@ def main():
     has_documents = kl_service.get_document_count() > 0
     
     # Check if user explicitly chose guest mode
-    guest_mode = st.session_state.get('guest_mode', False)
+    guest_mode = st.session_state.get(SessionKey.GUEST_MODE, False)
     
     # Determine access mode:
     # 1. NO documents + NOT authenticated → require admin login (setup mode)
@@ -106,7 +107,7 @@ def main():
         # User is in guest mode OR has documents available (auto-guest)
         # Auto-enable guest mode when documents exist
         if has_documents and not guest_mode:
-            st.session_state['guest_mode'] = True
+            st.session_state[SessionKey.GUEST_MODE] = True
         render_main_app(is_admin=False)
     elif not has_documents:
         # Setup mode: require admin login to upload first documents
@@ -149,7 +150,7 @@ def render_login_page(setup_mode=False):
             if st.button("👥 Continuar como Invitado", type="secondary", use_container_width=True):
                 # Don't authenticate, just proceed to main app
                 logger.info("User entered as guest")
-                st.session_state['guest_mode'] = True
+                st.session_state[SessionKey.GUEST_MODE] = True
                 st.rerun()
         with col2:
             pass  # Space for alignment
@@ -174,7 +175,7 @@ def render_login_page(setup_mode=False):
                     auth_service.login(password)
                     st.success("✅ ¡Inicio de sesión exitoso!")
                     logger.info("User logged in via web interface")
-                    st.session_state['guest_mode'] = False
+                    st.session_state[SessionKey.GUEST_MODE] = False
                     st.rerun()
                     
                 except Exception as e:
@@ -215,7 +216,7 @@ def render_main_app(is_admin=False):
         is_admin: Si True, el usuario tiene privilegios de administrador
     """
     # Store admin status in session state
-    st.session_state['is_admin'] = is_admin
+    st.session_state[SessionKey.IS_ADMIN] = is_admin
     
     # Render sidebar and get selected page
     selected_page = render_sidebar()

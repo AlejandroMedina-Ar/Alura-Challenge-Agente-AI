@@ -11,6 +11,7 @@ Licencia: MIT
 import streamlit as st
 
 from src.services import get_configuration_service
+from src.config import SessionKey
 from src.ui.components import (
     render_header,
     render_select_box,
@@ -36,6 +37,12 @@ def render_settings_panel() -> None:
         >>> render_settings_panel()
     """
     render_header("⚙️ Configuración", "Configura LLM, RAG y preferencias de UI")
+    
+    # Check if user is admin
+    is_admin = st.session_state.get(SessionKey.IS_ADMIN, False)
+    
+    if not is_admin:
+        st.info("👁️ **Modo de solo lectura:** Estás viendo la configuración como invitado. Para modificar configuraciones, inicia sesión como administrador.")
     
     # Render tabs
     tabs = render_tabs([
@@ -137,7 +144,7 @@ def save_llm_settings(
     api_key: str = None
 ) -> None:
     """
-    Guarda la configuración de LLM.
+    Guarda la configuración de LLM (requiere permisos de admin).
     
     Args:
         config_service: Instancia de ConfigurationService
@@ -145,6 +152,13 @@ def save_llm_settings(
         model: Nombre del modelo
         api_key: Clave API (opcional)
     """
+    # Verificar permisos admin
+    is_admin = st.session_state.get(SessionKey.IS_ADMIN, False)
+    if not is_admin:
+        render_info_message("🔒 Esta operación requiere permisos de administrador", "error")
+        logger.warning("Attempted to save LLM settings without admin permissions")
+        return
+    
     try:
         success = config_service.update_llm_config(
             provider=provider,
@@ -250,7 +264,7 @@ def save_rag_settings(
     temperature: float
 ) -> None:
     """
-    Guarda la configuración de RAG.
+    Guarda la configuración de RAG (requiere permisos de admin).
     
     Args:
         config_service: Instancia de ConfigurationService
@@ -259,6 +273,13 @@ def save_rag_settings(
         top_k: Valor Top K
         temperature: Valor de temperatura
     """
+    # Verificar permisos admin
+    is_admin = st.session_state.get(SessionKey.IS_ADMIN, False)
+    if not is_admin:
+        render_info_message("🔒 Esta operación requiere permisos de administrador", "error")
+        logger.warning("Attempted to save RAG settings without admin permissions")
+        return
+    
     try:
         success = config_service.update_rag_config(
             chunk_size=chunk_size,
@@ -314,12 +335,19 @@ def render_ui_settings_tab() -> None:
 
 def save_ui_settings(config_service, theme: str) -> None:
     """
-    Guarda la configuración de UI.
+    Guarda la configuración de UI (requiere permisos de admin).
     
     Args:
         config_service: Instancia de ConfigurationService
         theme: Nombre del tema
     """
+    # Verificar permisos admin
+    is_admin = st.session_state.get(SessionKey.IS_ADMIN, False)
+    if not is_admin:
+        render_info_message("🔒 Esta operación requiere permisos de administrador", "error")
+        logger.warning("Attempted to save UI settings without admin permissions")
+        return
+    
     try:
         success = config_service.set_theme(theme)
         
@@ -400,11 +428,18 @@ def export_configuration(config_service) -> None:
 
 def reset_configuration(config_service) -> None:
     """
-    Restablece la configuración a valores predeterminados.
+    Restablece la configuración a valores predeterminados (requiere permisos de admin).
     
     Args:
         config_service: Instancia de ConfigurationService
     """
+    # Verificar permisos admin
+    is_admin = st.session_state.get(SessionKey.IS_ADMIN, False)
+    if not is_admin:
+        render_info_message("🔒 Esta operación requiere permisos de administrador", "error")
+        logger.warning("Attempted to reset configuration without admin permissions")
+        return
+    
     st.warning("¿Estás seguro? Esto no se puede deshacer.")
     
     if st.button("Confirmar Restablecimiento"):

@@ -11,6 +11,7 @@ Licencia: MIT
 import streamlit as st
 
 from src.services import get_authentication_service, get_configuration_service
+from src.config import SessionKey
 from src.ui.theme import get_theme_icon
 from src.utils import get_logger
 
@@ -44,7 +45,7 @@ def render_sidebar() -> str:
         st.markdown("### 📋 Menú")
         
         # Check if user is admin
-        is_admin = st.session_state.get('is_admin', False)
+        is_admin = st.session_state.get(SessionKey.IS_ADMIN, False)
         
         menu_items = {
             "💬 Chat": "Chat",
@@ -106,13 +107,13 @@ def render_user_info() -> None:
         with col1:
             if st.button("👥 Modo Usuario", key="switch_guest_btn", use_container_width=True, help="Cambiar a vista de usuario sin cerrar sesión"):
                 # Switch to guest view without logging out
-                st.session_state['guest_mode'] = True
+                st.session_state[SessionKey.GUEST_MODE] = True
                 logger.info("Admin switched to guest view")
                 st.rerun()
         with col2:
             if st.button("🚪 Cerrar Sesión", key="logout_btn", use_container_width=True):
                 auth_service.logout()
-                st.session_state['guest_mode'] = False
+                st.session_state[SessionKey.GUEST_MODE] = False
                 st.rerun()
     else:
         # Guest user mode
@@ -122,7 +123,7 @@ def render_user_info() -> None:
         # Login as admin option
         if st.button("🔐 Login como Admin", key="login_admin_btn", use_container_width=True):
             # Clear guest mode and force login
-            st.session_state['guest_mode'] = False
+            st.session_state[SessionKey.GUEST_MODE] = False
             st.rerun()
 
 
