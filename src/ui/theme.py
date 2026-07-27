@@ -269,7 +269,7 @@ def style_info_box(
 
 def hide_streamlit_elements() -> None:
     """
-    Hide default Streamlit UI elements (menu, footer) but keep sidebar toggle visible.
+    Hide default Streamlit UI elements (menu, footer) and force sidebar to always show.
     
     Example:
         >>> hide_streamlit_elements()
@@ -280,19 +280,75 @@ def hide_streamlit_elements() -> None:
         footer {visibility: hidden;}
         header {visibility: hidden;}
         
-        /* Ensure sidebar collapse button is always visible */
-        [data-testid="collapsedControl"] {
+        /* FORCE SIDEBAR TO ALWAYS BE VISIBLE AND EXPANDED */
+        [data-testid="stSidebar"] {
             display: block !important;
             visibility: visible !important;
             opacity: 1 !important;
+            transform: none !important;
+            margin-left: 0 !important;
         }
         
-        /* Make collapse button more visible */
+        /* Hide the collapse button completely */
+        [data-testid="collapsedControl"] {
+            display: none !important;
+        }
+        
         button[kind="header"] {
-            display: block !important;
-            visibility: visible !important;
+            display: none !important;
+        }
+        
+        /* Ensure sidebar is always in expanded state */
+        [data-testid="stSidebar"][aria-expanded="false"] {
+            transform: none !important;
+            margin-left: 0 !important;
+        }
+        
+        /* Force sidebar width */
+        section[data-testid="stSidebar"] {
+            width: 21rem !important;
+            min-width: 21rem !important;
         }
     </style>
+    
+    <script>
+        // Force sidebar to be visible on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.querySelector('[data-testid="stSidebar"]');
+            if (sidebar) {
+                sidebar.style.display = 'block';
+                sidebar.style.visibility = 'visible';
+                sidebar.style.opacity = '1';
+                sidebar.style.transform = 'none';
+                sidebar.setAttribute('aria-expanded', 'true');
+            }
+            
+            // Clear localStorage to reset sidebar state
+            const keysToRemove = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && key.includes('sidebar')) {
+                    keysToRemove.push(key);
+                }
+            }
+            keysToRemove.forEach(key => localStorage.removeItem(key));
+        });
+        
+        // Keep forcing sidebar to be visible
+        setInterval(function() {
+            const sidebar = document.querySelector('[data-testid="stSidebar"]');
+            if (sidebar) {
+                const isCollapsed = sidebar.getAttribute('aria-expanded') === 'false';
+                if (isCollapsed) {
+                    sidebar.style.display = 'block';
+                    sidebar.style.visibility = 'visible';
+                    sidebar.style.opacity = '1';
+                    sidebar.style.transform = 'none';
+                    sidebar.setAttribute('aria-expanded', 'true');
+                }
+            }
+        }, 100);
+    </script>
     """
     st.markdown(hide_css, unsafe_allow_html=True)
 

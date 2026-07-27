@@ -51,8 +51,28 @@ def main():
         page_title="TechFlow Solutions - Agente RAG",
         page_icon="🤖",
         layout="wide",
-        initial_sidebar_state="expanded"
+        initial_sidebar_state="expanded",
+        menu_items={
+            'Get Help': None,
+            'Report a bug': None,
+            'About': None
+        }
     )
+    
+    # Force sidebar to stay open - clear localStorage on every load
+    st.markdown("""
+        <script>
+            // Clear sidebar state from localStorage on every page load
+            const keysToRemove = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && (key.includes('sidebar') || key.includes('Sidebar'))) {
+                    keysToRemove.push(key);
+                }
+            }
+            keysToRemove.forEach(key => localStorage.removeItem(key));
+        </script>
+    """, unsafe_allow_html=True)
     
     # Apply theme
     config_service = get_configuration_service()
