@@ -94,27 +94,29 @@ def main():
     # Check if user explicitly chose guest mode
     guest_mode = st.session_state.get(SessionKey.GUEST_MODE, False)
     
-    # Determine access mode:
-    # 1. NO documents + NOT authenticated → require admin login (setup mode)
-    # 2. HAS documents + NOT authenticated + NOT guest_mode → show login with guest option
-    # 3. HAS documents + guest_mode → allow guest access
-    # 4. Authenticated → allow admin access
+    # Log for debugging
+    logger.debug(f"Auth check: authenticated={auth_service.is_authenticated()}, has_documents={has_documents}, guest_mode={guest_mode}")
+    
+    # Determine access mode with SIMPLIFIED logic:
+    # Priority order:
+    # 1. If authenticated → Admin mode
+    # 2. If has documents → Guest mode (auto-enable)
+    # 3. If no documents → Setup mode (login required)
     
     if auth_service.is_authenticated():
         # User is authenticated as admin
+        logger.info("Rendering main app as admin")
         render_main_app(is_admin=True)
-    elif guest_mode or (has_documents and not auth_service.is_authenticated()):
-        # User is in guest mode OR has documents available (auto-guest)
-        # Auto-enable guest mode when documents exist
-        if has_documents and not guest_mode:
+    elif has_documents:
+        # Has documents → ALWAYS allow guest access (auto-enable)
+        if not guest_mode:
             st.session_state[SessionKey.GUEST_MODE] = True
+            logger.info("Auto-enabled guest mode (documents available)")
         render_main_app(is_admin=False)
-    elif not has_documents:
-        # Setup mode: require admin login to upload first documents
-        render_login_page(setup_mode=True)
     else:
-        # Fallback: show login page
-        render_login_page(setup_mode=False)
+        # No documents → Setup mode (login required)
+        logger.info("No documents - requiring admin setup")
+        render_login_page(setup_mode=True)
 
 
 def render_login_page(setup_mode=False):
@@ -275,6 +277,11 @@ def initialize_session_state():
     """
     Inicializa las variables de estado de sesión.
     """
+    # Initialize SessionManager first
+    from src.auth import get_session_manager
+    session_manager = get_session_manager()
+    session_manager.initialize_session()
+    
     if 'initialized' not in st.session_state:
         st.session_state.initialized = True
         st.session_state.current_page = 'Chat'

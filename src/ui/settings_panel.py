@@ -93,11 +93,11 @@ def render_llm_settings_tab() -> None:
     st.markdown("#### Modelo")
     
     if provider == 'gemini':
-        model_options = ['gemini-1.5-flash', 'gemini-1.5-pro']
-        default_model = current_config.get('model', 'gemini-1.5-flash')
+        model_options = ['gemini-3.6-flash', 'gemini-3.5-flash-lite']
+        default_model = current_config.get('model', 'gemini-3.6-flash')
     else:
-        model_options = ['command-r', 'command-r-plus']
-        default_model = current_config.get('model', 'command-r')
+        model_options = ['command-r7b-12-2024', 'command-r-plus']
+        default_model = current_config.get('model', 'command-r7b-12-2024')
     
     model = render_select_box(
         label="Modelo",
