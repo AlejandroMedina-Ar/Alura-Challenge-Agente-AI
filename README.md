@@ -2,27 +2,6 @@
 
 Asistente inteligente basado en Retrieval-Augmented Generation (RAG) para consultar documentos corporativos internos. Permite indexar documentos (PDF, TXT, MD), generar embeddings vectoriales y realizar consultas en lenguaje natural que el agente responde utilizando exclusivamente el contenido de los documentos de la empresa.
 
-## 🆕 Actualizaciones Recientes (Julio 2026)
-
-### Gemini 3.6 Flash
-- ✅ Actualizado a **Gemini 3.6 Flash** (versión más reciente de Google)
-- ✅ Modelos Gemini 1.5 deprecados y reemplazados
-- ✅ Mejor rendimiento en tareas multimodales y de código
-- ✅ Reducción de costos ($1.50/1M tokens de input vs $2.00 anterior)
-
-### Sistema de Autenticación Mejorado
-- ✅ **Acceso automático como Guest** cuando hay documentos
-- ✅ Ya NO pide contraseña en cada acceso
-- ✅ Usuarios comunes pueden usar el chat sin login
-- ✅ Administradores pueden alternar entre vista admin y usuario
-- ✅ Flujo de onboarding mejorado para primera configuración
-
-### Embeddings Optimizados
-- ✅ Migrado a **Sentence Transformers (multilingual-e5-base)**
-- ✅ Embeddings locales (sin dependencia de APIs externas)
-- ✅ 768 dimensiones (optimizado para velocidad)
-- ✅ Soporte multilingüe mejorado
-
 ---
 
 ## Arquitectura
@@ -201,29 +180,29 @@ techflow-rag-agent/
 
 ## Tecnologías
 
-| Componente | Tecnología | Versión | Propósito |
-|------------|-----------|---------|-----------|
-| **Interfaz** | Streamlit | 1.47.1 | Framework web interactivo |
-| **LLM Principal** | Google Gemini | 3.6 Flash | Generación de respuestas (última versión) |
-| **LLM Fallback** | Cohere Command-R | command-r7b-12-2024 | Backup ante fallos de Gemini |
-| **Embeddings** | Sentence Transformers | multilingual-e5-base | Embeddings multilingües (768 dim) |
-| **Vector Store** | ChromaDB | 1.0.16 | Base de datos vectorial local |
-| **Framework RAG** | LangChain | 0.3.27 | Orquestación del pipeline RAG |
-| **Carga de PDFs** | PyMuPDF | 1.23+ | Extracción de texto de PDFs |
-| **Text Splitting** | RecursiveCharacterTextSplitter | LangChain | Fragmentación inteligente |
-| **Auth** | bcrypt | 5.0+ | Hash de contraseñas |
-| **Config** | python-dotenv | 1.1.1 | Variables de entorno |
-| **Lenguaje** | Python | 3.11+ | Lenguaje base del proyecto |
+| Componente         | Tecnología                     | Versión              | Propósito                                 |
+| ------------------ | ------------------------------ | -------------------- | ----------------------------------------- |
+| **Interfaz**       | Streamlit                      | 1.47.1               | Framework web interactivo                 |
+| **LLM Principal**  | Google Gemini                  | 3.6 Flash            | Generación de respuestas (última versión) |
+| **LLM Fallback**   | Cohere Command-R               | command-r7b-12-2024  | Backup ante fallos de Gemini              |
+| **Embeddings**     | Sentence Transformers          | multilingual-e5-base | Embeddings multilingües (768 dim)         |
+| **Vector Store**   | ChromaDB                       | 1.0.16               | Base de datos vectorial local             |
+| **Framework RAG**  | LangChain                      | 0.3.27               | Orquestación del pipeline RAG             |
+| **Carga de PDFs**  | PyMuPDF                        | 1.23+                | Extracción de texto de PDFs               |
+| **Text Splitting** | RecursiveCharacterTextSplitter | LangChain            | Fragmentación inteligente                 |
+| **Auth**           | bcrypt                         | 5.0+                 | Hash de contraseñas                       |
+| **Config**         | python-dotenv                  | 1.1.1                | Variables de entorno                      |
+| **Lenguaje**       | Python                         | 3.11+                | Lenguaje base del proyecto                |
 
 ### Parámetros RAG configurables
 
-| Parámetro | Valor por defecto | Descripción |
-|-----------|-------------------|-------------|
-| `chunk_size` | 1000 | Tamaño de cada fragmento de texto |
-| `chunk_overlap` | 200 | Solapamiento entre fragmentos |
-| `top_k` | 5 | Número de fragmentos recuperados |
-| `temperature` | 0.7 | Temperatura del LLM (creatividad) |
-| `embedding_dim` | 768 | Dimensión del embedding de E5-base |
+| Parámetro       | Valor por defecto | Descripción                        |
+| --------------- | ----------------- | ---------------------------------- |
+| `chunk_size`    | 1000              | Tamaño de cada fragmento de texto  |
+| `chunk_overlap` | 200               | Solapamiento entre fragmentos      |
+| `top_k`         | 5                 | Número de fragmentos recuperados   |
+| `temperature`   | 0.7               | Temperatura del LLM (creatividad)  |
+| `embedding_dim` | 768               | Dimensión del embedding de E5-base |
 
 ---
 
@@ -264,7 +243,7 @@ cp .env.example .env
 # Editar .env con tu API key (mínimo requerido)
 # GEMINI_API_KEY=tu-clave-aqui (Gemini 3.6 Flash)
 # ADMIN_PASSWORD=tu-contraseña-admin
-# 
+#
 # Opcional:
 # COHERE_API_KEY=tu-clave-aqui (para fallback)
 # GEMINI_MODEL=gemini-3.6-flash (default, no necesitas cambiarlo)
@@ -317,39 +296,39 @@ El asistente puede responder preguntas sobre el contenido de los documentos corp
 
 ### Preguntas sobre Soporte IT
 
-| Pregunta | Área temática |
-|----------|---------------|
-| ¿Cómo solicito una notebook nueva en la empresa? | Equipamiento tecnológico |
-| ¿Cuál es el horario de atención de la Mesa de Ayuda? | Soporte técnico |
-| ¿Qué información debo incluir al abrir un ticket de soporte? | Procedimientos IT |
-| ¿Cómo me conecto a la VPN corporativa? | Acceso remoto |
-| ¿Qué hago si olvido mi contraseña corporativa? | Gestión de accesos |
-| ¿Cómo configuro la autenticación multifactor (MFA)? | Seguridad informática |
-| ¿Qué equipamiento tecnológico se asigna a los empleados? | Hardware corporativo |
-| ¿Cuánto tiempo tarda en llegar un equipo solicitado? | Tiempos de entrega |
+| Pregunta                                                     | Área temática            |
+| ------------------------------------------------------------ | ------------------------ |
+| ¿Cómo solicito una notebook nueva en la empresa?             | Equipamiento tecnológico |
+| ¿Cuál es el horario de atención de la Mesa de Ayuda?         | Soporte técnico          |
+| ¿Qué información debo incluir al abrir un ticket de soporte? | Procedimientos IT        |
+| ¿Cómo me conecto a la VPN corporativa?                       | Acceso remoto            |
+| ¿Qué hago si olvido mi contraseña corporativa?               | Gestión de accesos       |
+| ¿Cómo configuro la autenticación multifactor (MFA)?          | Seguridad informática    |
+| ¿Qué equipamiento tecnológico se asigna a los empleados?     | Hardware corporativo     |
+| ¿Cuánto tiempo tarda en llegar un equipo solicitado?         | Tiempos de entrega       |
 
 ### Preguntas sobre Políticas de la Empresa
 
-| Pregunta | Área temática |
-|----------|---------------|
-| ¿Cuál es la misión de TechFlow Solutions? | Cultura empresarial |
-| ¿Qué áreas de negocio tiene la empresa? | Estructura organizacional |
-| ¿Cuáles son los valores corporativos de TechFlow? | Valores empresariales |
-| ¿Qué modalidad de trabajo aplica en la empresa? | Política laboral |
-| ¿Cuánto dura el período de prueba para nuevos empleados? | Onboarding |
-| ¿Cuál es el código de vestimenta de la empresa? | Normas internas |
-| ¿Qué debo hacer si quiero renunciar? | Procedimientos administrativos |
-| ¿Cómo es el proceso de onboarding para nuevos empleados? | Incorporación |
+| Pregunta                                                 | Área temática                  |
+| -------------------------------------------------------- | ------------------------------ |
+| ¿Cuál es la misión de TechFlow Solutions?                | Cultura empresarial            |
+| ¿Qué áreas de negocio tiene la empresa?                  | Estructura organizacional      |
+| ¿Cuáles son los valores corporativos de TechFlow?        | Valores empresariales          |
+| ¿Qué modalidad de trabajo aplica en la empresa?          | Política laboral               |
+| ¿Cuánto dura el período de prueba para nuevos empleados? | Onboarding                     |
+| ¿Cuál es el código de vestimenta de la empresa?          | Normas internas                |
+| ¿Qué debo hacer si quiero renunciar?                     | Procedimientos administrativos |
+| ¿Cómo es el proceso de onboarding para nuevos empleados? | Incorporación                  |
 
 ### Preguntas sobre Procedimientos Técnicos
 
-| Pregunta | Área temática |
-|----------|---------------|
-| ¿Qué configuraciones de seguridad vienen en los equipos nuevos? | Seguridad |
-| ¿Cómo se realiza la indexación de documentos en el sistema? | Procesos internos |
-| ¿Qué software está autorizado para instalar en mi notebook? | Políticas de software |
-| ¿Cómo reporto un incidente de seguridad informática? | Ciberseguridad |
-| ¿Qué hacer si mi equipo se daña o es robado? | Gestión de incidentes |
+| Pregunta                                                        | Área temática         |
+| --------------------------------------------------------------- | --------------------- |
+| ¿Qué configuraciones de seguridad vienen en los equipos nuevos? | Seguridad             |
+| ¿Cómo se realiza la indexación de documentos en el sistema?     | Procesos internos     |
+| ¿Qué software está autorizado para instalar en mi notebook?     | Políticas de software |
+| ¿Cómo reporto un incidente de seguridad informática?            | Ciberseguridad        |
+| ¿Qué hacer si mi equipo se daña o es robado?                    | Gestión de incidentes |
 
 ---
 
@@ -402,7 +381,7 @@ El asistente puede responder preguntas sobre el contenido de los documentos corp
 
 > No tengo esa información en los documentos disponibles.
 
-*(El agente solo responde con información presente en los documentos indexados. No inventa ni utiliza conocimiento externo.)*
+_(El agente solo responde con información presente en los documentos indexados. No inventa ni utiliza conocimiento externo.)_
 
 ---
 
@@ -410,7 +389,7 @@ El asistente puede responder preguntas sobre el contenido de los documentos corp
 
 > ¡Hola! Soy el asistente de documentos corporativos de TechFlow Solutions. Puedo ayudarte a consultar información de los manuales internos. ¿En qué puedo asistirte hoy?
 
-*(El agente detecta saludos y responde de forma amigable sin consultar la base de datos.)*
+_(El agente detecta saludos y responde de forma amigable sin consultar la base de datos.)_
 
 ---
 
@@ -425,6 +404,7 @@ El asistente puede responder preguntas sobre el contenido de los documentos corp
 ### Pasos
 
 1. **Push del código a GitHub** (si aún no lo hiciste):
+
    ```bash
    git add .
    git commit -m "Preparar para deployment"
@@ -440,6 +420,7 @@ El asistente puede responder preguntas sobre el contenido de los documentos corp
 
 3. **Configurar Secrets** (API keys):
    En el dashboard de Streamlit Cloud, ir a **"Settings" → "Secrets"** y agregar:
+
    ```toml
    GEMINI_API_KEY = "tu-clave-aqui"
    COHERE_API_KEY = "tu-clave-aqui"
@@ -520,6 +501,7 @@ WantedBy=multi-user.target
 ```
 
 Activar servicio:
+
 ```bash
 sudo systemctl daemon-reload
 sudo systemctl enable techflow-rag
@@ -536,6 +518,7 @@ sudo systemctl status techflow-rag
 **Cuándo:** Al abrir la aplicación cuando hay documentos indexados (acceso automático)
 
 **Permisos:**
+
 - ✅ Usar el chat para consultar documentos
 - ✅ Ver la biblioteca de conocimiento
 - ✅ Ver configuración actual
@@ -545,6 +528,7 @@ sudo systemctl status techflow-rag
 - ❌ Acceder al Panel de Administración
 
 **Interfaz:**
+
 - Sidebar muestra: "👤 Usuario: Invitado"
 - Botón "🔐 Login como Admin" disponible para escalar permisos
 
@@ -553,6 +537,7 @@ sudo systemctl status techflow-rag
 **Cuándo:** Después de hacer login con la contraseña de admin
 
 **Permisos:**
+
 - ✅ Todas las funciones de Guest
 - ✅ Subir y eliminar documentos
 - ✅ Modificar configuración del sistema
@@ -561,6 +546,7 @@ sudo systemctl status techflow-rag
 - ✅ Cambiar a vista de usuario sin cerrar sesión
 
 **Interfaz:**
+
 - Sidebar muestra: "👤 Usuario: admin" y "🔑 Rol: Admin"
 - Botón "👥 Modo Usuario" para cambiar a vista guest
 - Botón "🚪 Cerrar Sesión" para logout completo
@@ -635,21 +621,47 @@ Si necesitas admin: Click "Login como Admin"
 
 ---
 
+## 🆕 Actualizaciones Recientes (Julio 2026)
+
+### Gemini 3.6 Flash
+
+- ✅ Actualizado a **Gemini 3.6 Flash** (versión más reciente de Google)
+- ✅ Modelos Gemini 1.5 deprecados y reemplazados
+- ✅ Mejor rendimiento en tareas multimodales y de código
+- ✅ Reducción de costos ($1.50/1M tokens de input vs $2.00 anterior)
+
+### Sistema de Autenticación Mejorado
+
+- ✅ **Acceso automático como Guest** cuando hay documentos
+- ✅ Ya NO pide contraseña en cada acceso
+- ✅ Usuarios comunes pueden usar el chat sin login
+- ✅ Administradores pueden alternar entre vista admin y usuario
+- ✅ Flujo de onboarding mejorado para primera configuración
+
+### Embeddings Optimizados
+
+- ✅ Migrado a **Sentence Transformers (multilingual-e5-base)**
+- ✅ Embeddings locales (sin dependencia de APIs externas)
+- ✅ 768 dimensiones (optimizado para velocidad)
+- ✅ Soporte multilingüe mejorado
+
+---
+
 ## Documentación Técnica
 
-| Documento | Descripción |
-|-----------|-------------|
-| [Architecture.md](architecture/Architecture.md) | Arquitectura general del sistema |
-| [Source-Code-Structure.md](architecture/Source-Code-Structure.md) | Estructura del código fuente |
-| [Glossary.md](architecture/Glossary.md) | Glosario de términos técnicos |
-| [USER-GUIDE.md](docs/USER-GUIDE.md) | Guía de usuario completa |
-| [TECHNICAL-DOCS.md](docs/TECHNICAL-DOCS.md) | Documentación técnica detallada |
-| [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | Solución de problemas comunes |
-| [HOTFIX-GEMINI-AUTH.md](docs/HOTFIX-GEMINI-AUTH.md) | Detalles técnicos de Gemini 3.6 y autenticación |
-| [TEST-AUTH-FLOW.md](docs/TEST-AUTH-FLOW.md) | Guía de pruebas del flujo de autenticación |
-| [FAQ.md](docs/FAQ.md) | Preguntas frecuentes |
-| [DEPLOYMENT.md](docs/DEPLOYMENT.md) | Guía de despliegue |
-| [SECURITY-NOTES.md](docs/SECURITY-NOTES.md) | Consideraciones de seguridad |
+| Documento                                                         | Descripción                                     |
+| ----------------------------------------------------------------- | ----------------------------------------------- |
+| [Architecture.md](architecture/Architecture.md)                   | Arquitectura general del sistema                |
+| [Source-Code-Structure.md](architecture/Source-Code-Structure.md) | Estructura del código fuente                    |
+| [Glossary.md](architecture/Glossary.md)                           | Glosario de términos técnicos                   |
+| [USER-GUIDE.md](docs/USER-GUIDE.md)                               | Guía de usuario completa                        |
+| [TECHNICAL-DOCS.md](docs/TECHNICAL-DOCS.md)                       | Documentación técnica detallada                 |
+| [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)                     | Solución de problemas comunes                   |
+| [HOTFIX-GEMINI-AUTH.md](docs/HOTFIX-GEMINI-AUTH.md)               | Detalles técnicos de Gemini 3.6 y autenticación |
+| [TEST-AUTH-FLOW.md](docs/TEST-AUTH-FLOW.md)                       | Guía de pruebas del flujo de autenticación      |
+| [FAQ.md](docs/FAQ.md)                                             | Preguntas frecuentes                            |
+| [DEPLOYMENT.md](docs/DEPLOYMENT.md)                               | Guía de despliegue                              |
+| [SECURITY-NOTES.md](docs/SECURITY-NOTES.md)                       | Consideraciones de seguridad                    |
 
 ---
 
@@ -661,9 +673,11 @@ Este proyecto es privado y de uso interno para **TechFlow Solutions**.
 
 ## Créditos
 
-**Proyecto:** Alura Challenge - Immersion AI + Google Gemini  
-**Empresa:** TechFlow Solutions  
-**Desarrollado por:** [Alejandro Medina](https://github.com/AlejandroMedina-Ar)
+**Proyecto:** : Alura Challenge Agente RAG con IA  
+**Empresa:** : TechFlow Solutions  
+**Desarrollado por:** [Oscar Alejandro Medina](https://github.com/AlejandroMedina-Ar)
+
+---
 
 ### Stack de tecnologías
 
@@ -677,3 +691,5 @@ Este proyecto es privado y de uso interno para **TechFlow Solutions**.
 ---
 
 **⭐ TechFlow Solutions - Transformación Digital con Inteligencia Artificial**
+
+---
