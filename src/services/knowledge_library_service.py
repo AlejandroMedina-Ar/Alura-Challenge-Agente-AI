@@ -193,13 +193,9 @@ class KnowledgeLibraryService:
             >>> service = KnowledgeLibraryService()
             >>> service.delete_document_by_filename("manual.pdf")
         """
-        # Find document by filename
-        doc_id = self.doc_repo.get_doc_id_by_filename(filename)
-        
-        if not doc_id:
-            raise DocumentNotFoundError(filename)
-        
-        return self.delete_document(doc_id)
+        # In our system, doc_id IS the filename
+        # Simply use delete_document with the filename
+        return self.delete_document(filename)
     
     def list_documents(self) -> list[dict]:
         """
@@ -256,12 +252,8 @@ class KnowledgeLibraryService:
             >>> service = KnowledgeLibraryService()
             >>> doc = service.get_document_by_filename("manual.pdf")
         """
-        doc_id = self.doc_repo.get_doc_id_by_filename(filename)
-        
-        if not doc_id:
-            return None
-        
-        return self.get_document_info(doc_id)
+        # In our system, doc_id IS the filename
+        return self.get_document_info(filename)
     
     def document_exists(self, filename: str) -> bool:
         """
@@ -310,7 +302,7 @@ class KnowledgeLibraryService:
             >>> with open(path, 'rb') as f:
             ...     content = f.read()
         """
-        return self.file_manager.get_document_path(filename)
+        return str(self.doc_repo.get_document_path(filename))
     
     def update_document_metadata(
         self,
