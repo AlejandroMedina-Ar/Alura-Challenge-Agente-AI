@@ -30,46 +30,70 @@ Verificar que usuarios Guest NO puedan realizar operaciones de administración:
 
 **Resultado esperado:**
 ```
-✅ Título: "📚 Gestión de Documentos"
-❌ NO aparece sección "⬆️ Subir Documento"
-✅ Aparece: "📄 Documentos Subidos"
-✅ Lista de documentos visible
-❌ NO aparecen botones: "🗑️ Eliminar", "⚡ Indexar", "🔄 Re-indexar"
-✅ Solo información: nombre, tamaño, fecha, estado de indexación
+✅ Título: "📚 Biblioteca de Conocimiento"
+✅ Caption: "Estadísticas de la biblioteca"
+✅ Mensaje: "🔒 Acceso Restringido: La gestión de documentos requiere permisos admin"
+✅ Mensaje: "💡 Como invitado puedes: Consultar usando Chat, Ver estadísticas"
+✅ Sección "📊 Estadísticas de la Biblioteca"
+✅ Métricas: Total Documentos, Documentos Indexados, Tamaño Total
+✅ Botón: "Iniciar Sesión como Administrador"
+❌ NO aparece lista de documentos
+❌ NO aparece uploader
+❌ NO aparecen botones de gestión
 ```
 
 **Vista esperada:**
 ```
-📚 Gestión de Documentos
+📚 Biblioteca de Conocimiento
+Estadísticas de la biblioteca
 
-📄 Documentos Subidos
+🔒 Acceso Restringido: La gestión de documentos 
+   requiere permisos de administrador.
 
-┌─────────────────────────────────────────┐
-│ 📄 manual_empleado.pdf                  │
-│ Tamaño: 245.3 KB | Subido: 2026-07-27  │
-│ ✅ Indexado (42 fragmentos)             │
-├─────────────────────────────────────────┤
-│ 📄 politicas_ti.pdf                     │
-│ Tamaño: 189.7 KB | Subido: 2026-07-27  │
-│ ✅ Indexado (35 fragmentos)             │
-└─────────────────────────────────────────┘
+💡 Como usuario invitado, puedes:
+   - Consultar documentos usando el 💬 Chat
+   - Ver estadísticas de la biblioteca abajo
+
+────────────────────────────────────────────
+
+📊 Estadísticas de la Biblioteca
+
+┌──────────────┬──────────────────┬──────────────┐
+│ Total Docs   │ Docs Indexados   │ Tamaño Total │
+│      3       │        3         │   2.4 MB     │
+└──────────────┴──────────────────┴──────────────┘
+
+────────────────────────────────────────────
+
+🔐 ¿Necesitas gestionar documentos?
+
+[  Iniciar Sesión como Administrador  ]
 ```
 
 ---
 
-### ✅ Test 2: Intento de Subir Documento (Guest)
+### ✅ Test 2: Botón Login Admin (Guest)
 
 **Pasos:**
 ```bash
-1. Como guest, ir a Biblioteca
-2. Buscar sección "⬆️ Subir Documento"
+1. Como guest, en sidebar
+2. Click en "🔐 Login como Admin"
+3. Observar comportamiento
 ```
 
 **Resultado esperado:**
 ```
-❌ Sección NO existe
-❌ NO hay uploader visible
-✅ Solo lista de documentos (read-only)
+✅ Redirige a pantalla de login
+✅ Muestra formulario de login admin
+✅ Input de contraseña visible
+✅ Botón "Iniciar Sesión" visible
+✅ SI hay docs: Botón "👥 Continuar como Invitado" visible
+❌ NO vuelve automáticamente a guest
+```
+
+**Flujo completo:**
+```
+Guest → Click "Login Admin" → Login Page → Ingresar password → Admin Mode
 ```
 
 ---
@@ -227,12 +251,12 @@ Después de re-login:
 
 | Función | Guest | Admin | Verificación |
 |---------|-------|-------|--------------|
-| **Ver documentos** | ✅ | ✅ | Lista visible |
+| **Ver documentos** | ❌ | ✅ | Solo stats para guest |
 | **Subir documentos** | ❌ | ✅ | Uploader oculto/visible |
 | **Eliminar documentos** | ❌ | ✅ | Botón oculto/visible |
 | **Indexar documentos** | ❌ | ✅ | Botón oculto/visible |
 | **Re-indexar documentos** | ❌ | ✅ | Botón oculto/visible |
-| **Ver dashboard** | ✅ | ✅ | Estadísticas visibles |
+| **Ver estadísticas biblioteca** | ✅ | ✅ | Métricas agregadas |
 | **Ver settings** | ✅ | ✅ | Configuración visible |
 | **Modificar settings** | ❌ | ✅ | Mensaje de error/éxito |
 | **Usar chat** | ✅ | ✅ | Chat funcional |
