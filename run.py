@@ -40,9 +40,10 @@ def check_requirements():
         return False
     
     # Check if setup was run
-    from src.config import DATA_DIR
+    from src.config import get_paths
+    paths = get_paths()
     
-    if not DATA_DIR.exists():
+    if not paths.DATA_DIR.exists():
         print("   ⚠️  Data directory not found")
         print("   Run: python setup.py")
         return False

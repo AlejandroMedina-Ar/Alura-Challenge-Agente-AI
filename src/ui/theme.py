@@ -11,11 +11,13 @@ License: MIT
 import streamlit as st
 from pathlib import Path
 
-from src.config import ASSETS_DIR
+from src.config import get_paths
 from src.utils import get_logger
 
 
 logger = get_logger()
+paths = get_paths()
+ASSETS_DIR = paths.ASSETS_DIR
 
 
 # Theme configurations

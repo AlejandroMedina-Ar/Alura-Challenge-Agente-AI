@@ -333,8 +333,12 @@ import streamlit as st
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 # Locales
-from src.config import DATA_DIR
+from src.config import get_paths
 from src.utils import get_logger
+
+# Uso:
+paths = get_paths()
+data_dir = paths.DATA_DIR
 ```
 
 ### Manejo de Errores

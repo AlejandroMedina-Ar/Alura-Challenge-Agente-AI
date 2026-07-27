@@ -21,14 +21,7 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from src.config import (
-    DATA_DIR,
-    LOGS_DIR,
-    CHROMADB_DIR,
-    KNOWLEDGE_LIBRARY_DIR,
-    DOCUMENTS_DIR,
-    METADATA_DIR
-)
+from src.config import get_paths
 from src.storage import ConfigRepository
 from src.auth import get_authenticator
 from src.utils import get_logger, setup_logging
@@ -87,13 +80,14 @@ def main():
 
 def create_directories():
     """Create necessary directories."""
+    paths = get_paths()
     directories = [
-        DATA_DIR,
-        LOGS_DIR,
-        CHROMADB_DIR,
-        KNOWLEDGE_LIBRARY_DIR,
-        DOCUMENTS_DIR,
-        METADATA_DIR
+        paths.DATA_DIR,
+        paths.LOGS_DIR,
+        paths.CHROMADB_DIR,
+        paths.KNOWLEDGE_LIBRARY_DIR,
+        paths.DOCUMENTS_DIR,
+        paths.METADATA_DIR
     ]
     
     for directory in directories:

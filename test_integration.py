@@ -28,7 +28,8 @@ def test_imports():
     
     try:
         # Config
-        from src.config import DATA_DIR, LOGS_DIR
+        from src.config import get_paths
+        paths = get_paths()
         print("   ✅ config")
         
         # Utils
