@@ -1,8 +1,10 @@
 """
-Google Gemini LLM Provider Module
+Google Gemini LLM Provider Module (NEW SDK)
 
-This module implements the Google Gemini provider for the TechFlow Solutions project.
-Uses Gemini 2.0 Flash (free tier) as the primary LLM provider.
+This module implements the Google Gemini provider using the NEW official google-genai SDK.
+The old google-generativeai SDK was deprecated in late 2024.
+
+Uses Gemini 1.5 Flash (free tier) as the primary LLM provider.
 
 Author: TechFlow Solutions Project
 License: MIT
@@ -12,7 +14,8 @@ from typing import Optional, Iterator
 import time
 
 try:
-    import google.generativeai as genai
+    from google import genai
+    from google.genai import types
     GENAI_AVAILABLE = True
 except ImportError:
     GENAI_AVAILABLE = False
@@ -32,7 +35,7 @@ logger = get_logger()
 
 class GeminiProvider(BaseProvider):
     """
-    Google Gemini LLM provider (free tier).
+    Google Gemini LLM provider (free tier) - NEW SDK.
     
     Features:
     - Gemini 1.5 Flash model (free tier)
@@ -42,19 +45,24 @@ class GeminiProvider(BaseProvider):
     - 1M token context window
     
     Requirements:
-    - Google Generative AI SDK (google-generativeai)
+    - Google GenAI SDK (google-genai) - NEW official SDK
     - Gemini API key (free tier available)
+    
+    Changes from old SDK:
+    - Uses Client object instead of GenerativeModel
+    - client.models.generate_content() instead of model.generate_content()
+    - Unified streaming with stream parameter
     """
     
     def __init__(
         self,
-        model: str = 'gemini-1.5-flash-latest',  # Correct model name for API v1beta
+        model: str = 'gemini-1.5-flash-latest',
         api_key: Optional[str] = None,
         timeout: int = 30,
         **kwargs
     ):
         """
-        Initialize Gemini provider.
+        Initialize Gemini provider with NEW SDK.
         
         Args:
             model: Gemini model name (default: gemini-1.5-flash-latest)
@@ -74,14 +82,13 @@ class GeminiProvider(BaseProvider):
         
         if GENAI_AVAILABLE and api_key:
             try:
-                genai.configure(api_key=api_key)
-                self.client = genai.GenerativeModel(model)
-                logger.info(f"GeminiProvider initialized", model=model)
+                self.client = genai.Client(api_key=api_key)
+                logger.info(f"GeminiProvider initialized with NEW SDK", model=model)
             except Exception as e:
                 logger.error(f"Failed to initialize Gemini client", error=str(e))
         else:
             if not GENAI_AVAILABLE:
-                logger.warning("google-generativeai package not available")
+                logger.warning("google-genai package not available (NEW SDK required)")
             else:
                 logger.warning("Gemini API key not provided")
     
@@ -102,29 +109,22 @@ class GeminiProvider(BaseProvider):
             ...     print("Gemini is ready")
         """
         if not GENAI_AVAILABLE:
-            logger.debug("Gemini not available - SDK not installed")
+            logger.debug("Gemini not available - NEW SDK not installed")
             return False
         
         if not self.api_key or not self.client:
             logger.debug("Gemini not available - API key not configured")
             return False
         
-        try:
-            # Simple test to verify API key works
-            test_model = genai.GenerativeModel(self.model)
-            # Just checking if we can create the model is enough
-            return True
-        except Exception as e:
-            logger.debug(f"Gemini availability check failed: {e}")
-            return False
+        return True
     
     def _convert_messages_to_gemini_format(self, messages: list[dict]) -> tuple[str, list[dict]]:
         """
-        Convert OpenAI-style messages to Gemini format.
+        Convert OpenAI-style messages to NEW Gemini SDK format.
         
-        Gemini uses a different format:
-        - system_instruction (string)
-        - contents (list of {'role': 'user'/'model', 'parts': [{'text': '...'}]})
+        NEW SDK format:
+        - System instruction (string) passed in config
+        - Contents array with role ('user'/'model') and parts
         
         Args:
             messages: OpenAI-style messages
@@ -140,7 +140,7 @@ class GeminiProvider(BaseProvider):
             content = msg['content']
             
             if role == 'system':
-                # Gemini uses system_instruction separately
+                # System instruction separate in config
                 system_instruction = content
             elif role == 'user':
                 gemini_contents.append({
@@ -164,7 +164,7 @@ class GeminiProvider(BaseProvider):
         **kwargs
     ) -> str | Iterator[str]:
         """
-        Generate chat completion using Gemini.
+        Generate chat completion using NEW Gemini SDK.
         
         Args:
             messages: List of message dicts (OpenAI format)
@@ -198,25 +198,21 @@ class GeminiProvider(BaseProvider):
         # Convert to Gemini format
         system_instruction, gemini_contents = self._convert_messages_to_gemini_format(messages)
         
-        # Create model with system instruction if present
-        if system_instruction:
-            model = genai.GenerativeModel(
-                self.model,
-                system_instruction=system_instruction
-            )
-        else:
-            model = self.client
-        
-        # Build generation config
-        generation_config = {
+        # Build config using NEW SDK types
+        config_dict = {
             'temperature': temperature,
         }
         
+        if system_instruction:
+            config_dict['system_instruction'] = system_instruction
+        
         if max_tokens:
-            generation_config['max_output_tokens'] = max_tokens
+            config_dict['max_output_tokens'] = max_tokens
+        
+        config = types.GenerateContentConfig(**config_dict)
         
         logger.debug(
-            f"Gemini chat completion request",
+            f"Gemini chat completion request (NEW SDK)",
             model=self.model,
             num_messages=len(messages),
             stream=stream
@@ -226,9 +222,9 @@ class GeminiProvider(BaseProvider):
             start_time = time.time()
             
             if stream:
-                return self._chat_completion_stream(model, gemini_contents, generation_config)
+                return self._chat_completion_stream(gemini_contents, config, start_time)
             else:
-                return self._chat_completion_blocking(model, gemini_contents, generation_config, start_time)
+                return self._chat_completion_blocking(gemini_contents, config, start_time)
                 
         except Exception as e:
             error_str = str(e).lower()
@@ -244,31 +240,31 @@ class GeminiProvider(BaseProvider):
                 raise LLMRateLimitError("Gemini")
             
             # General API error
-            logger.error(f"Gemini API error", error=str(e), exc_info=True)
+            logger.error(f"Gemini API error (NEW SDK)", error=str(e), exc_info=True)
             raise LLMAPIError("Gemini", str(e))
     
     def _chat_completion_blocking(
         self,
-        model,
         gemini_contents: list[dict],
-        generation_config: dict,
+        config: types.GenerateContentConfig,
         start_time: float
     ) -> str:
         """
-        Execute blocking (non-streaming) chat completion.
+        Execute blocking (non-streaming) chat completion with NEW SDK.
         
         Args:
-            model: Gemini model instance
             gemini_contents: Messages in Gemini format
-            generation_config: Generation configuration
+            config: Generation configuration
             start_time: Request start time
         
         Returns:
             str: Complete response text
         """
-        response = model.generate_content(
-            gemini_contents,
-            generation_config=generation_config
+        # NEW SDK: client.models.generate_content()
+        response = self.client.models.generate_content(
+            model=self.model,
+            contents=gemini_contents,
+            config=config
         )
         
         # Check if request took too long
@@ -281,7 +277,7 @@ class GeminiProvider(BaseProvider):
         response_text = response.text
         
         logger.info(
-            f"Gemini completion successful",
+            f"Gemini completion successful (NEW SDK)",
             model=self.model,
             response_length=len(response_text)
         )
@@ -290,43 +286,50 @@ class GeminiProvider(BaseProvider):
     
     def _chat_completion_stream(
         self,
-        model,
         gemini_contents: list[dict],
-        generation_config: dict
+        config: types.GenerateContentConfig,
+        start_time: float
     ) -> Iterator[str]:
         """
-        Execute streaming chat completion.
+        Execute streaming chat completion with NEW SDK.
         
         Args:
-            model: Gemini model instance
             gemini_contents: Messages in Gemini format
-            generation_config: Generation configuration
+            config: Generation configuration
+            start_time: Request start time
         
         Yields:
             str: Response chunks
         """
-        logger.info(f"Gemini streaming started", model=self.model)
+        logger.info(f"Gemini streaming started (NEW SDK)", model=self.model)
         
         try:
-            response_stream = model.generate_content(
-                gemini_contents,
-                generation_config=generation_config,
-                stream=True
+            # NEW SDK: client.models.generate_content_stream()
+            response_stream = self.client.models.generate_content_stream(
+                model=self.model,
+                contents=gemini_contents,
+                config=config
             )
             
             for chunk in response_stream:
+                # Check timeout
+                if time.time() - start_time > self.timeout:
+                    raise LLMTimeoutError("Gemini", self.timeout)
+                
                 if chunk.text:
                     yield chunk.text
             
-            logger.debug("Gemini streaming complete")
+            logger.debug("Gemini streaming complete (NEW SDK)")
             
+        except LLMTimeoutError:
+            raise
         except Exception as e:
-            logger.error(f"Gemini streaming error", error=str(e), exc_info=True)
+            logger.error(f"Gemini streaming error (NEW SDK)", error=str(e), exc_info=True)
             raise LLMAPIError("Gemini", f"Streaming error: {e}")
     
     def count_tokens(self, text: str) -> int:
         """
-        Count tokens in text using Gemini's token counter.
+        Count tokens in text using NEW Gemini SDK.
         
         Args:
             text: Text to count tokens for
@@ -345,10 +348,14 @@ class GeminiProvider(BaseProvider):
             return len(text) // 4
         
         try:
-            result = self.client.count_tokens(text)
-            return result.total_tokens
+            # NEW SDK: client.models.count_tokens()
+            response = self.client.models.count_tokens(
+                model=self.model,
+                contents=text
+            )
+            return response.total_tokens
         except Exception as e:
-            logger.warning(f"Failed to count tokens with Gemini", error=str(e))
+            logger.warning(f"Failed to count tokens with Gemini (NEW SDK)", error=str(e))
             # Fallback
             return len(text) // 4
 
@@ -384,6 +391,6 @@ def get_gemini_provider() -> GeminiProvider:
             model=settings.GEMINI_MODEL,
             api_key=settings.GEMINI_API_KEY
         )
-        logger.debug("GeminiProvider singleton created")
+        logger.debug("GeminiProvider singleton created (NEW SDK)")
     
     return _gemini_provider_instance

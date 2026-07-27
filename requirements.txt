@@ -53,8 +53,8 @@ langdetect>=1.0.9
 # Proveedores de IA
 # ============================================================
 
-# Google Gemini (proveedor LLM primario)
-google-generativeai>=0.8.0
+# Google Gemini (proveedor LLM primario) - NUEVO SDK OFICIAL
+google-genai>=1.0.0
 
 # Cohere (proveedor LLM de respaldo)
 cohere>=5.11.0
