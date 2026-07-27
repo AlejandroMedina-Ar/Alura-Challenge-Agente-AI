@@ -1,221 +1,52 @@
 # TechFlow Solutions - Agente RAG Corporativo
 
-Asistente inteligente basado en Retrieval-Augmented Generation (RAG) para consultar documentos corporativos internos. Permite indexar documentos (PDF, TXT, MD), generar embeddings vectoriales y realizar consultas en lenguaje natural que el agente responde utilizando exclusivamente el contenido de los documentos de la empresa.
+Asistente inteligente basado en Retrieval-Augmented Generation (RAG) para consultar documentos corporativos internos. Permite indexar documentos (PDF, TXT, MD, DOCX), generar embeddings vectoriales y realizar consultas en lenguaje natural que el agente responde utilizando exclusivamente el contenido de los documentos de la empresa.
 
 ---
 
-## Arquitectura
+## 📋 Características Principales
 
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                     Interfaz Web (Streamlit)                        │
-│                                                                     │
-│  ┌──────────────┐  ┌──────────────┐  ┌───────────────────────────┐ │
-│  │  Chat        │  │  Admin Panel │  │  Configuración            │ │
-│  │  - Historial │  │  - Documentos│  │  - LLM Settings           │ │
-│  │  - Input     │  │  - Indexación│  │  - RAG Parameters         │ │
-│  │  - Export    │  │  - Métricas  │  │  - Tema (Dark/Light)      │ │
-│  └──────┬───────┘  └──────┬───────┘  └───────┬───────────────────┘ │
-│         │                 │                   │                     │
-└─────────┼─────────────────┼───────────────────┼─────────────────────┘
-          │                 │                   │
-          ▼                 ▼                   ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                     Services Layer (Business Logic)                 │
-│                                                                     │
-│  ┌─────────────────┐  ┌──────────────────┐  ┌──────────────────┐  │
-│  │  ChatService    │  │  IndexingService │  │  ConfigService   │  │
-│  │  - RAG Pipeline │  │  - Chunking      │  │  - Settings      │  │
-│  │  - LLM Provider │  │  - Embeddings    │  │  - Validation    │  │
-│  │  - Fallback     │  │  - Vector Store  │  │  - Export/Import │  │
-│  └────────┬────────┘  └────────┬─────────┘  └────────┬─────────┘  │
-│           │                    │                      │            │
-└───────────┼────────────────────┼──────────────────────┼────────────┘
-            │                    │                      │
-            ▼                    ▼                      ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                         Core Components                             │
-│                                                                     │
-│  ┌──────────────┐     ┌─────────────────┐     ┌─────────────────┐ │
-│  │  LLM Layer   │     │  RAG Pipeline   │     │  Storage Layer  │ │
-│  │              │     │                 │     │                 │ │
-│  │  • Gemini    │────▶│  • Retriever    │────▶│  • Documents    │ │
-│  │    3.6 Flash │     │  • Chunker      │     │  • Metadata     │ │
-│  │              │     │  • Embeddings   │     │  • Config       │ │
-│  │  • Cohere    │     │  • PromptBuilder│     │  • FileManager  │ │
-│  │    Command-R │     │                 │     │                 │ │
-│  │  (fallback)  │     └─────────┬───────┘     └─────────────────┘ │
-│  └──────────────┘               │                                 │
-│                                 ▼                                 │
-│                    ┌──────────────────────────┐                   │
-│                    │   ChromaDB (Vector DB)   │                   │
-│                    │                          │                   │
-│                    │  • Embeddings: E5-base   │                   │
-│                    │    (multilingual, 768d)  │                   │
-│                    │  • Similarity Search     │                   │
-│                    │  • Metadata Filtering    │                   │
-│                    └──────────────────────────┘                   │
-└─────────────────────────────────────────────────────────────────────┘
-```
+### 🔐 Acceso Inteligente
+- **Modo Guest automático:** Acceso directo al chat cuando hay documentos indexados
+- **Modo Admin:** Gestión completa de documentos y configuración
+- **Login flexible:** Cambio entre modos sin cerrar sesión
+- **Seguridad:** Contraseñas hasheadas con bcrypt
 
-### Flujo de una consulta (Query Flow)
+### 💬 Chat con RAG
+- Respuestas contextualizadas desde tus documentos
+- Historial de conversación persistente
+- Indicación de fuentes consultadas
+- Detección inteligente de saludos y consultas fuera de contexto
 
-1. **Usuario** escribe una pregunta en el chat.
-2. **EmbeddingService** genera el embedding de la consulta usando Sentence Transformers (multilingual-e5-base).
-3. **Retriever** busca los 5 fragmentos más relevantes en ChromaDB (configurable).
-4. **PromptBuilder** construye el prompt RAG con los fragmentos como contexto.
-5. **ChatService** invoca el LLM (Gemini 3.6 Flash primario, Cohere Command-R como fallback).
-6. El LLM genera una respuesta basándose **exclusivamente** en el contexto recuperado.
-7. La respuesta se muestra en el chat con las fuentes consultadas.
+### 📚 Gestión de Documentos
+- Soporte multi-formato: PDF, TXT, MD, DOCX
+- Detección de duplicados por checksum SHA-256
+- Indexación automática al subir
+- Operaciones por lotes (indexar múltiples documentos)
+- Re-indexación selectiva
 
-### Flujo de indexación (Indexing Flow)
+### ⚙️ Configuración Flexible
+- Dual LLM: Gemini 3.6 Flash + Cohere Command-R
+- Parámetros RAG ajustables (chunk_size, top_k, temperature)
+- Tema claro/oscuro
+- Exportar/importar configuración
 
-1. **Admin** sube documentos (PDF, TXT, MD) desde el panel de administración.
-2. **FileManager** guarda los archivos en `data/knowledge_library/documents/`.
-3. **DocumentRepository** calcula checksums SHA-256 para detectar duplicados.
-4. **TextChunker** fragmenta los documentos (chunk_size=1000, overlap=200).
-5. **EmbeddingService** genera embeddings con Sentence Transformers (multilingual-e5-base).
-6. **VectorStore** almacena chunks + embeddings + metadata en ChromaDB.
-7. **MetadataRepository** guarda metadata JSON para cada documento.
+### 🔄 Sistema de Fallback
+- Cambio automático a Cohere si Gemini falla
+- Cooldown inteligente de 5 minutos
+- Manejo de rate limits y timeouts
 
 ---
 
-## Estructura del proyecto
-
-```
-techflow-rag-agent/
-├── .env                          # Variables de entorno (API keys)
-├── .env.example                  # Template de configuración
-├── requirements.txt              # Dependencias Python
-├── setup.py                      # Script de configuración inicial
-├── run.py                        # Inicializador rápido
-├── test_integration.py           # Tests de integración
-├── validate_imports.py           # Validador de imports pre-setup
-│
-├── data/                         # Datos persistentes (no versionado)
-│   ├── chromadb/                 # Base de datos vectorial
-│   ├── knowledge_library/
-│   │   ├── documents/            # PDFs, TXTs, MDs originales
-│   │   └── metadata/             # Metadatos JSON por documento
-│   ├── logs/                     # Logs de aplicación
-│   └── config.json               # Configuración runtime
-│
-├── src/
-│   ├── app.py                    # Entry point Streamlit
-│   │
-│   ├── config/                   # Configuración centralizada
-│   │   ├── settings.py           # Variables de entorno
-│   │   ├── paths.py              # Rutas del sistema
-│   │   └── constants.py          # Constantes de aplicación
-│   │
-│   ├── utils/                    # Utilidades generales
-│   │   ├── logger.py             # Sistema de logging
-│   │   ├── exceptions.py         # Excepciones custom
-│   │   ├── validators.py         # Validaciones
-│   │   └── helpers.py            # Funciones auxiliares
-│   │
-│   ├── storage/                  # Capa de persistencia
-│   │   ├── file_manager.py       # Gestión de archivos
-│   │   ├── document_repository.py
-│   │   ├── metadata_repository.py
-│   │   └── config_repository.py
-│   │
-│   ├── auth/                     # Autenticación
-│   │   ├── authentication.py     # Login/logout
-│   │   └── session.py            # Gestión de sesiones
-│   │
-│   ├── llm/                      # Proveedores LLM
-│   │   ├── base_provider.py      # Clase base abstracta
-│   │   ├── gemini_provider.py    # Google Gemini 3.6 Flash
-│   │   └── cohere_provider.py    # Cohere Command-R (fallback)
-│   │
-│   ├── rag/                      # Pipeline RAG
-│   │   ├── embedding_service.py  # Generación de embeddings
-│   │   ├── vector_store.py       # ChromaDB wrapper
-│   │   ├── chunker.py            # Text splitting
-│   │   ├── retriever.py          # Búsqueda de similitud
-│   │   ├── prompt_builder.py     # Construcción de prompts
-│   │   └── pipeline.py           # Orquestador RAG
-│   │
-│   ├── services/                 # Lógica de negocio
-│   │   ├── authentication_service.py
-│   │   ├── configuration_service.py
-│   │   ├── knowledge_library_service.py
-│   │   ├── indexing_service.py
-│   │   └── chat_service.py       # Servicio principal
-│   │
-│   └── ui/                       # Interfaz Streamlit
-│       ├── theme.py              # Gestión de temas
-│       ├── components.py         # Componentes reutilizables
-│       ├── sidebar.py            # Navegación lateral
-│       ├── chat.py               # Página de chat
-│       ├── admin_panel.py        # Panel de administración
-│       └── settings_panel.py     # Configuración
-│
-├── architecture/                 # Documentación de arquitectura
-│   ├── Architecture.md
-│   ├── Source-Code-Structure.md
-│   └── Glossary.md
-│
-├── specs/                        # Especificaciones técnicas
-│   ├── 000-project-overview.md
-│   ├── 001-chat-interface.md
-│   ├── 002-knowledge-base-management.md
-│   ├── 003-authentication.md
-│   ├── 004-rag-pipeline.md
-│   ├── 005-configuration.md
-│   └── 006-deployment.md
-│
-└── docs/                         # Documentación adicional
-    ├── USER-GUIDE.md
-    ├── TECHNICAL-DOCS.md
-    ├── TROUBLESHOOTING.md
-    ├── FAQ.md
-    ├── DEPLOYMENT.md
-    ├── SECURITY-NOTES.md
-    └── ELIMINAR.md               # Archivos eliminables post-desarrollo
-```
-
----
-
-## Tecnologías
-
-| Componente         | Tecnología                     | Versión              | Propósito                                 |
-| ------------------ | ------------------------------ | -------------------- | ----------------------------------------- |
-| **Interfaz**       | Streamlit                      | 1.47.1               | Framework web interactivo                 |
-| **LLM Principal**  | Google Gemini                  | 3.6 Flash            | Generación de respuestas (última versión) |
-| **LLM Fallback**   | Cohere Command-R               | command-r7b-12-2024  | Backup ante fallos de Gemini              |
-| **Embeddings**     | Sentence Transformers          | multilingual-e5-base | Embeddings multilingües (768 dim)         |
-| **Vector Store**   | ChromaDB                       | 1.0.16               | Base de datos vectorial local             |
-| **Framework RAG**  | LangChain                      | 0.3.27               | Orquestación del pipeline RAG             |
-| **Carga de PDFs**  | PyMuPDF                        | 1.23+                | Extracción de texto de PDFs               |
-| **Text Splitting** | RecursiveCharacterTextSplitter | LangChain            | Fragmentación inteligente                 |
-| **Auth**           | bcrypt                         | 5.0+                 | Hash de contraseñas                       |
-| **Config**         | python-dotenv                  | 1.1.1                | Variables de entorno                      |
-| **Lenguaje**       | Python                         | 3.11+                | Lenguaje base del proyecto                |
-
-### Parámetros RAG configurables
-
-| Parámetro       | Valor por defecto | Descripción                        |
-| --------------- | ----------------- | ---------------------------------- |
-| `chunk_size`    | 1000              | Tamaño de cada fragmento de texto  |
-| `chunk_overlap` | 200               | Solapamiento entre fragmentos      |
-| `top_k`         | 5                 | Número de fragmentos recuperados   |
-| `temperature`   | 0.7               | Temperatura del LLM (creatividad)  |
-| `embedding_dim` | 768               | Dimensión del embedding de E5-base |
-
----
-
-## Instalación y Ejecución Local
+## 🚀 Instalación Local
 
 ### Requisitos
 
-- Python 3.11 o superior
-- Al menos una API key (Gemini **o** Cohere)
-  - Gemini: gratuita en [Google AI Studio](https://makersuite.google.com/app/apikey)
-  - Cohere: gratuita en [Cohere Dashboard](https://dashboard.cohere.com/api-keys)
+- **Python 3.11+**
+- **API Key de Gemini** (gratuita en [Google AI Studio](https://makersuite.google.com/app/apikey))
+- **API Key de Cohere** (opcional, gratuita en [Cohere Dashboard](https://dashboard.cohere.com/api-keys))
 
-### Pasos de instalación
+### Paso a Paso
 
 ```bash
 # 1. Clonar el repositorio
@@ -225,236 +56,111 @@ cd Alura-Challenge-Agente-AI
 # 2. Crear entorno virtual
 python -m venv venv
 
-# Activar entorno virtual
-# En Windows:
+# 3. Activar entorno virtual
+# Windows:
 venv\Scripts\activate
-# En Linux/Mac:
+# Linux/Mac:
 source venv/bin/activate
 
-# 3. Instalar dependencias
+# 4. Instalar dependencias
 pip install -r requirements.txt
 
-# 4. Configurar variables de entorno
-# En Windows:
+# 5. Configurar variables de entorno
+# Windows:
 copy .env.example .env
-# En Linux/Mac:
+# Linux/Mac:
 cp .env.example .env
 
-# Editar .env con tu API key (mínimo requerido)
-# GEMINI_API_KEY=tu-clave-aqui (Gemini 3.6 Flash)
-# ADMIN_PASSWORD=tu-contraseña-admin
-#
-# Opcional:
-# COHERE_API_KEY=tu-clave-aqui (para fallback)
-# GEMINI_MODEL=gemini-3.6-flash (default, no necesitas cambiarlo)
+# 6. Editar .env con tus API keys
+# GEMINI_API_KEY=tu-api-key-aqui
+# ADMIN_PASSWORD=tu-password-segura
 
-# 5. (Opcional) Validar imports antes de continuar
-python validate_imports.py
-
-# 6. Ejecutar configuración inicial
+# 7. Ejecutar configuración inicial
 python setup.py
 
-# 7. (Opcional) Ejecutar tests de integración
+# 8. (Opcional) Tests de integración
 python test_integration.py
 
-# 8. Iniciar la aplicación
+# 9. Iniciar aplicación
 python run.py
-# o directamente:
-streamlit run src/app.py
 ```
 
-La aplicación se abre automáticamente en `http://localhost:8501`.
+La aplicación se abrirá automáticamente en `http://localhost:8501`
 
-### Indexar documentos
+### ⚡ Primera Configuración
 
-**Primera vez (Setup inicial):**
+**Al abrir por primera vez:**
+1. El sistema pedirá login de administrador (no hay documentos)
+2. Ingresa la contraseña de `.env` (ADMIN_PASSWORD)
+3. Ve a **"Panel de Administración"** → **"Documentos"**
+4. Sube documentos PDF, TXT, MD o DOCX
+5. Espera a que se indexen automáticamente
 
-1. Al abrir la aplicación por primera vez (sin documentos), el sistema te pedirá login de administrador.
-2. Ingresa la contraseña configurada en `.env` (ADMIN_PASSWORD).
-3. Navegar a **"Panel de Administración"** desde la barra lateral.
-4. Subir documentos PDF, TXT o MD mediante el uploader.
-5. Los documentos se indexan automáticamente.
-6. Esperar a que finalice la indexación (se muestra progreso en tiempo real).
-
-**Acceso posterior (con documentos):**
-
-- **Como usuario común (Guest):** Al abrir la aplicación, entrarás automáticamente como invitado.
-  - Puedes usar el chat y consultar la biblioteca.
-  - **NO** puedes subir, eliminar o modificar documentos.
-  - Para acceder como admin, click en **"🔐 Login como Admin"** en el sidebar.
-
-- **Como administrador:** Después de hacer login:
-  - Acceso completo a todas las funciones.
-  - Puedes cambiar a vista de usuario con **"👥 Modo Usuario"** sin cerrar sesión.
-  - Para cerrar sesión completamente, usa **"🚪 Cerrar Sesión"**.
+**Accesos posteriores:**
+- El sistema abrirá directamente en **Modo Guest** (acceso al chat)
+- Para gestionar documentos, usa **"🔐 Login como Admin"** en el sidebar
 
 ---
 
-## Ejemplos de Uso
+## ☁️ Despliegue en Streamlit Cloud
 
-El asistente puede responder preguntas sobre el contenido de los documentos corporativos indexados. A continuación, ejemplos basados en los **Manuales de TechFlow Solutions** (Manual de TI y Manual del Empleado):
-
-### Preguntas sobre Soporte IT
-
-| Pregunta                                                     | Área temática            |
-| ------------------------------------------------------------ | ------------------------ |
-| ¿Cómo solicito una notebook nueva en la empresa?             | Equipamiento tecnológico |
-| ¿Cuál es el horario de atención de la Mesa de Ayuda?         | Soporte técnico          |
-| ¿Qué información debo incluir al abrir un ticket de soporte? | Procedimientos IT        |
-| ¿Cómo me conecto a la VPN corporativa?                       | Acceso remoto            |
-| ¿Qué hago si olvido mi contraseña corporativa?               | Gestión de accesos       |
-| ¿Cómo configuro la autenticación multifactor (MFA)?          | Seguridad informática    |
-| ¿Qué equipamiento tecnológico se asigna a los empleados?     | Hardware corporativo     |
-| ¿Cuánto tiempo tarda en llegar un equipo solicitado?         | Tiempos de entrega       |
-
-### Preguntas sobre Políticas de la Empresa
-
-| Pregunta                                                 | Área temática                  |
-| -------------------------------------------------------- | ------------------------------ |
-| ¿Cuál es la misión de TechFlow Solutions?                | Cultura empresarial            |
-| ¿Qué áreas de negocio tiene la empresa?                  | Estructura organizacional      |
-| ¿Cuáles son los valores corporativos de TechFlow?        | Valores empresariales          |
-| ¿Qué modalidad de trabajo aplica en la empresa?          | Política laboral               |
-| ¿Cuánto dura el período de prueba para nuevos empleados? | Onboarding                     |
-| ¿Cuál es el código de vestimenta de la empresa?          | Normas internas                |
-| ¿Qué debo hacer si quiero renunciar?                     | Procedimientos administrativos |
-| ¿Cómo es el proceso de onboarding para nuevos empleados? | Incorporación                  |
-
-### Preguntas sobre Procedimientos Técnicos
-
-| Pregunta                                                        | Área temática         |
-| --------------------------------------------------------------- | --------------------- |
-| ¿Qué configuraciones de seguridad vienen en los equipos nuevos? | Seguridad             |
-| ¿Cómo se realiza la indexación de documentos en el sistema?     | Procesos internos     |
-| ¿Qué software está autorizado para instalar en mi notebook?     | Políticas de software |
-| ¿Cómo reporto un incidente de seguridad informática?            | Ciberseguridad        |
-| ¿Qué hacer si mi equipo se daña o es robado?                    | Gestión de incidentes |
-
----
-
-## Ejemplos de Respuestas
-
-### Pregunta: ¿Cómo solicito una notebook nueva en la empresa?
-
-> Para solicitar una notebook nueva en TechFlow Solutions, debes seguir estos pasos:
->
-> 1. Ingresar al Portal de Tickets.
-> 2. Seleccionar la categoría **"Hardware / Equipamiento"**.
-> 3. Elegir el tipo de solicitud (equipamiento nuevo, adicional o reemplazo).
-> 4. Completar el formulario indicando el tipo de equipo y el motivo de la solicitud.
-> 5. Si es equipamiento adicional, necesitarás la aprobación de tu responsable directo.
->
-> El tiempo estimado de entrega es de 1 a 2 días hábiles si estás en oficina, o hasta 5 días hábiles si eres empleado remoto.
->
-> **Fuentes:** Manual de TI y Soporte - Capítulo 4 (Solicitud de Equipamiento Tecnológico)
-
----
-
-### Pregunta: ¿Cuál es la misión de TechFlow Solutions?
-
-> La misión de TechFlow Solutions es:
->
-> **"Ayudar a las organizaciones a acelerar su transformación digital mediante soluciones tecnológicas innovadoras."**
->
-> Esto significa que cada proyecto y decisión interna está orientada a generar un impacto real en la digitalización de los clientes, a través de desarrollo de software, inteligencia artificial, migración a la nube o fortalecimiento de la seguridad informática.
->
-> **Fuentes:** Manual del Empleado - Capítulo 3 (Misión, Visión y Valores)
-
----
-
-### Pregunta: ¿Qué hago si olvido mi contraseña corporativa?
-
-> Si olvidaste tu contraseña corporativa, debes:
->
-> 1. Abrir un ticket en el Portal de Tickets (si aún tienes acceso).
-> 2. Si no puedes acceder al Portal, contactar a la Mesa de Ayuda por Slack (#it-helpdesk) o llamar al Anexo 4100.
-> 3. Categoría del ticket: **"Accesos y Contraseñas"**.
-> 4. El soporte técnico restablecerá tu contraseña y te enviará una temporal por correo.
->
-> El tiempo de primera respuesta para este tipo de solicitud es de hasta 2 horas hábiles.
->
-> **Fuentes:** Manual de TI y Soporte - Capítulo 3 (Mesa de Ayuda)
-
----
-
-### Pregunta: ¿Cuántas sedes tiene la empresa?
-
-> No tengo esa información en los documentos disponibles.
-
-_(El agente solo responde con información presente en los documentos indexados. No inventa ni utiliza conocimiento externo.)_
-
----
-
-### Pregunta: Hola
-
-> ¡Hola! Soy el asistente de documentos corporativos de TechFlow Solutions. Puedo ayudarte a consultar información de los manuales internos. ¿En qué puedo asistirte hoy?
-
-_(El agente detecta saludos y responde de forma amigable sin consultar la base de datos.)_
-
----
-
-## Despliegue en Streamlit Community Cloud
-
-### Requisitos previos
-
+### Requisitos Previos
 - Cuenta en [Streamlit Community Cloud](https://share.streamlit.io)
-- Repositorio público o privado en GitHub
-- API keys configuradas
+- Repositorio en GitHub (público o privado)
 
 ### Pasos
 
-1. **Push del código a GitHub** (si aún no lo hiciste):
-
-   ```bash
-   git add .
-   git commit -m "Preparar para deployment"
-   git push origin main
-   ```
-
-2. **Conectar repositorio en Streamlit Cloud**:
+1. **Conectar Repositorio**
    - Ir a [share.streamlit.io](https://share.streamlit.io)
-   - Hacer clic en **"New app"**
-   - Seleccionar el repositorio GitHub
-   - Main file path: `src/app.py`
-   - Python version: 3.11
+   - Click en **"New app"**
+   - Seleccionar tu repositorio
+   - **Main file path:** `src/app.py`
+   - **Python version:** 3.11
 
-3. **Configurar Secrets** (API keys):
-   En el dashboard de Streamlit Cloud, ir a **"Settings" → "Secrets"** y agregar:
-
+2. **Configurar Secrets**
+   En **Settings → Secrets**, agregar:
+   
    ```toml
-   GEMINI_API_KEY = "tu-clave-aqui"
-   COHERE_API_KEY = "tu-clave-aqui"
+   GEMINI_API_KEY = "tu-api-key-aqui"
+   COHERE_API_KEY = "tu-api-key-aqui"
    ADMIN_PASSWORD = "tu-password-aqui"
+   GEMINI_MODEL = "gemini-3.6-flash"
    ```
 
-4. **Deploy automático**:
-   - Streamlit Cloud detecta cambios automáticamente y redespliega
-   - La app estará disponible en `https://tu-app.streamlit.app`
+3. **Deploy**
+   - Streamlit Cloud despliega automáticamente
+   - Tu app estará en: `https://tu-app.streamlit.app`
 
-### Consideraciones
+### ⚠️ Consideraciones Streamlit Cloud
 
-- **Almacenamiento persistente**: ChromaDB se reinicia con cada redeploy. Para producción, considerar una base vectorial externa (Pinecone, Weaviate, Qdrant).
-- **Documentos pre-indexados**: Subir documentos después de cada deploy o implementar un sistema de persistencia externo.
-- **Límites de Streamlit Cloud**: 1 GB de RAM, sin persistencia de archivos entre reinicios.
+- **Persistencia:** ChromaDB se reinicia con cada redeploy
+- **Solución:** Considera usar vector store externo (Pinecone, Weaviate, Qdrant) para producción
+- **Límites:** 1 GB RAM, sin persistencia de archivos entre reinicios
+- **Documentos:** Deberás re-subir documentos después de cada redeploy
+
+### 🔧 Alternativa: Persistencia con S3
+
+Para mantener documentos entre redeploys:
+
+```toml
+# En Secrets
+AWS_ACCESS_KEY_ID = "tu-access-key"
+AWS_SECRET_ACCESS_KEY = "tu-secret-key"
+S3_BUCKET_NAME = "tu-bucket"
+S3_REGION = "us-east-1"
+```
 
 ---
 
-## Despliegue en VPS / Servidor Propio
+## 🖥️ Despliegue en VPS
 
-### Requisitos
-
-- VPS con Ubuntu 20.04+ (o similar)
-- Python 3.11+
-- Al menos 1 GB de RAM
-- Puerto 8501 abierto en el firewall
-
-### Instalación en servidor
+### Instalación en Servidor
 
 ```bash
 # Actualizar sistema
 sudo apt update && sudo apt upgrade -y
 
-# Instalar Python y dependencias
+# Instalar dependencias
 sudo apt install -y python3 python3-pip python3-venv git
 
 # Clonar repositorio
@@ -475,13 +181,13 @@ nano .env
 # Ejecutar setup
 python setup.py
 
-# Ejecutar aplicación
+# Iniciar aplicación
 streamlit run src/app.py --server.port 8501 --server.address 0.0.0.0 --server.headless true
 ```
 
-### Ejecutar como servicio systemd (opcional)
+### Servicio Systemd (Opcional)
 
-Crear archivo `/etc/systemd/system/techflow-rag.service`:
+Crear `/etc/systemd/system/techflow-rag.service`:
 
 ```ini
 [Unit]
@@ -500,8 +206,7 @@ Restart=always
 WantedBy=multi-user.target
 ```
 
-Activar servicio:
-
+Activar:
 ```bash
 sudo systemctl daemon-reload
 sudo systemctl enable techflow-rag
@@ -511,185 +216,335 @@ sudo systemctl status techflow-rag
 
 ---
 
-## Modos de Acceso
+## 🏗️ Arquitectura del Sistema
 
-### 👥 Modo Guest (Usuario Común)
+### Flujo de una Consulta (Query Flow)
 
-**Cuándo:** Al abrir la aplicación cuando hay documentos indexados (acceso automático)
+```
+Usuario → Chat
+    ↓
+EmbeddingService (multilingual-e5-base)
+    ↓
+ChromaDB (búsqueda por similitud)
+    ↓
+Retriever (top 5 fragmentos)
+    ↓
+PromptBuilder (construcción de contexto)
+    ↓
+LLM (Gemini 3.6 Flash → Cohere fallback)
+    ↓
+Respuesta + Fuentes
+```
+
+### Flujo de Indexación
+
+```
+Admin → Upload documento
+    ↓
+FileManager (guardar en data/knowledge_library/)
+    ↓
+DocumentRepository (checksum SHA-256)
+    ↓
+TextChunker (chunk_size=1000, overlap=200)
+    ↓
+EmbeddingService (768 dimensiones)
+    ↓
+ChromaDB (almacenar chunks + embeddings)
+    ↓
+MetadataRepository (metadata JSON)
+```
+
+### Diagrama de Componentes
+
+```
+┌──────────────────────────────────────────────────────┐
+│           Interfaz Web (Streamlit)                    │
+│  ┌─────────┐  ┌─────────┐  ┌──────────────────────┐ │
+│  │  Chat   │  │  Admin  │  │  Configuración       │ │
+│  └────┬────┘  └────┬────┘  └─────────┬────────────┘ │
+└───────┼────────────┼──────────────────┼──────────────┘
+        │            │                  │
+┌───────┼────────────┼──────────────────┼──────────────┐
+│       ▼            ▼                  ▼              │
+│  ChatService  IndexingService  ConfigService        │
+└───────┼────────────┼──────────────────┼──────────────┘
+        │            │                  │
+┌───────┼────────────┼──────────────────┼──────────────┐
+│       ▼            ▼                  ▼              │
+│  LLM Layer    RAG Pipeline    Storage Layer         │
+│  • Gemini     • Retriever     • Documents           │
+│  • Cohere     • Chunker       • Metadata            │
+│               • Embeddings    • Config              │
+└───────┼────────────┼──────────────────┼──────────────┘
+        │            ▼                  │
+        │    ┌──────────────┐           │
+        └───▶│  ChromaDB    │◀──────────┘
+             └──────────────┘
+```
+
+Para más detalles, ver [Architecture.md](architecture/Architecture.md)
+
+---
+
+## 📂 Estructura del Proyecto
+
+```
+techflow-rag-agent/
+├── src/
+│   ├── app.py                  # Entry point Streamlit
+│   ├── config/                 # Configuración
+│   ├── utils/                  # Utilidades
+│   ├── storage/                # Persistencia
+│   ├── auth/                   # Autenticación
+│   ├── llm/                    # Proveedores LLM
+│   ├── rag/                    # Pipeline RAG
+│   ├── services/               # Lógica de negocio
+│   └── ui/                     # Interfaz Streamlit
+├── data/
+│   ├── chromadb/               # Vector store
+│   ├── knowledge_library/      # Documentos
+│   ├── logs/                   # Logs
+│   └── config.json             # Config runtime
+├── architecture/               # Docs arquitectura
+├── specs/                      # Especificaciones
+├── docs/                       # Documentación
+├── .env                        # Variables entorno
+├── requirements.txt            # Dependencias
+├── setup.py                    # Setup inicial
+├── run.py                      # Inicializador
+└── test_integration.py         # Tests
+```
+
+Ver [Source-Code-Structure.md](architecture/Source-Code-Structure.md) para detalles completos.
+
+---
+
+## 🛠️ Tecnologías
+
+| Componente | Tecnología | Versión | Propósito |
+|------------|-----------|---------|-----------|
+| **Framework Web** | Streamlit | 1.47.1 | Interfaz interactiva |
+| **LLM Principal** | Google Gemini | 3.6 Flash | Generación de respuestas |
+| **LLM Fallback** | Cohere Command-R | command-r7b-12-2024 | Backup |
+| **Embeddings** | Sentence Transformers | multilingual-e5-base | Embeddings (768d) |
+| **Vector Store** | ChromaDB | 1.0.16 | Base de datos vectorial |
+| **Framework RAG** | LangChain | 0.3.27 | Orquestación RAG |
+| **PDF Parser** | PyMuPDF | 1.23+ | Extracción de texto |
+| **Auth** | bcrypt | 5.0+ | Hash de contraseñas |
+| **Lenguaje** | Python | 3.11+ | Base del proyecto |
+
+---
+
+## 👥 Modos de Acceso
+
+### Modo Guest (Usuario Común)
+
+**Acceso:** Automático cuando hay documentos indexados
 
 **Permisos:**
-
-- ✅ Usar el chat para consultar documentos
-- ✅ Ver la biblioteca de conocimiento
-- ✅ Ver configuración actual
+- ✅ Usar chat para consultar documentos
+- ✅ Ver biblioteca de conocimiento
+- ✅ Ver configuración (read-only)
 - ✅ Cambiar tema (claro/oscuro)
 - ❌ Subir o eliminar documentos
-- ❌ Modificar configuración del sistema
-- ❌ Acceder al Panel de Administración
+- ❌ Modificar configuración
+- ❌ Acceder a Panel de Administración
 
 **Interfaz:**
+- Sidebar: "👤 Usuario: Invitado"
+- Botón: "🔐 Login como Admin" disponible
 
-- Sidebar muestra: "👤 Usuario: Invitado"
-- Botón "🔐 Login como Admin" disponible para escalar permisos
+### Modo Admin (Administrador)
 
-### 🔧 Modo Admin (Administrador)
-
-**Cuándo:** Después de hacer login con la contraseña de admin
+**Acceso:** Login con contraseña de admin
 
 **Permisos:**
-
 - ✅ Todas las funciones de Guest
-- ✅ Subir y eliminar documentos
+- ✅ Gestión completa de documentos
 - ✅ Modificar configuración del sistema
-- ✅ Acceder al Panel de Administración
-- ✅ Ver métricas y estadísticas
-- ✅ Cambiar a vista de usuario sin cerrar sesión
+- ✅ Panel de Administración completo
+- ✅ Métricas y estadísticas
+- ✅ Cambiar a vista Guest sin cerrar sesión
 
 **Interfaz:**
+- Sidebar: "👤 Usuario: admin" + "🔑 Rol: Admin"
+- Botones: "👥 Modo Usuario" y "🚪 Cerrar Sesión"
 
-- Sidebar muestra: "👤 Usuario: admin" y "🔑 Rol: Admin"
-- Botón "👥 Modo Usuario" para cambiar a vista guest
-- Botón "🚪 Cerrar Sesión" para logout completo
+---
 
-### 🔄 Flujo de Acceso
+## 💡 Ejemplos de Uso
 
-```
-Primera vez (Sin documentos)
-    ↓
-Login Admin obligatorio
-    ↓
-Subir y indexar documentos
-    ↓
-Cerrar sesión o pestaña
-    ↓
-Siguiente visita: Acceso directo como Guest ✅
-    ↓
-Si necesitas admin: Click "Login como Admin"
+### Preguntas Técnicas
+- ¿Cómo solicito una notebook nueva en la empresa?
+- ¿Cuál es el horario de atención de la Mesa de Ayuda?
+- ¿Cómo me conecto a la VPN corporativa?
+- ¿Qué hago si olvido mi contraseña corporativa?
+
+### Preguntas Corporativas
+- ¿Cuál es la misión de TechFlow Solutions?
+- ¿Qué modalidad de trabajo aplica en la empresa?
+- ¿Cuál es el código de vestimenta?
+- ¿Cómo es el proceso de onboarding?
+
+### Ejemplo de Respuesta
+
+**Pregunta:** ¿Cómo solicito una notebook nueva?
+
+**Respuesta:**
+> Para solicitar una notebook nueva en TechFlow Solutions:
+>
+> 1. Ingresa al Portal de Tickets
+> 2. Categoría: "Hardware / Equipamiento"
+> 3. Completa el formulario indicando el motivo
+> 4. Si es equipamiento adicional, necesitas aprobación de tu responsable
+>
+> **Tiempo de entrega:** 1-2 días hábiles en oficina, hasta 5 días para remotos
+>
+> **Fuente:** Manual de TI - Capítulo 4
+
+---
+
+## 🔧 Configuración Avanzada
+
+### Parámetros RAG
+
+| Parámetro | Default | Descripción |
+|-----------|---------|-------------|
+| `chunk_size` | 1000 | Tamaño de cada fragmento |
+| `chunk_overlap` | 200 | Solapamiento entre fragmentos |
+| `top_k` | 5 | Fragmentos recuperados |
+| `temperature` | 0.7 | Creatividad del LLM |
+| `embedding_dim` | 768 | Dimensión del embedding |
+
+### Variables de Entorno (.env)
+
+```bash
+# LLM API Keys
+GEMINI_API_KEY=tu-gemini-api-key
+COHERE_API_KEY=tu-cohere-api-key
+
+# Modelos (configuración por defecto)
+GEMINI_MODEL=gemini-3.6-flash
+COHERE_MODEL=command-r7b-12-2024
+
+# Autenticación
+ADMIN_PASSWORD=tu-password-segura
+
+# RAG Parameters (opcional)
+CHUNK_SIZE=1000
+CHUNK_OVERLAP=200
+TOP_K=5
+TEMPERATURE=0.7
+
+# Embeddings
+EMBEDDING_MODEL=intfloat/multilingual-e5-base
 ```
 
 ---
 
-## Características Principales
+## 📚 Documentación Adicional
 
-### 🔐 Autenticación Inteligente
-
-- **Acceso automático como Guest:** Cuando hay documentos indexados, los usuarios pueden acceder directamente sin contraseña
-- **Login Admin opcional:** Botón "Login como Admin" disponible en sidebar para acceder a funciones de gestión
-- **Modo Vista de Usuario:** Los administradores pueden cambiar a vista de usuario sin cerrar sesión
-- **Sistema de roles:** Control de acceso basado en roles (admin/guest)
-- **Sesión persistente:** La sesión de admin se mantiene durante la navegación
-- **Contraseñas hasheadas:** Seguridad con bcrypt para almacenamiento de credenciales
-
-### 💬 Chat Inteligente
-
-- Respuestas contextualizadas usando RAG
-- Historial de conversación por sesión
-- Exportación de chat completo
-- Detección de saludos y mensajes fuera de contexto
-- Indicación de fuentes consultadas
-
-### 📚 Gestión de Documentos
-
-- Upload de múltiples formatos (PDF, TXT, MD)
-- Detección de duplicados por checksum SHA-256
-- Vista de documentos indexados con metadata
-- Eliminación de documentos con re-indexación
-- Operaciones por lotes (indexar múltiples documentos)
-
-### ⚙️ Configuración Avanzada
-
-- Selección de proveedor LLM (Gemini/Cohere)
-- Ajuste de parámetros RAG (chunk_size, top_k, temperature)
-- Configuración de embeddings
-- Tema claro/oscuro (Tokyo Night palette)
-- Exportar/importar configuración
-
-### 🔄 Sistema de Fallback
-
-- Si Gemini falla → automáticamente usa Cohere
-- Registro de cambios de proveedor en logs
-- Cooldown de 5 minutos antes de reintentar proveedor principal
-- Manejo de errores de rate limit y timeout
-
-### 📊 Panel de Administración
-
-- Dashboard con métricas en tiempo real
-- Gestión completa de documentos
-- Sistema de indexación con progreso visual
-- Testing de proveedores LLM
-- Estadísticas de uso
+| Documento | Descripción |
+|-----------|-------------|
+| [Architecture.md](architecture/Architecture.md) | Arquitectura general del sistema |
+| [Source-Code-Structure.md](architecture/Source-Code-Structure.md) | Estructura del código fuente |
+| [USER-GUIDE.md](docs/USER-GUIDE.md) | Guía de usuario completa |
+| [TECHNICAL-DOCS.md](docs/TECHNICAL-DOCS.md) | Documentación técnica detallada |
+| [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | Solución de problemas |
+| [FAQ.md](docs/FAQ.md) | Preguntas frecuentes |
+| [DEPLOYMENT.md](docs/DEPLOYMENT.md) | Guía de despliegue |
+| [SECURITY-NOTES.md](docs/SECURITY-NOTES.md) | Consideraciones de seguridad |
 
 ---
 
-## 🆕 Actualizaciones Recientes (Julio 2026)
+## 🐛 Solución de Problemas
 
-### Gemini 3.6 Flash
+### Error: "ModuleNotFoundError: No module named 'X'"
+```bash
+pip install -r requirements.txt
+```
 
-- ✅ Actualizado a **Gemini 3.6 Flash** (versión más reciente de Google)
-- ✅ Modelos Gemini 1.5 deprecados y reemplazados
-- ✅ Mejor rendimiento en tareas multimodales y de código
-- ✅ Reducción de costos ($1.50/1M tokens de input vs $2.00 anterior)
+### Error: "API Key inválida"
+Verifica que `.env` tenga las API keys correctas:
+```bash
+GEMINI_API_KEY=tu-api-key-aqui
+```
 
-### Sistema de Autenticación Mejorado
+### ChromaDB no persiste datos
+Verifica que `data/chromadb/` existe y tiene permisos de escritura:
+```bash
+ls -la data/chromadb/
+```
 
+### App no abre automáticamente
+Abre manualmente: `http://localhost:8501`
+
+Ver [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) para más detalles.
+
+---
+
+## 🆕 Historial de Actualizaciones
+
+### Julio 2026 - v1.0.0
+
+#### Migración a Gemini 3.6 Flash
+- ✅ Actualizado a **Gemini 3.6 Flash** (última versión)
+- ✅ Modelos Gemini 1.5 deprecados
+- ✅ Mejor rendimiento y reducción de costos
+
+#### Sistema de Autenticación Mejorado
 - ✅ **Acceso automático como Guest** cuando hay documentos
-- ✅ Ya NO pide contraseña en cada acceso
-- ✅ Usuarios comunes pueden usar el chat sin login
-- ✅ Administradores pueden alternar entre vista admin y usuario
-- ✅ Flujo de onboarding mejorado para primera configuración
+- ✅ Login solo necesario para funciones de administración
+- ✅ Alternancia entre modos sin cerrar sesión
+- ✅ Flujo de onboarding optimizado
 
-### Embeddings Optimizados
-
-- ✅ Migrado a **Sentence Transformers (multilingual-e5-base)**
-- ✅ Embeddings locales (sin dependencia de APIs externas)
-- ✅ 768 dimensiones (optimizado para velocidad)
+#### Embeddings Locales
+- ✅ Migración a **Sentence Transformers** (multilingual-e5-base)
+- ✅ Embeddings sin dependencia de APIs externas
+- ✅ 768 dimensiones optimizadas
 - ✅ Soporte multilingüe mejorado
 
----
+#### UI y UX
+- ✅ Tema claro por defecto
+- ✅ Sidebar siempre visible
+- ✅ Gestión de documentos mejorada
+- ✅ Panel de administración completo
+- ✅ Operaciones por lotes
 
-## Documentación Técnica
-
-| Documento                                                         | Descripción                                     |
-| ----------------------------------------------------------------- | ----------------------------------------------- |
-| [Architecture.md](architecture/Architecture.md)                   | Arquitectura general del sistema                |
-| [Source-Code-Structure.md](architecture/Source-Code-Structure.md) | Estructura del código fuente                    |
-| [Glossary.md](architecture/Glossary.md)                           | Glosario de términos técnicos                   |
-| [USER-GUIDE.md](docs/USER-GUIDE.md)                               | Guía de usuario completa                        |
-| [TECHNICAL-DOCS.md](docs/TECHNICAL-DOCS.md)                       | Documentación técnica detallada                 |
-| [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)                     | Solución de problemas comunes                   |
-| [HOTFIX-GEMINI-AUTH.md](docs/HOTFIX-GEMINI-AUTH.md)               | Detalles técnicos de Gemini 3.6 y autenticación |
-| [TEST-AUTH-FLOW.md](docs/TEST-AUTH-FLOW.md)                       | Guía de pruebas del flujo de autenticación      |
-| [FAQ.md](docs/FAQ.md)                                             | Preguntas frecuentes                            |
-| [DEPLOYMENT.md](docs/DEPLOYMENT.md)                               | Guía de despliegue                              |
-| [SECURITY-NOTES.md](docs/SECURITY-NOTES.md)                       | Consideraciones de seguridad                    |
+#### Correcciones y Optimizaciones
+- ✅ Corrección de duplicate keys en componentes
+- ✅ Validación defensiva de datos
+- ✅ CSS completo para temas claro/oscuro
+- ✅ Logging mejorado para troubleshooting
+- ✅ Manejo robusto de errores
 
 ---
 
-## Licencia
+## 📄 Licencia
 
-Este proyecto es privado y de uso interno para **TechFlow Solutions**.
+Este proyecto es de uso interno para **TechFlow Solutions**.
 
 ---
 
-## Créditos
+## 👤 Créditos
 
-**Proyecto:** : Alura Challenge Agente RAG con IA  
-**Empresa:** : TechFlow Solutions  
+**Proyecto:** Alura Challenge - Agente RAG con IA  
+**Empresa:** TechFlow Solutions  
 **Desarrollado por:** [Oscar Alejandro Medina](https://github.com/AlejandroMedina-Ar)
 
 ---
 
-### Stack de tecnologías
+## 🌟 Stack de Tecnologías
 
-- [Streamlit](https://streamlit.io) - Framework de interfaz web
-- [LangChain](https://langchain.com) - Framework RAG
+Construido con las mejores herramientas del ecosistema de IA:
+
+- [Streamlit](https://streamlit.io) - Framework web para IA/ML
+- [LangChain](https://langchain.com) - Framework RAG y orquestación LLM
 - [ChromaDB](https://www.trychroma.com) - Base de datos vectorial
-- [Google Gemini](https://deepmind.google/technologies/gemini/) - LLM principal
-- [Cohere](https://cohere.com) - Embeddings y LLM fallback
-- [HuggingFace](https://huggingface.co) - Ecosistema de modelos
+- [Google Gemini](https://deepmind.google/technologies/gemini/) - LLM de última generación
+- [Cohere](https://cohere.com) - LLM enterprise y embeddings
+- [HuggingFace](https://huggingface.co) - Modelos open-source
 
 ---
 
 **⭐ TechFlow Solutions - Transformación Digital con Inteligencia Artificial**
-
----

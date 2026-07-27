@@ -50,7 +50,7 @@ class ConfigRepository:
             'temperature': 0.7
         },
         'ui': {
-            'theme': Theme.DARK.value
+            'theme': Theme.LIGHT.value
         }
     }
     
