@@ -90,15 +90,30 @@ def main():
     kl_service = get_knowledge_library_service()
     has_documents = kl_service.get_document_count() > 0
     
+    # Check if user explicitly chose guest mode
+    guest_mode = st.session_state.get('guest_mode', False)
+    
     # Determine access mode:
-    # - If NO documents: require admin login (setup mode)
-    # - If HAS documents: allow guest access (user mode) or admin login
-    if not has_documents and not auth_service.is_authenticated():
+    # 1. NO documents + NOT authenticated → require admin login (setup mode)
+    # 2. HAS documents + NOT authenticated + NOT guest_mode → show login with guest option
+    # 3. HAS documents + guest_mode → allow guest access
+    # 4. Authenticated → allow admin access
+    
+    if auth_service.is_authenticated():
+        # User is authenticated as admin
+        render_main_app(is_admin=True)
+    elif guest_mode or (has_documents and not auth_service.is_authenticated()):
+        # User is in guest mode OR has documents available (auto-guest)
+        # Auto-enable guest mode when documents exist
+        if has_documents and not guest_mode:
+            st.session_state['guest_mode'] = True
+        render_main_app(is_admin=False)
+    elif not has_documents:
         # Setup mode: require admin login to upload first documents
         render_login_page(setup_mode=True)
     else:
-        # User mode: allow access (admin or guest)
-        render_main_app(is_admin=auth_service.is_authenticated())
+        # Fallback: show login page
+        render_login_page(setup_mode=False)
 
 
 def render_login_page(setup_mode=False):
@@ -106,7 +121,7 @@ def render_login_page(setup_mode=False):
     Renderiza la página de inicio de sesión para usuarios no autenticados.
     
     Args:
-        setup_mode: Si True, indica que se requiere login para setup inicial
+        setup_mode: Si True, indica que se requiere login para setup inicial (sin opción guest)
     """
     # Compact sidebar for login
     render_compact_sidebar()
@@ -118,6 +133,28 @@ def render_login_page(setup_mode=False):
     
     if setup_mode:
         st.info("👋 **Bienvenido!** Se requiere autenticación de administrador para cargar los primeros documentos.")
+    else:
+        # If NOT setup mode, user can choose to continue as guest
+        st.info("💡 **Tip:** Puedes entrar como invitado para consultar documentos, o como admin para gestionar el sistema.")
+    
+    # Check if we can allow guest access
+    from src.services import get_knowledge_library_service
+    kl_service = get_knowledge_library_service()
+    has_documents = kl_service.get_document_count() > 0
+    
+    # Option to continue as guest (only if documents exist)
+    if has_documents and not setup_mode:
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("👥 Continuar como Invitado", type="secondary", use_container_width=True):
+                # Don't authenticate, just proceed to main app
+                logger.info("User entered as guest")
+                st.session_state['guest_mode'] = True
+                st.rerun()
+        with col2:
+            pass  # Space for alignment
+        
+        st.markdown("---")
     
     st.markdown("#### 🔐 Inicio de Sesión Admin")
     
@@ -137,6 +174,7 @@ def render_login_page(setup_mode=False):
                     auth_service.login(password)
                     st.success("✅ ¡Inicio de sesión exitoso!")
                     logger.info("User logged in via web interface")
+                    st.session_state['guest_mode'] = False
                     st.rerun()
                     
                 except Exception as e:

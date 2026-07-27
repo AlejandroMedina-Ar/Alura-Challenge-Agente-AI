@@ -101,10 +101,19 @@ def render_user_info() -> None:
         if duration:
             st.caption(f"Sesión: {duration}")
         
-        # Logout button
-        if st.button("🚪 Cerrar Sesión", key="logout_btn", use_container_width=True):
-            auth_service.logout()
-            st.rerun()
+        # Two options for admin: switch to guest view or logout
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("👥 Modo Usuario", key="switch_guest_btn", use_container_width=True, help="Cambiar a vista de usuario sin cerrar sesión"):
+                # Switch to guest view without logging out
+                st.session_state['guest_mode'] = True
+                logger.info("Admin switched to guest view")
+                st.rerun()
+        with col2:
+            if st.button("🚪 Cerrar Sesión", key="logout_btn", use_container_width=True):
+                auth_service.logout()
+                st.session_state['guest_mode'] = False
+                st.rerun()
     else:
         # Guest user mode
         st.markdown("**👤 Usuario:** Invitado")
@@ -112,8 +121,8 @@ def render_user_info() -> None:
         
         # Login as admin option
         if st.button("🔐 Login como Admin", key="login_admin_btn", use_container_width=True):
-            # Force redirect to login page by clearing any cached state
-            st.session_state.clear()
+            # Clear guest mode and force login
+            st.session_state['guest_mode'] = False
             st.rerun()
 
 
