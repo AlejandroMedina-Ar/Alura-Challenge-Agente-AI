@@ -163,9 +163,10 @@ class ChatService:
         try:
             logger.info(f"Attempting streaming with fallback provider", provider=fallback_name)
             
-            for chunk in fallback_provider.chat_completion_stream(
+            for chunk in fallback_provider.chat_completion(
                 messages=messages,
-                temperature=temperature
+                temperature=temperature,
+                stream=True
             ):
                 yield chunk
             
