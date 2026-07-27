@@ -48,10 +48,7 @@ logs_dir = paths.LOGS_DIR
 - `test_integration.py`
 - `src/ui/theme.py`
 
-**Nota:** Este error fue corregido en el commit `33402fb`. Si sigues viendo este error, asegúrate de tener la última versión del código:
-```bash
-git pull origin main
-```
+**Nota:** Este error fue corregido en el commit `33402fb`.
 
 ---
 
@@ -89,10 +86,119 @@ logger = get_logger()  # El logger se configura automáticamente
 - `setup.py`
 - `test_integration.py`
 
-**Nota:** Este error fue corregido en el commit `1f6839d`. Si sigues viendo este error:
+**Nota:** Este error fue corregido en el commit `1f6839d`.
+
+---
+
+### Error: `ImportError: cannot import name 'get_gemini_provider' from 'src.llm'`
+
+**Síntoma:**
 ```bash
-git pull origin main
+python test_integration.py
+Traceback (most recent call last):
+  File "test_integration.py", line 53, in <module>
+    from src.llm import get_gemini_provider, get_cohere_provider
+ImportError: cannot import name 'get_gemini_provider' from 'src.llm'
 ```
+
+**Causa:**
+Las funciones factory `get_gemini_provider()` y `get_cohere_provider()` no existían. Solo estaban las clases `GeminiProvider` y `CohereProvider`.
+
+**Solución:**
+Se agregaron funciones singleton en cada módulo de provider:
+
+```python
+# En src/llm/gemini_provider.py
+def get_gemini_provider() -> GeminiProvider:
+    """Get singleton GeminiProvider instance."""
+    global _gemini_provider_instance
+    
+    if _gemini_provider_instance is None:
+        from src.config import get_settings
+        settings = get_settings()
+        
+        _gemini_provider_instance = GeminiProvider(
+            model=settings.GEMINI_MODEL,
+            api_key=settings.GEMINI_API_KEY
+        )
+    
+    return _gemini_provider_instance
+```
+
+Y se actualizó `src/llm/__init__.py` para exportarlas:
+
+```python
+from .gemini_provider import GeminiProvider, get_gemini_provider
+from .cohere_provider import CohereProvider, get_cohere_provider
+
+__all__ = [
+    'BaseProvider',
+    'GeminiProvider',
+    'CohereProvider',
+    'get_gemini_provider',  # ← Agregado
+    'get_cohere_provider',  # ← Agregado
+]
+```
+
+**Archivos afectados (ya corregidos):**
+- `src/llm/gemini_provider.py` (función agregada)
+- `src/llm/cohere_provider.py` (función agregada)
+- `src/llm/__init__.py` (exportaciones actualizadas)
+
+**Archivos que dependían de esto:**
+- `test_integration.py`
+- `src/services/chat_service.py`
+
+**Nota:** Este error fue corregido en el commit `3174d74`.
+
+---
+
+### Error: `ImportError: cannot import name 'DEFAULT_TOP_K' from 'src.config'`
+
+**Síntoma:**
+```bash
+python src/rag/pipeline.py
+Traceback (most recent call last):
+  File "src/rag/pipeline.py", line 13, in <module>
+    from src.config import DEFAULT_TOP_K
+ImportError: cannot import name 'DEFAULT_TOP_K' from 'src.config'
+```
+
+**Causa:**
+Las constantes de configuración RAG (`DEFAULT_TOP_K`, `DEFAULT_CHUNK_SIZE`, etc.) existían en `src/config/constants.py` pero **no se exportaban** en `src/config/__init__.py`.
+
+**Solución:**
+Actualizar `src/config/__init__.py` para exportar todas las constantes RAG:
+
+```python
+from .constants import (
+    # ... otras importaciones ...
+    
+    # RAG Configuration
+    DEFAULT_CHUNK_SIZE,
+    DEFAULT_CHUNK_OVERLAP,
+    DEFAULT_TOP_K,
+    DEFAULT_TEMPERATURE,
+    MIN_DOCUMENTS_FOR_RAG,
+    MIN_CHUNK_SIZE,
+    MAX_CHUNK_SIZE,
+    MIN_TOP_K,
+    MAX_TOP_K,
+    MIN_TEMPERATURE,
+    MAX_TEMPERATURE,
+    
+    # ...
+)
+```
+
+**Archivos afectados (ya corregidos):**
+- `src/config/__init__.py` (exportaciones agregadas)
+
+**Archivos que dependían de esto:**
+- `src/rag/pipeline.py`
+- Cualquier módulo que use constantes de configuración RAG
+
+**Nota:** Este error fue corregido en el commit `3174d74`.
 
 ---
 
@@ -396,6 +502,74 @@ Si ninguna solución funciona:
 ---
 
 ## Información de Debug Útil
+
+### Script de Validación Pre-Setup (NUEVO)
+
+Antes de ejecutar `setup.py`, puedes ejecutar el script de validación para detectar problemas de importación:
+
+```bash
+python validate_imports.py
+```
+
+Este script verifica:
+- ✅ Todas las importaciones de módulos principales
+- ✅ Exportaciones en `__init__.py` de cada paquete
+- ✅ Funciones factory de LLM (get_gemini_provider, get_cohere_provider)
+- ✅ Constantes de configuración (DEFAULT_TOP_K, etc.)
+- ✅ Imports en setup.py, run.py, test_integration.py
+
+**Salida esperada si todo está bien:**
+```
+======================================================================
+TechFlow Solutions - Import Validation
+======================================================================
+
+🔍 Validating config package...
+   ✅ config package OK
+🔍 Validating utils package...
+   ✅ utils package OK
+🔍 Validating storage package...
+   ✅ storage package OK
+🔍 Validating auth package...
+   ✅ auth package OK
+🔍 Validating llm package...
+   ✅ llm package OK
+🔍 Validating rag package...
+   ✅ rag package OK
+🔍 Validating services package...
+   ✅ services package OK
+🔍 Validating ui package...
+   ✅ ui package OK
+🔍 Validating main scripts...
+   ✅ setup.py imports OK
+   ✅ run.py imports OK
+   ✅ test_integration.py imports OK
+🔍 Checking LLM factory functions...
+   ✅ LLM factory functions found in src.llm
+🔍 Checking config constants...
+   ✅ All required config constants present
+
+======================================================================
+Validation Results
+======================================================================
+
+Checks Passed: 11/11
+Success Count: [número]
+
+✅ ALL IMPORTS ARE VALID!
+
+You can now safely run:
+  1. python setup.py
+  2. python test_integration.py
+  3. python run.py
+```
+
+**Si hay errores:**
+El script listará exactamente qué imports fallan y por qué. Esto te ayudará a diagnosticar problemas antes de intentar ejecutar setup.py.
+
+**Nota:** Este script requiere que tengas las dependencias instaladas (`pip install -r requirements.txt`). Si no las tienes, verás errores de módulos como `streamlit`, `chromadb`, etc., pero aún así detectará problemas de estructura del proyecto.
+
+---
 
 ### Verificar instalación completa
 

@@ -132,18 +132,23 @@ pip install -r requirements.txt
 cp .env.example .env  # En Windows: copy .env.example .env
 # Editar .env con tus API keys
 
-# 5. Ejecutar setup
+# 5. (OPCIONAL) Validar imports antes de setup
+python validate_imports.py
+
+# 6. Ejecutar setup
 python setup.py
 
-# 6. Ejecutar tests (opcional)
+# 7. Ejecutar tests (opcional)
 python test_integration.py
 
-# 7. Iniciar la aplicación
+# 8. Iniciar la aplicación
 python run.py
 # o directamente: streamlit run src/app.py
 ```
 
-> **💡 Nota:** Si el comando `python setup.py` falla con un error de importación, asegúrate de tener la última versión del código ejecutando `git pull origin main`. El problema fue corregido en versiones recientes. Ver [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) para más detalles.
+> **💡 Tip:** Ejecuta `python validate_imports.py` antes de `setup.py` para detectar problemas de importación tempranamente. Este script valida que todas las importaciones estén correctas antes de iniciar el proyecto.
+
+> **💡 Nota:** Si el comando `python setup.py` falla con un error de importación, asegúrate de tener la última versión del código ejecutando `git pull origin main`. Los problemas comunes de importación fueron corregidos en commits recientes. Ver [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) para más detalles.
 
 ---
 
