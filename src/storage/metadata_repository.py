@@ -131,7 +131,7 @@ class MetadataRepository:
         metadata_path = self._get_metadata_path(document_name)
         
         try:
-            safe_json_save(metadata, metadata_path)
+            safe_json_save(metadata_path, metadata)
             logger.info(
                 f"Metadata created",
                 document=document_name,
@@ -215,7 +215,7 @@ class MetadataRepository:
         metadata_path = self._get_metadata_path(document_name)
         
         try:
-            safe_json_save(metadata, metadata_path)
+            safe_json_save(metadata_path, metadata)
             logger.info(
                 f"Metadata updated",
                 document=document_name,

@@ -68,7 +68,7 @@ class ConfigRepository:
         """Create config file with defaults if it doesn't exist."""
         if not self.config_path.exists():
             try:
-                safe_json_save(self.DEFAULT_CONFIG, self.config_path)
+                safe_json_save(self.config_path, self.DEFAULT_CONFIG)
                 logger.info("Config file created with defaults", path=str(self.config_path))
             except Exception as e:
                 logger.error("Failed to create config file", exc_info=True)
@@ -120,7 +120,7 @@ class ConfigRepository:
             True
         """
         try:
-            safe_json_save(config, self.config_path)
+            safe_json_save(self.config_path, config)
             logger.info("Configuration saved")
             return True
             
