@@ -45,6 +45,7 @@ from .exceptions import (
     UnsupportedFileFormatError,
     InvalidFilenameError,
     FileCorruptedError,
+    InvalidDocumentError,
     
     # Authentication
     AuthenticationError,
@@ -56,6 +57,7 @@ from .exceptions import (
     KnowledgeLibraryError,
     EmptyKnowledgeLibraryError,
     DuplicateDocumentError,
+    DocumentAlreadyExistsError,
     DocumentNotFoundError,
     MetadataNotFoundError,
     IndexingError,
@@ -164,6 +166,7 @@ __all__ = [
     'UnsupportedFileFormatError',
     'InvalidFilenameError',
     'FileCorruptedError',
+    'InvalidDocumentError',
     
     # Exceptions - Authentication
     'AuthenticationError',
@@ -175,6 +178,7 @@ __all__ = [
     'KnowledgeLibraryError',
     'EmptyKnowledgeLibraryError',
     'DuplicateDocumentError',
+    'DocumentAlreadyExistsError',
     'DocumentNotFoundError',
     'MetadataNotFoundError',
     'IndexingError',

@@ -106,6 +106,13 @@ class FileCorruptedError(FileError):
         super().__init__(message)
 
 
+class InvalidDocumentError(FileError):
+    """Raised when a document file is invalid or cannot be processed."""
+    
+    def __init__(self, message: str):
+        super().__init__(message)
+
+
 class WriteError(FileError):
     """Raised when a write operation fails."""
     
@@ -197,6 +204,10 @@ class DuplicateDocumentError(KnowledgeLibraryError):
     def __init__(self, filename: str):
         self.filename = filename
         super().__init__(f"Document '{filename}' already exists in knowledge library")
+
+
+# Alias for backward compatibility
+DocumentAlreadyExistsError = DuplicateDocumentError
 
 
 class DocumentNotFoundError(KnowledgeLibraryError):
@@ -444,6 +455,7 @@ __all__ = [
     'UnsupportedFileFormatError',
     'InvalidFilenameError',
     'FileCorruptedError',
+    'InvalidDocumentError',
     
     # Authentication
     'AuthenticationError',
@@ -455,7 +467,9 @@ __all__ = [
     'KnowledgeLibraryError',
     'EmptyKnowledgeLibraryError',
     'DuplicateDocumentError',
+    'DocumentAlreadyExistsError',  # Alias for DuplicateDocumentError
     'DocumentNotFoundError',
+    'MetadataNotFoundError',
     'IndexingError',
     
     # LLM
