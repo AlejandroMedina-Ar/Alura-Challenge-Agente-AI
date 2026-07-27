@@ -236,7 +236,7 @@ class KnowledgeLibraryService:
             >>> if info:
             ...     print(info['filename'])
         """
-        return self.metadata_repo.get_metadata(doc_id)
+        return self.meta_repo.get_metadata(doc_id)
     
     def get_document_by_filename(self, filename: str) -> Optional[dict]:
         """
@@ -328,7 +328,7 @@ class KnowledgeLibraryService:
             ... )
         """
         try:
-            return self.metadata_repo.update_metadata(doc_id, **metadata_updates)
+            return self.meta_repo.update_metadata(doc_id, **metadata_updates)
         except Exception as e:
             logger.error(f"Metadata update failed", doc_id=doc_id, error=str(e))
             return False

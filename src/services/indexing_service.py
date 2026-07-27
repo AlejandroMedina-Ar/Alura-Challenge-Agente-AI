@@ -367,7 +367,7 @@ class IndexingService:
             >>> if not service.is_document_indexed("doc_123"):
             ...     service.index_document("doc_123", "file.txt")
         """
-        metadata = self.metadata_repo.get_metadata(doc_id)
+        metadata = self.meta_repo.get_metadata(doc_id)
         
         if not metadata:
             return False
@@ -387,7 +387,7 @@ class IndexingService:
             >>> for doc in pending:
             ...     print(f"Pending: {doc['filename']}")
         """
-        all_docs = self.metadata_repo.list_all_metadata()
+        all_docs = self.meta_repo.list_all_metadata()
         return [doc for doc in all_docs if not doc.get('indexed', False)]
     
     def clear_all_indexes(self) -> bool:
@@ -406,7 +406,7 @@ class IndexingService:
         """
         try:
             # Get all document IDs
-            all_docs = self.metadata_repo.list_all_metadata()
+            all_docs = self.meta_repo.list_all_metadata()
             
             for doc in all_docs:
                 doc_id = doc['doc_id']
