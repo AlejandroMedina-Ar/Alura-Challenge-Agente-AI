@@ -2,6 +2,27 @@
 
 Asistente inteligente basado en Retrieval-Augmented Generation (RAG) para consultar documentos corporativos internos. Permite indexar documentos (PDF, TXT, MD), generar embeddings vectoriales y realizar consultas en lenguaje natural que el agente responde utilizando exclusivamente el contenido de los documentos de la empresa.
 
+## 🆕 Actualizaciones Recientes (Julio 2026)
+
+### Gemini 3.6 Flash
+- ✅ Actualizado a **Gemini 3.6 Flash** (versión más reciente de Google)
+- ✅ Modelos Gemini 1.5 deprecados y reemplazados
+- ✅ Mejor rendimiento en tareas multimodales y de código
+- ✅ Reducción de costos ($1.50/1M tokens de input vs $2.00 anterior)
+
+### Sistema de Autenticación Mejorado
+- ✅ **Acceso automático como Guest** cuando hay documentos
+- ✅ Ya NO pide contraseña en cada acceso
+- ✅ Usuarios comunes pueden usar el chat sin login
+- ✅ Administradores pueden alternar entre vista admin y usuario
+- ✅ Flujo de onboarding mejorado para primera configuración
+
+### Embeddings Optimizados
+- ✅ Migrado a **Sentence Transformers (multilingual-e5-base)**
+- ✅ Embeddings locales (sin dependencia de APIs externas)
+- ✅ 768 dimensiones (optimizado para velocidad)
+- ✅ Soporte multilingüe mejorado
+
 ---
 
 ## Arquitectura
@@ -40,7 +61,7 @@ Asistente inteligente basado en Retrieval-Augmented Generation (RAG) para consul
 │  │  LLM Layer   │     │  RAG Pipeline   │     │  Storage Layer  │ │
 │  │              │     │                 │     │                 │ │
 │  │  • Gemini    │────▶│  • Retriever    │────▶│  • Documents    │ │
-│  │    1.5 Flash │     │  • Chunker      │     │  • Metadata     │ │
+│  │    3.6 Flash │     │  • Chunker      │     │  • Metadata     │ │
 │  │              │     │  • Embeddings   │     │  • Config       │ │
 │  │  • Cohere    │     │  • PromptBuilder│     │  • FileManager  │ │
 │  │    Command-R │     │                 │     │                 │ │
@@ -50,8 +71,8 @@ Asistente inteligente basado en Retrieval-Augmented Generation (RAG) para consul
 │                    ┌──────────────────────────┐                   │
 │                    │   ChromaDB (Vector DB)   │                   │
 │                    │                          │                   │
-│                    │  • Embeddings: Cohere    │                   │
-│                    │    embed-multilingual-v4 │                   │
+│                    │  • Embeddings: E5-base   │                   │
+│                    │    (multilingual, 768d)  │                   │
 │                    │  • Similarity Search     │                   │
 │                    │  • Metadata Filtering    │                   │
 │                    └──────────────────────────┘                   │
@@ -61,10 +82,10 @@ Asistente inteligente basado en Retrieval-Augmented Generation (RAG) para consul
 ### Flujo de una consulta (Query Flow)
 
 1. **Usuario** escribe una pregunta en el chat.
-2. **EmbeddingService** genera el embedding de la consulta usando Cohere embed-multilingual-v4.
+2. **EmbeddingService** genera el embedding de la consulta usando Sentence Transformers (multilingual-e5-base).
 3. **Retriever** busca los 5 fragmentos más relevantes en ChromaDB (configurable).
 4. **PromptBuilder** construye el prompt RAG con los fragmentos como contexto.
-5. **ChatService** invoca el LLM (Gemini 1.5 Flash primario, Cohere Command-R como fallback).
+5. **ChatService** invoca el LLM (Gemini 3.6 Flash primario, Cohere Command-R como fallback).
 6. El LLM genera una respuesta basándose **exclusivamente** en el contexto recuperado.
 7. La respuesta se muestra en el chat con las fuentes consultadas.
 
@@ -74,7 +95,7 @@ Asistente inteligente basado en Retrieval-Augmented Generation (RAG) para consul
 2. **FileManager** guarda los archivos en `data/knowledge_library/documents/`.
 3. **DocumentRepository** calcula checksums SHA-256 para detectar duplicados.
 4. **TextChunker** fragmenta los documentos (chunk_size=1000, overlap=200).
-5. **EmbeddingService** genera embeddings con Cohere embed-multilingual-v4.
+5. **EmbeddingService** genera embeddings con Sentence Transformers (multilingual-e5-base).
 6. **VectorStore** almacena chunks + embeddings + metadata en ChromaDB.
 7. **MetadataRepository** guarda metadata JSON para cada documento.
 
@@ -183,9 +204,9 @@ techflow-rag-agent/
 | Componente | Tecnología | Versión | Propósito |
 |------------|-----------|---------|-----------|
 | **Interfaz** | Streamlit | 1.47.1 | Framework web interactivo |
-| **LLM Principal** | Google Gemini | 1.5 Flash | Generación de respuestas |
-| **LLM Fallback** | Cohere Command-R | command-r | Backup ante fallos de Gemini |
-| **Embeddings** | Cohere | embed-multilingual-v4 | Embeddings multilingües (1024 dim) |
+| **LLM Principal** | Google Gemini | 3.6 Flash | Generación de respuestas (última versión) |
+| **LLM Fallback** | Cohere Command-R | command-r7b-12-2024 | Backup ante fallos de Gemini |
+| **Embeddings** | Sentence Transformers | multilingual-e5-base | Embeddings multilingües (768 dim) |
 | **Vector Store** | ChromaDB | 1.0.16 | Base de datos vectorial local |
 | **Framework RAG** | LangChain | 0.3.27 | Orquestación del pipeline RAG |
 | **Carga de PDFs** | PyMuPDF | 1.23+ | Extracción de texto de PDFs |
@@ -202,7 +223,7 @@ techflow-rag-agent/
 | `chunk_overlap` | 200 | Solapamiento entre fragmentos |
 | `top_k` | 5 | Número de fragmentos recuperados |
 | `temperature` | 0.7 | Temperatura del LLM (creatividad) |
-| `embedding_dim` | 1024 | Dimensión del embedding de Cohere |
+| `embedding_dim` | 768 | Dimensión del embedding de E5-base |
 
 ---
 
@@ -241,9 +262,12 @@ copy .env.example .env
 cp .env.example .env
 
 # Editar .env con tu API key (mínimo requerido)
-# GEMINI_API_KEY=tu-clave-aqui
-# o
-# COHERE_API_KEY=tu-clave-aqui
+# GEMINI_API_KEY=tu-clave-aqui (Gemini 3.6 Flash)
+# ADMIN_PASSWORD=tu-contraseña-admin
+# 
+# Opcional:
+# COHERE_API_KEY=tu-clave-aqui (para fallback)
+# GEMINI_MODEL=gemini-3.6-flash (default, no necesitas cambiarlo)
 
 # 5. (Opcional) Validar imports antes de continuar
 python validate_imports.py
@@ -264,11 +288,26 @@ La aplicación se abre automáticamente en `http://localhost:8501`.
 
 ### Indexar documentos
 
-1. Iniciar sesión como administrador (contraseña por defecto si no se configuró en `.env`).
-2. Navegar a **"Biblioteca de Conocimiento"** desde la barra lateral.
-3. Subir documentos PDF, TXT o MD mediante el uploader.
-4. Hacer clic en **"Indexar documentos"** (se procesan automáticamente).
-5. Esperar a que finalice la indexación (se muestra progreso en tiempo real).
+**Primera vez (Setup inicial):**
+
+1. Al abrir la aplicación por primera vez (sin documentos), el sistema te pedirá login de administrador.
+2. Ingresa la contraseña configurada en `.env` (ADMIN_PASSWORD).
+3. Navegar a **"Panel de Administración"** desde la barra lateral.
+4. Subir documentos PDF, TXT o MD mediante el uploader.
+5. Los documentos se indexan automáticamente.
+6. Esperar a que finalice la indexación (se muestra progreso en tiempo real).
+
+**Acceso posterior (con documentos):**
+
+- **Como usuario común (Guest):** Al abrir la aplicación, entrarás automáticamente como invitado.
+  - Puedes usar el chat y consultar la biblioteca.
+  - **NO** puedes subir, eliminar o modificar documentos.
+  - Para acceder como admin, click en **"🔐 Login como Admin"** en el sidebar.
+
+- **Como administrador:** Después de hacer login:
+  - Acceso completo a todas las funciones.
+  - Puedes cambiar a vista de usuario con **"👥 Modo Usuario"** sin cerrar sesión.
+  - Para cerrar sesión completamente, usa **"🚪 Cerrar Sesión"**.
 
 ---
 
@@ -490,14 +529,70 @@ sudo systemctl status techflow-rag
 
 ---
 
+## Modos de Acceso
+
+### 👥 Modo Guest (Usuario Común)
+
+**Cuándo:** Al abrir la aplicación cuando hay documentos indexados (acceso automático)
+
+**Permisos:**
+- ✅ Usar el chat para consultar documentos
+- ✅ Ver la biblioteca de conocimiento
+- ✅ Ver configuración actual
+- ✅ Cambiar tema (claro/oscuro)
+- ❌ Subir o eliminar documentos
+- ❌ Modificar configuración del sistema
+- ❌ Acceder al Panel de Administración
+
+**Interfaz:**
+- Sidebar muestra: "👤 Usuario: Invitado"
+- Botón "🔐 Login como Admin" disponible para escalar permisos
+
+### 🔧 Modo Admin (Administrador)
+
+**Cuándo:** Después de hacer login con la contraseña de admin
+
+**Permisos:**
+- ✅ Todas las funciones de Guest
+- ✅ Subir y eliminar documentos
+- ✅ Modificar configuración del sistema
+- ✅ Acceder al Panel de Administración
+- ✅ Ver métricas y estadísticas
+- ✅ Cambiar a vista de usuario sin cerrar sesión
+
+**Interfaz:**
+- Sidebar muestra: "👤 Usuario: admin" y "🔑 Rol: Admin"
+- Botón "👥 Modo Usuario" para cambiar a vista guest
+- Botón "🚪 Cerrar Sesión" para logout completo
+
+### 🔄 Flujo de Acceso
+
+```
+Primera vez (Sin documentos)
+    ↓
+Login Admin obligatorio
+    ↓
+Subir y indexar documentos
+    ↓
+Cerrar sesión o pestaña
+    ↓
+Siguiente visita: Acceso directo como Guest ✅
+    ↓
+Si necesitas admin: Click "Login como Admin"
+```
+
+---
+
 ## Características Principales
 
-### 🔐 Autenticación
+### 🔐 Autenticación Inteligente
 
-- Sistema de login con contraseña hasheada (bcrypt)
-- Sesión persistente durante la navegación
-- Panel de administración protegido
-- Control de acceso basado en roles (admin/usuario)
+- **Acceso automático como Guest:** Cuando hay documentos indexados, los usuarios pueden acceder directamente sin contraseña
+- **Login Admin opcional:** Botón "Login como Admin" disponible en sidebar para acceder a funciones de gestión
+- **Modo Vista de Usuario:** Los administradores pueden cambiar a vista de usuario sin cerrar sesión
+- **Sistema de roles:** Control de acceso basado en roles (admin/guest)
+- **Sesión persistente:** La sesión de admin se mantiene durante la navegación
+- **Contraseñas hasheadas:** Seguridad con bcrypt para almacenamiento de credenciales
 
 ### 💬 Chat Inteligente
 
@@ -550,6 +645,8 @@ sudo systemctl status techflow-rag
 | [USER-GUIDE.md](docs/USER-GUIDE.md) | Guía de usuario completa |
 | [TECHNICAL-DOCS.md](docs/TECHNICAL-DOCS.md) | Documentación técnica detallada |
 | [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | Solución de problemas comunes |
+| [HOTFIX-GEMINI-AUTH.md](docs/HOTFIX-GEMINI-AUTH.md) | Detalles técnicos de Gemini 3.6 y autenticación |
+| [TEST-AUTH-FLOW.md](docs/TEST-AUTH-FLOW.md) | Guía de pruebas del flujo de autenticación |
 | [FAQ.md](docs/FAQ.md) | Preguntas frecuentes |
 | [DEPLOYMENT.md](docs/DEPLOYMENT.md) | Guía de despliegue |
 | [SECURITY-NOTES.md](docs/SECURITY-NOTES.md) | Consideraciones de seguridad |
