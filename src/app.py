@@ -278,6 +278,9 @@ def render_knowledge_page():
     
     Solo accesible para administradores. Guests deben usar el chat.
     """
+    # Version marker for debugging
+    # st.caption("🔍 DEBUG: Version 2024-07-27-v3")  # Descomentar para debug
+    
     # Check if user is admin
     from src.config import SessionKey
     is_admin = st.session_state.get(SessionKey.IS_ADMIN, False)

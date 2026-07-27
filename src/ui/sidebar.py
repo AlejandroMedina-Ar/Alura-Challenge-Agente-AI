@@ -120,6 +120,10 @@ def render_user_info() -> None:
         st.markdown("**👤 Usuario:** Invitado")
         st.caption("Acceso de solo lectura")
         
+        # Debug: Uncomment to verify button click
+        # if st.button("🧪 TEST: Check Session State", key="debug_btn"):
+        #     st.write("Session State:", st.session_state)
+        
         # Login as admin option
         if st.button("🔐 Login como Admin", key="login_admin_btn", use_container_width=True):
             # Set force_login flag to break auto-guest cycle
