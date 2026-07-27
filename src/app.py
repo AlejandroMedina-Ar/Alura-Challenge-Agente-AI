@@ -91,22 +91,33 @@ def main():
     kl_service = get_knowledge_library_service()
     has_documents = kl_service.get_document_count() > 0
     
+    # Check if user explicitly requested login (from guest mode)
+    force_login = st.session_state.get('force_login', False)
+    
     # Check if user explicitly chose guest mode
     guest_mode = st.session_state.get(SessionKey.GUEST_MODE, False)
     
     # Log for debugging
-    logger.debug(f"Auth check: authenticated={auth_service.is_authenticated()}, has_documents={has_documents}, guest_mode={guest_mode}")
+    logger.debug(f"Auth check: authenticated={auth_service.is_authenticated()}, has_documents={has_documents}, guest_mode={guest_mode}, force_login={force_login}")
     
     # Determine access mode with SIMPLIFIED logic:
     # Priority order:
     # 1. If authenticated → Admin mode
-    # 2. If has documents → Guest mode (auto-enable)
-    # 3. If no documents → Setup mode (login required)
+    # 2. If force_login → Show login page
+    # 3. If has documents → Guest mode (auto-enable)
+    # 4. If no documents → Setup mode (login required)
     
     if auth_service.is_authenticated():
         # User is authenticated as admin
         logger.info("Rendering main app as admin")
+        # Clear force_login flag
+        if 'force_login' in st.session_state:
+            del st.session_state['force_login']
         render_main_app(is_admin=True)
+    elif force_login:
+        # User explicitly requested login from guest mode
+        logger.info("User requested admin login from guest mode")
+        render_login_page(setup_mode=False)
     elif has_documents:
         # Has documents → ALWAYS allow guest access (auto-enable)
         if not guest_mode:
@@ -178,6 +189,9 @@ def render_login_page(setup_mode=False):
                     st.success("✅ ¡Inicio de sesión exitoso!")
                     logger.info("User logged in via web interface")
                     st.session_state[SessionKey.GUEST_MODE] = False
+                    # Clear force_login flag after successful login
+                    if 'force_login' in st.session_state:
+                        del st.session_state['force_login']
                     st.rerun()
                     
                 except Exception as e:
@@ -262,14 +276,54 @@ def render_knowledge_page():
     """
     Renderiza la página de gestión de la biblioteca de conocimiento.
     
-    Esta es una vista simplificada enfocada en la gestión de documentos.
-    Para características completas de administración, usa el Panel de Administración.
+    Solo accesible para administradores. Guests deben usar el chat.
     """
-    st.title("📚 Biblioteca de Conocimiento")
-    st.caption("Administra tu colección de documentos")
-    st.divider()
+    # Check if user is admin
+    from src.config import SessionKey
+    is_admin = st.session_state.get(SessionKey.IS_ADMIN, False)
     
-    # Use the documents tab from admin panel
+    st.title("📚 Biblioteca de Conocimiento")
+    
+    if not is_admin:
+        # Guest view: Limited to statistics only
+        st.caption("Estadísticas de la biblioteca")
+        st.divider()
+        
+        st.warning("🔒 **Acceso Restringido:** La gestión de documentos requiere permisos de administrador.")
+        st.info("💡 **Como usuario invitado, puedes:**\n- Consultar documentos usando el 💬 Chat\n- Ver estadísticas de la biblioteca abajo")
+        
+        st.divider()
+        
+        # Show basic statistics only
+        from src.services import get_knowledge_library_service
+        kl_service = get_knowledge_library_service()
+        stats = kl_service.get_storage_stats()
+        
+        st.markdown("### 📊 Estadísticas de la Biblioteca")
+        
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.metric("Total Documentos", stats['total_documents'])
+        with col2:
+            st.metric("Documentos Indexados", stats['indexed_documents'])
+        with col3:
+            st.metric("Tamaño Total", f"{stats['total_size'] / (1024*1024):.1f} MB")
+        
+        st.divider()
+        
+        # Show login option
+        st.markdown("### 🔐 ¿Necesitas gestionar documentos?")
+        if st.button("Iniciar Sesión como Administrador", type="primary", use_container_width=True):
+            st.session_state['force_login'] = True
+            st.session_state[SessionKey.GUEST_MODE] = False
+            st.rerun()
+    else:
+        # Admin view: Full access
+        st.caption("Administra tu colección de documentos")
+        st.divider()
+        
+        # Use the documents tab from admin panel
+        render_documents_tab()
     render_documents_tab()
 
 

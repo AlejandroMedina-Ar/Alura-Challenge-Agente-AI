@@ -122,8 +122,10 @@ def render_user_info() -> None:
         
         # Login as admin option
         if st.button("🔐 Login como Admin", key="login_admin_btn", use_container_width=True):
-            # Clear guest mode and force login
+            # Set force_login flag to break auto-guest cycle
+            st.session_state['force_login'] = True
             st.session_state[SessionKey.GUEST_MODE] = False
+            logger.info("Guest user requested admin login")
             st.rerun()
 
 
