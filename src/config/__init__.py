@@ -57,19 +57,27 @@ from .constants import (
     # Important constants
     SUPPORTED_EXTENSIONS,
     FILE_SIZE_LIMITS,
+    
+    # RAG Configuration
+    DEFAULT_CHUNK_SIZE,
+    DEFAULT_CHUNK_OVERLAP,
+    DEFAULT_TOP_K,
+    DEFAULT_TEMPERATURE,
     MIN_DOCUMENTS_FOR_RAG,
-    FALLBACK_DURATION_SECONDS,
-    LOG_FORMAT,
-    LOG_DATE_FORMAT,
-    VALID_FILENAME_PATTERN,
-    MIN_PASSWORD_LENGTH,
-    MAX_PASSWORD_LENGTH,
     MIN_CHUNK_SIZE,
     MAX_CHUNK_SIZE,
     MIN_TOP_K,
     MAX_TOP_K,
     MIN_TEMPERATURE,
     MAX_TEMPERATURE,
+    
+    # Other constants
+    FALLBACK_DURATION_SECONDS,
+    LOG_FORMAT,
+    LOG_DATE_FORMAT,
+    VALID_FILENAME_PATTERN,
+    MIN_PASSWORD_LENGTH,
+    MAX_PASSWORD_LENGTH,
     
     # Utility functions
     get_file_format,
@@ -118,19 +126,27 @@ __all__ = [
     # Constants - Dicts
     'SUPPORTED_EXTENSIONS',
     'FILE_SIZE_LIMITS',
+    
+    # Constants - RAG Configuration
+    'DEFAULT_CHUNK_SIZE',
+    'DEFAULT_CHUNK_OVERLAP',
+    'DEFAULT_TOP_K',
+    'DEFAULT_TEMPERATURE',
     'MIN_DOCUMENTS_FOR_RAG',
-    'FALLBACK_DURATION_SECONDS',
-    'LOG_FORMAT',
-    'LOG_DATE_FORMAT',
-    'VALID_FILENAME_PATTERN',
-    'MIN_PASSWORD_LENGTH',
-    'MAX_PASSWORD_LENGTH',
     'MIN_CHUNK_SIZE',
     'MAX_CHUNK_SIZE',
     'MIN_TOP_K',
     'MAX_TOP_K',
     'MIN_TEMPERATURE',
     'MAX_TEMPERATURE',
+    
+    # Constants - Other
+    'FALLBACK_DURATION_SECONDS',
+    'LOG_FORMAT',
+    'LOG_DATE_FORMAT',
+    'VALID_FILENAME_PATTERN',
+    'MIN_PASSWORD_LENGTH',
+    'MAX_PASSWORD_LENGTH',
     
     # Constants - Functions
     'get_file_format',

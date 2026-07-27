@@ -357,3 +357,33 @@ class GeminiProvider(BaseProvider):
 __all__ = [
     'GeminiProvider',
 ]
+
+
+# Singleton instance
+_gemini_provider_instance: Optional[GeminiProvider] = None
+
+
+def get_gemini_provider() -> GeminiProvider:
+    """
+    Get singleton GeminiProvider instance.
+    
+    Returns:
+        GeminiProvider: Singleton Gemini provider instance
+    
+    Example:
+        >>> provider = get_gemini_provider()
+        >>> response = provider.chat_completion(messages)
+    """
+    global _gemini_provider_instance
+    
+    if _gemini_provider_instance is None:
+        from src.config import get_settings
+        settings = get_settings()
+        
+        _gemini_provider_instance = GeminiProvider(
+            model=settings.GEMINI_MODEL,
+            api_key=settings.GEMINI_API_KEY
+        )
+        logger.debug("GeminiProvider singleton created")
+    
+    return _gemini_provider_instance

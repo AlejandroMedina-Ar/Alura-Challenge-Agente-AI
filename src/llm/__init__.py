@@ -13,8 +13,8 @@ License: MIT
 """
 
 from .base_provider import BaseProvider
-from .gemini_provider import GeminiProvider
-from .cohere_provider import CohereProvider
+from .gemini_provider import GeminiProvider, get_gemini_provider
+from .cohere_provider import CohereProvider, get_cohere_provider
 
 
 __all__ = [
@@ -24,4 +24,8 @@ __all__ = [
     # Providers
     'GeminiProvider',
     'CohereProvider',
+    
+    # Factory functions
+    'get_gemini_provider',
+    'get_cohere_provider',
 ]

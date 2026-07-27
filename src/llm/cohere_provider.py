@@ -350,3 +350,33 @@ class CohereProvider(BaseProvider):
 __all__ = [
     'CohereProvider',
 ]
+
+
+# Singleton instance
+_cohere_provider_instance: Optional[CohereProvider] = None
+
+
+def get_cohere_provider() -> CohereProvider:
+    """
+    Get singleton CohereProvider instance.
+    
+    Returns:
+        CohereProvider: Singleton Cohere provider instance
+    
+    Example:
+        >>> provider = get_cohere_provider()
+        >>> response = provider.chat_completion(messages)
+    """
+    global _cohere_provider_instance
+    
+    if _cohere_provider_instance is None:
+        from src.config import get_settings
+        settings = get_settings()
+        
+        _cohere_provider_instance = CohereProvider(
+            model=settings.COHERE_MODEL,
+            api_key=settings.COHERE_API_KEY
+        )
+        logger.debug("CohereProvider singleton created")
+    
+    return _cohere_provider_instance
