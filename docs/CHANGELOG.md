@@ -60,7 +60,7 @@ Implementación completa del Agente RAG de TechFlow Solutions con funcionalidad 
   - Construcción de prompts consciente del contexto
 
 - **Integración LLM** - Soporte dual de proveedores con fallback automático
-  - Google Gemini 1.5 Flash (primario)
+  - Google Gemini 3.6 Flash (primario)
   - Cohere Command-R (respaldo)
   - Respuestas en streaming
   - Formato de mensajes compatible con OpenAI

@@ -884,7 +884,7 @@ Desplegar aplicación a Streamlit Community Cloud.
 **LLM Module (4 archivos):**
 - ✅ `src/llm/__init__.py` - LLM package exports
 - ✅ `src/llm/base_provider.py` - Abstract base provider (220 líneas)
-- ✅ `src/llm/gemini_provider.py` - Google Gemini 1.5 Flash provider (420 líneas)
+- ✅ `src/llm/gemini_provider.py` - Google Gemini 3.6 Flash provider (420 líneas)
 - ✅ `src/llm/cohere_provider.py` - Cohere Command-R provider (400 líneas)
 
 **Total:** 7 archivos, ~1550 líneas de código

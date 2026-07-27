@@ -147,7 +147,7 @@ techflow-rag-agent/
 │   │
 │   ├── llm/                      # Proveedores LLM
 │   │   ├── base_provider.py      # Clase base abstracta
-│   │   ├── gemini_provider.py    # Google Gemini 1.5 Flash
+│   │   ├── gemini_provider.py    # Google Gemini 3.6 Flash
 │   │   └── cohere_provider.py    # Cohere Command-R (fallback)
 │   │
 │   ├── rag/                      # Pipeline RAG

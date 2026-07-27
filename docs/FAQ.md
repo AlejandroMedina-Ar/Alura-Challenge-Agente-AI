@@ -20,7 +20,7 @@ RAG stands for Retrieval-Augmented Generation. It's a technique that:
 ### Is it free to use?
 
 Yes! The entire stack uses free-tier services:
-- **Google Gemini 1.5 Flash** (free tier)
+- **Google Gemini 3.6 Flash** (free tier)
 - **Cohere Command-R** (free tier)
 - **Local ChromaDB** (free, open-source)
 - **Local embeddings** (free, runs on your machine)

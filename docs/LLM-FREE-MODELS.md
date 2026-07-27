@@ -16,7 +16,7 @@ Este documento lista los modelos LLM de **tier gratuito** disponibles para el pr
 │                                                 │
 │  ┌───────────────────────────────────────────┐ │
 │  │  PRIMARY LLM                              │ │
-│  │  Google Gemini 1.5 Flash (FREE)          │ │
+│  │  Google Gemini 3.6 Flash (FREE)          │ │
 │  │  - Modelo principal para chat             │ │
 │  │  - Alta velocidad                         │ │
 │  │  - 1M token context window                │ │
@@ -40,16 +40,16 @@ Este documento lista los modelos LLM de **tier gratuito** disponibles para el pr
 
 | Modelo | Estado | Velocidad | Context Window | Recomendado |
 |--------|--------|-----------|----------------|-------------|
-| **`gemini-1.5-flash`** | ✅ Estable | Muy alta | 1M tokens | ✅ **SÍ** |
-| **`gemini-1.5-flash-8b`** | ✅ Estable | Ultra alta | 1M tokens | ✅ Para baja latencia |
-| **`gemini-2.0-flash-exp`** | ⚠️ Experimental | Alta | 1M tokens | ⚠️ Puede cambiar |
+| **`gemini-3.6-flash`** | ✅ Estable | Muy alta | 1M tokens | ✅ **SÍ** (recomendado) |
+| **`gemini-3.5-flash-lite`** | ✅ Estable | Ultra alta | 1M tokens | ✅ Para baja latencia |
+| ~~`gemini-1.5-flash`~~ | ❌ Deprecado | - | - | ❌ **NO** (usar 3.6) |
 
 ### **Configuración Recomendada**
 
 ```bash
 # .env
 GEMINI_API_KEY=tu-api-key-aqui
-GEMINI_MODEL=gemini-1.5-flash
+GEMINI_MODEL=gemini-3.6-flash
 ```
 
 ### **Obtener API Key (FREE)**
@@ -146,7 +146,7 @@ COHERE_MODEL=command-r7b-12-2024
 
 # PRIMARY: Google Gemini (FREE)
 GEMINI_API_KEY=AIza...tu-key-aqui
-GEMINI_MODEL=gemini-1.5-flash
+GEMINI_MODEL=gemini-3.6-flash
 
 # FALLBACK: Cohere (FREE)
 COHERE_API_KEY=tu-cohere-key-aqui
