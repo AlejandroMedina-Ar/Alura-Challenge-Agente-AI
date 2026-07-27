@@ -188,15 +188,7 @@ def handle_file_upload(uploaded_file, kl_service) -> None:
     file_size = uploaded_file.size
     file_type = uploaded_file.type
     
-    # Check if exists
-    if kl_service.document_exists(filename):
-        render_info_message(
-            f"El documento '{filename}' ya existe",
-            "warning"
-        )
-        return
-    
-    # Upload
+    # Upload (el servicio ya verifica si existe)
     with render_spinner(f"Subiendo {filename}..."):
         try:
             # Save uploaded file temporarily

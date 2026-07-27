@@ -47,7 +47,7 @@ class IndexingService:
     
     def __init__(self):
         """Initialize indexing service."""
-        from src.services.knowledge_base_service import get_knowledge_library_service
+        from src.services.knowledge_library_service import get_knowledge_library_service
         self.file_manager = FileManager()
         self.meta_repo = MetadataRepository()
         self.kl_service = get_knowledge_library_service()
