@@ -86,7 +86,7 @@ class KnowledgeLibraryService:
                 raise DocumentAlreadyExistsError(filename)
             
             # Save document file
-            doc_id = self.file_manager.save_document(file_path, filename)
+            doc_id = self.file_manager.save_file(file_path, filename)
             
             # Create metadata
             metadata = self.metadata_repo.create_metadata(
