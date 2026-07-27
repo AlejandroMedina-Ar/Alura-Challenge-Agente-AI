@@ -333,7 +333,7 @@ class IndexingService:
             >>> print(f"Total chunks: {stats['total_chunks']}")
         """
         # Get all documents
-        all_docs = self.metadata_repo.list_all_metadata()
+        all_docs = self.meta_repo.list_all_metadata()
         
         indexed_docs = [doc for doc in all_docs if doc.get('indexed', False)]
         pending_docs = [doc for doc in all_docs if not doc.get('indexed', False)]
