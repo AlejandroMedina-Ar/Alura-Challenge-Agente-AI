@@ -1,504 +1,534 @@
-# 📖 TechFlow Solutions - User Guide
+# 📖 Guía de Usuario - TechFlow Solutions RAG Agent
 
-**Complete guide for using the TechFlow Solutions RAG Agent**
-
----
-
-## Table of Contents
-
-1. [Getting Started](#getting-started)
-2. [Login](#login)
-3. [Chat Interface](#chat-interface)
-4. [Knowledge Library](#knowledge-library)
-5. [Admin Panel](#admin-panel)
-6. [Settings](#settings)
-7. [Tips & Best Practices](#tips--best-practices)
-8. [Troubleshooting](#troubleshooting)
+**Guía completa para usar el Agente RAG de TechFlow Solutions**
 
 ---
 
-## Getting Started
+## 📑 Tabla de Contenidos
 
-### First Time Setup
-
-1. **Install the application** (if not already done):
-   ```bash
-   python setup.py
-   ```
-
-2. **Configure API keys** in `.env` file:
-   ```bash
-   GEMINI_API_KEY=your_gemini_key_here
-   COHERE_API_KEY=your_cohere_key_here
-   ADMIN_PASSWORD=your_secure_password
-   ```
-
-3. **Start the application**:
-   ```bash
-   python run.py
-   ```
-
-4. **Open browser** at: http://localhost:8501
+1. [Primeros Pasos](#primeros-pasos)
+2. [Modos de Acceso](#modos-de-acceso)
+3. [Chat con el Agente](#chat-con-el-agente)
+4. [Biblioteca de Conocimiento](#biblioteca-de-conocimiento)
+5. [Panel de Administración](#panel-de-administración)
+6. [Configuración](#configuración)
+7. [Mejores Prácticas](#mejores-prácticas)
+8. [Solución de Problemas](#solución-de-problemas)
 
 ---
 
-## Login
+## 🚀 Primeros Pasos
 
-### Admin Authentication
+### Primera Vez (Sin Documentos)
 
-1. Navigate to the login page (default on first visit)
-2. Enter your admin password (set in `.env` file)
-3. Click **Login**
+Cuando abres la aplicación por primera vez:
 
-**Default Credentials:**
-- Username: `admin` (fixed)
-- Password: Check your `.env` file
+1. **Pantalla de Login** aparecerá automáticamente
+2. Ingresa la contraseña de administrador (configurada en `.env`)
+3. Serás redirigido al Panel de Administración
+4. **Sube tus primeros documentos:**
+   - Panel de Administración → Documentos
+   - Arrastra archivos o click en "Selecciona un documento"
+   - Espera a que se indexen automáticamente
 
-**Security Notes:**
-- Sessions expire after inactivity
-- Always logout when done using public computers
-- Change default password in production
+### Accesos Posteriores (Con Documentos)
 
----
+Una vez que hay documentos indexados:
 
-## Chat Interface
-
-### Starting a Conversation
-
-1. Navigate to **💬 Chat** from the sidebar
-2. Type your question in the chat input box
-3. Press Enter or click Send
-4. Wait for the streaming response
-
-### Chat Features
-
-#### **Streaming Responses**
-- Responses appear word-by-word in real-time
-- Can be interrupted by refreshing the page
-- Shows thinking process
-
-#### **Conversation History**
-- Previous messages are maintained in session
-- Context-aware: system remembers conversation
-- Cleared when you click "Clear Chat" or reload
-
-#### **Source Citations**
-- Responses include source document references
-- Format: `[Fuente: document.pdf, Sección 2]`
-- Helps verify information accuracy
-
-### Example Questions
-
-**Good Questions:**
-- "¿Cuál es el proceso de onboarding para nuevos empleados?"
-- "Resume el documento de políticas de vacaciones"
-- "¿Qué dice el manual sobre trabajo remoto?"
-
-**Questions to Avoid:**
-- Too vague: "Dime algo"
-- Outside knowledge base: "¿Qué hora es?"
-- Personal questions: System doesn't have personal context
-
-### Chat Controls
-
-**Clear Chat:**
-- Clears conversation history
-- Fresh start for new topic
-
-**Export Chat:**
-- Downloads conversation as text file
-- Useful for documentation or sharing
+- **Acceso automático como Guest:** La app se abre directamente al chat
+- **No necesitas contraseña** para consultar documentos
+- **Para gestionar documentos:** Click en "🔐 Login como Admin" en el sidebar
 
 ---
 
-## Knowledge Library
+## 👥 Modos de Acceso
 
-### Uploading Documents
+### Modo Guest (Usuario Común)
 
-1. Navigate to **📚 Knowledge Library**
-2. Click **Choose a document** or drag & drop
-3. Select file from your computer
-4. Wait for upload confirmation
+**Acceso:** Automático cuando hay documentos
 
-**Supported Formats:**
-- PDF (.pdf) - Max 10MB
-- Text (.txt) - Max 10MB
-- Markdown (.md) - Max 10MB
-- Word (.docx) - Max 10MB
+**Puedes:**
+- ✅ Usar el chat para consultar documentos
+- ✅ Ver la biblioteca de conocimiento
+- ✅ Ver configuración (solo lectura)
+- ✅ Cambiar tema (claro/oscuro)
 
-**Upload Best Practices:**
-- Use descriptive filenames
-- Keep files under 10MB
-- Remove sensitive information first
-- Ensure text is readable (not scanned images)
+**NO puedes:**
+- ❌ Subir documentos
+- ❌ Eliminar documentos
+- ❌ Modificar configuración
+- ❌ Acceder al Panel de Administración
 
-### Managing Documents
+**Interfaz:**
+- Sidebar muestra: "👤 Usuario: Invitado"
+- Botón disponible: "🔐 Login como Admin"
 
-**View Documents:**
-- See list of all uploaded documents
-- Check upload date and size
-- View indexing status
+### Modo Admin (Administrador)
 
-**Delete Documents:**
-- Click 🗑️ Delete button
-- Confirm deletion
-- Both file and index are removed
+**Acceso:** Click en "Login como Admin" + contraseña
 
-**Index Status:**
-- ✅ Indexed - Ready for chat
-- ⚠️ Not indexed - Needs indexing
+**Puedes:**
+- ✅ Todas las funciones de Guest
+- ✅ Subir y eliminar documentos
+- ✅ Modificar configuración del sistema
+- ✅ Acceder al Panel de Administración
+- ✅ Ver métricas y estadísticas
+- ✅ Cambiar entre modos sin cerrar sesión
 
----
-
-## Admin Panel
-
-### Dashboard Tab
-
-**System Overview:**
-- Total documents uploaded
-- Indexed documents count
-- Total chunks in vector store
-- Storage used (MB)
-
-**System Status:**
-- RAG Pipeline status (Ready/Not Ready)
-- Vector store count
-- LLM configuration (Provider, Temperature)
-
-### Documents Tab
-
-**Upload Documents:**
-- Same as Knowledge Library page
-- More detailed upload interface
-- Bulk operations available
-
-**Manage Documents:**
-- View all documents
-- Delete individual documents
-- Index/Re-index documents
-
-**Document Actions:**
-- 🗑️ **Delete** - Remove document permanently
-- ⚡ **Index** - Index document for chat
-- 🔄 **Re-index** - Re-process existing document
-
-### Indexing Tab
-
-**Indexing Operations:**
-- View pending documents (not indexed)
-- Index all pending at once
-- Clear all indexes (warning: destructive!)
-
-**Statistics:**
-- Indexed documents
-- Pending documents
-- Total chunks
-
-**Batch Operations:**
-- ⚡ **Index All Pending** - Process all unindexed documents
-- 🗑️ **Clear All Indexes** - Remove all from vector store
-
-### Testing Tab
-
-**LLM Provider Tests:**
-- Test Gemini connectivity
-- Test Cohere connectivity
-- View response times
-- Verify API keys
-
-**Test Results:**
-- ✅ Success - Provider working
-- ❌ Failed - Check API key or connection
+**Interfaz:**
+- Sidebar muestra: "👤 Usuario: admin" + "🔑 Rol: Admin"
+- Botones: "👥 Modo Usuario" (cambiar a vista guest) y "🚪 Cerrar Sesión"
 
 ---
 
-## Settings
+## 💬 Chat con el Agente
 
-### LLM Settings
+### Usar el Chat
 
-**Provider Selection:**
-- **Gemini** (Primary) - Fast, reliable
-- **Cohere** (Fallback) - Automatic backup
+1. **Ir a Chat:**
+   - Sidebar → "💬 Chat con el Agente"
 
-**Model Selection:**
-- Gemini: `gemini-1.5-flash` (recommended)
-- Cohere: `command-r`
+2. **Escribir pregunta:**
+   - Escribe en el input inferior
+   - Presiona Enter o click en el botón de envío
 
-**API Key:**
-- Enter your provider API key
-- Stored securely in local config
-- Hidden with asterisks for security
+3. **Ver respuesta:**
+   - La respuesta aparece en streaming (palabra por palabra)
+   - Incluye fuentes consultadas al final
 
-### RAG Settings
+### Características del Chat
 
-**Chunking Settings:**
-- **Chunk Size** (128-2048 chars)
-  - Smaller = More precise, more chunks
-  - Larger = More context, fewer chunks
-  - Default: 512 characters
+#### Historial de Conversación
+- El chat mantiene contexto de mensajes anteriores
+- Puedes hacer preguntas de seguimiento
+- Ejemplo:
+  ```
+  Usuario: ¿Cuál es el horario de la Mesa de Ayuda?
+  Agente: El horario es...
+  Usuario: ¿Y para urgencias?
+  Agente: [responde basándose en contexto anterior]
+  ```
 
-- **Chunk Overlap** (0-512 chars)
-  - Overlap between chunks
-  - Prevents losing context at boundaries
-  - Default: 50 characters
+#### Indicación de Fuentes
+- Cada respuesta muestra los documentos consultados
+- Formato: `**Fuente:** Manual de TI - Capítulo 3`
+- Ayuda a verificar información
 
-**Retrieval Settings:**
-- **Top K** (1-20)
-  - Number of chunks to retrieve
-  - More = More context, slower
-  - Less = Faster, less context
-  - Default: 5 chunks
+#### Limpiar Conversación
+- Click en "🗑️ Limpiar Chat" (si disponible)
+- O recarga la página para empezar de nuevo
 
-**Generation Settings:**
-- **Temperature** (0.0-2.0)
-  - 0.0-0.5: Focused, deterministic
-  - 0.5-1.0: Balanced (default: 0.7)
-  - 1.0-2.0: Creative, varied
+### Ejemplos de Preguntas
 
-### UI Settings
+#### Preguntas Efectivas
+```
+✅ "¿Cómo solicito una notebook nueva?"
+✅ "¿Cuál es el proceso de onboarding?"
+✅ "¿Qué dice el manual sobre trabajo remoto?"
+✅ "Resume las políticas de vacaciones"
+```
 
-**Theme Selection:**
-- **Light** - Bright, high contrast
-- **Dark** - Easy on eyes, low light
+#### Preguntas a Evitar
+```
+❌ "Hola" (saludo simple)
+❌ "Cuéntame algo" (demasiado vago)
+❌ "¿Qué hora es?" (fuera del conocimiento)
+❌ Preguntas sobre información no indexada
+```
 
-**Theme Changes:**
-- Applied immediately
-- Saved for next session
+### Respuestas del Agente
 
-### Configuration Management
+#### Cuando HAY información
+```
+El agente responde con:
+1. Respuesta directa basada en documentos
+2. Detalles específicos
+3. Fuentes consultadas
+```
 
-**Validate Configuration:**
-- Check if all settings are valid
-- Shows errors if any
+#### Cuando NO hay información
+```
+"No tengo esa información en los documentos disponibles."
+```
 
-**Export Configuration:**
-- Download config as JSON
-- API keys are redacted
-- Useful for backup
-
-**Reset to Defaults:**
-- Restore original settings
-- Warning: Cannot be undone
-- API keys are preserved
-
----
-
-## Tips & Best Practices
-
-### Document Preparation
-
-**Before Uploading:**
-1. Review content for sensitive information
-2. Ensure text is machine-readable
-3. Use clear, descriptive filenames
-4. Remove unnecessary pages/sections
-
-**Optimal Document Format:**
-- Well-structured with headers
-- Clear paragraphs
-- Avoid overly long documents (split if needed)
-- Include table of contents if possible
-
-### Getting Better Responses
-
-**Ask Specific Questions:**
-- ❌ "Tell me about HR"
-- ✅ "What is the vacation policy for full-time employees?"
-
-**Reference Documents:**
-- "According to the employee handbook..."
-- "In the 2024 sales report..."
-
-**Break Down Complex Questions:**
-- Instead of one complex question
-- Ask 2-3 simpler questions
-
-**Use Context from History:**
-- Follow-up questions work well
-- "Can you elaborate on that?"
-- "What about part-time employees?"
-
-### Indexing Strategy
-
-**When to Index:**
-- Immediately after uploading new documents
-- After updating existing documents
-- If search results seem outdated
-
-**Batch Indexing:**
-- Upload multiple documents first
-- Then index all at once
-- More efficient than one-by-one
-
-**Re-indexing:**
-- If document was updated
-- If search quality degrades
-- After changing chunk settings
-
-### Configuration Tuning
-
-**For Precise Answers:**
-- Smaller chunk size (256-384)
-- Higher top-k (7-10)
-- Lower temperature (0.3-0.5)
-
-**For Creative Responses:**
-- Larger chunk size (512-1024)
-- Medium top-k (5)
-- Higher temperature (0.7-1.0)
-
-**For Fast Performance:**
-- Medium chunk size (512)
-- Lower top-k (3-5)
-- Default temperature (0.7)
+**El agente es honesto:** Si no sabe algo, lo dice claramente. NO inventa información.
 
 ---
 
-## Troubleshooting
+## 📚 Biblioteca de Conocimiento
 
-### Common Issues
+### Vista Guest
 
-#### Cannot Login
+Como usuario guest, ves:
+- 📊 **Estadísticas:**
+  - Total de documentos
+  - Documentos indexados
+  - Tamaño total
+- 🔒 **Mensaje:** "Acceso restringido para gestión"
+- 💡 **Sugerencia:** Usar el chat para consultas
 
-**Problem:** Login fails with "Invalid credentials"
+### Vista Admin
 
-**Solutions:**
-1. Check `.env` file for correct password
-2. Ensure no extra spaces in password
-3. Try resetting password in `.env`
-4. Restart application after changing `.env`
+Como administrador, ves:
+- ⬆️ **Subir Documentos:**
+  - Botón de selección de archivos
+  - Drag & drop disponible
+- 📄 **Lista de Documentos:**
+  - Nombre, tamaño, fecha
+  - Estado de indexación
+  - Botones de acción por documento
 
-#### No Response from Chat
+### Subir Documentos (Admin)
 
-**Problem:** Chat doesn't respond or shows error
+1. **Navegar a Biblioteca:**
+   - Sidebar → "📚 Biblioteca de Conocimiento"
 
-**Solutions:**
-1. Check if documents are indexed (Admin Panel)
-2. Verify API keys in Settings
-3. Test LLM providers in Admin Panel → Testing
-4. Check internet connection
-5. Review logs in `data/logs/application.log`
+2. **Seleccionar archivo:**
+   - Click en "Selecciona un documento"
+   - O arrastra y suelta
 
-#### Upload Fails
+3. **Formatos soportados:**
+   - **PDF** (.pdf) - Máx 50MB
+   - **TXT** (.txt) - Máx 10MB
+   - **Markdown** (.md) - Máx 10MB
+   - **Word** (.docx) - Máx 25MB
 
-**Problem:** Document upload fails
+4. **Esperar indexación:**
+   - El documento se indexa automáticamente
+   - ✅ Aparece confirmación cuando está listo
 
-**Solutions:**
-1. Check file size (max 10MB)
-2. Verify file format (PDF, TXT, MD, DOCX)
-3. Ensure filename has no special characters
-4. Check disk space
-5. Try different file
+### Acciones sobre Documentos (Admin)
 
-#### Indexing Fails
+**Por cada documento:**
+- 🗑️ **Eliminar:** Borra el documento y su índice
+- ⚡ **Indexar:** (si no está indexado) Procesa el documento
+- 🔄 **Re-indexar:** (si ya está indexado) Vuelve a procesar
 
-**Problem:** Document fails to index
+---
 
-**Solutions:**
-1. Check if file is readable (not corrupted)
-2. Verify file contains text (not just images)
-3. Check logs for specific error
-4. Try re-uploading document
-5. Check disk space for ChromaDB
+## 🔧 Panel de Administración
 
-#### Poor Search Results
+**Acceso:** Solo para administradores
 
-**Problem:** Responses don't use relevant documents
+### Tab: Documentos
 
-**Solutions:**
-1. Re-index documents
-2. Increase top-k (Settings → RAG)
-3. Adjust chunk size
-4. Rephrase question more specifically
-5. Check if relevant documents are uploaded
+**Vista completa de gestión:**
+- Subir múltiples documentos
+- Ver lista detallada
+- Acciones por documento
+- Operaciones por lotes
 
-#### Slow Performance
+### Tab: Indexación
 
-**Problem:** Application is slow or laggy
+**Control de indexación:**
 
-**Solutions:**
-1. Reduce top-k value
-2. Clear browser cache
-3. Restart application
-4. Check system resources
-5. Reduce number of indexed documents
+**Estadísticas:**
+- Documentos indexados
+- Documentos pendientes
+- Total de fragmentos
 
-### Error Messages
+**Documentos Pendientes:**
+- Lista de archivos sin indexar
+- Nombres de archivos visibles
+
+**Operaciones:**
+- ⚡ **Indexar Todos los Pendientes:** Procesa todos de una vez
+- 🗑️ **Limpiar Todos los Índices:** Borra todo el índice (⚠️ destructivo)
+
+### Tab: Testing
+
+**Probar proveedores LLM:**
+
+1. **Test de Gemini:**
+   - Click en "Test Gemini"
+   - Ver respuesta y tiempo
+   - ✅ Verde = funciona, ❌ Rojo = error
+
+2. **Test de Cohere:**
+   - Click en "Test Cohere"
+   - Verifica fallback
+   - Solo necesario si Gemini falla
+
+---
+
+## ⚙️ Configuración
+
+### Proveedor LLM
+
+**Gemini 3.6 Flash (Principal):**
+- Modelo más reciente de Google
+- Rápido y eficiente
+- Requiere API key gratuita
+
+**Cohere Command-R (Fallback):**
+- Backup automático si Gemini falla
+- Se activa automáticamente
+- 5 minutos de cooldown antes de reintentar Gemini
+
+### Parámetros RAG
+
+**Chunk Size (Tamaño de Fragmento):**
+- Rango: 100-5000 caracteres
+- Default: 1000
+- Más pequeño = más precisión
+- Más grande = más contexto
+
+**Chunk Overlap (Solapamiento):**
+- Rango: 0-200 caracteres
+- Default: 200
+- Previene pérdida de contexto en bordes
+
+**Top K (Fragmentos Recuperados):**
+- Rango: 1-20
+- Default: 5
+- Más fragmentos = más contexto, más lento
+
+**Temperature (Temperatura):**
+- Rango: 0.0-2.0
+- Default: 0.7
+- 0.0-0.5: Respuestas precisas
+- 0.5-1.0: Balanceado
+- 1.0-2.0: Creativo
+
+### Tema
+
+**Modo Claro (Light):**
+- Fondo blanco
+- Texto oscuro
+- Mejor para ambientes iluminados
+- **Default por defecto**
+
+**Modo Oscuro (Dark):**
+- Fondo oscuro
+- Texto claro
+- Mejor para ambientes con poca luz
+
+**Cambio inmediato:**
+- Click en el selector de tema
+- Se aplica instantáneamente
+- Se guarda para la próxima sesión
+
+---
+
+## 💡 Mejores Prácticas
+
+### Preparar Documentos
+
+**Antes de subir:**
+1. ✅ Revisa que no haya información sensible
+2. ✅ Verifica que el texto sea legible (no imágenes escaneadas)
+3. ✅ Usa nombres de archivo descriptivos
+4. ✅ Divide documentos muy largos (>10MB)
+
+**Formato ideal:**
+- Con encabezados claros (H1, H2, H3)
+- Párrafos bien estructurados
+- Tabla de contenidos (opcional)
+- Sin información duplicada
+
+### Hacer Mejores Preguntas
+
+**Sé específico:**
+```
+❌ "Dime sobre RR.HH."
+✅ "¿Cuál es la política de vacaciones para empleados tiempo completo?"
+```
+
+**Usa contexto:**
+```
+✅ "Según el manual del empleado, ¿cuántos días de vacaciones tengo?"
+✅ "En el reporte de ventas 2024, ¿cuál fue el producto más vendido?"
+```
+
+**Divide preguntas complejas:**
+```
+En lugar de:
+❌ "¿Cuál es el proceso completo de solicitud de equipamiento, 
+   los tiempos de entrega y qué hacer si falla?"
+
+Pregunta:
+✅ 1. "¿Cómo solicito equipamiento nuevo?"
+✅ 2. "¿Cuánto tarda en llegar?"
+✅ 3. "¿Qué hago si el equipo falla?"
+```
+
+### Estrategia de Indexación
+
+**Cuándo indexar:**
+- Inmediatamente después de subir documentos
+- Después de actualizar un documento
+- Si las respuestas parecen desactualizadas
+
+**Indexación por lotes:**
+- Sube varios documentos primero
+- Luego indexa todos de una vez
+- Más eficiente que uno por uno
+
+**Re-indexación:**
+- Cuando actualizas un documento
+- Si la calidad de búsqueda baja
+- Después de cambiar parámetros de chunk
+
+### Ajustar Configuración
+
+**Para respuestas precisas:**
+- Chunk size: 500-800
+- Top K: 7-10
+- Temperature: 0.3-0.5
+
+**Para respuestas creativas:**
+- Chunk size: 1000-1500
+- Top K: 5
+- Temperature: 0.7-1.0
+
+**Para rendimiento rápido:**
+- Chunk size: 1000
+- Top K: 3-5
+- Temperature: 0.7
+
+---
+
+## 🐛 Solución de Problemas
+
+### No Puedo Hacer Login
+
+**Problema:** La contraseña no funciona
+
+**Soluciones:**
+1. Verifica el archivo `.env` → `ADMIN_PASSWORD`
+2. Asegúrate de no tener espacios extra
+3. Reinicia la aplicación después de cambiar `.env`
+4. Verifica mayúsculas/minúsculas
+
+### El Chat No Responde
+
+**Problema:** No hay respuesta o aparece error
+
+**Soluciones:**
+1. ✅ Verifica que hay documentos indexados (Biblioteca)
+2. ✅ Comprueba tu conexión a internet
+3. ✅ Prueba los proveedores LLM (Admin → Testing)
+4. ✅ Revisa logs en `data/logs/application.log`
+5. ✅ Verifica que tu API key de Gemini esté activa
+
+### No Puedo Subir Documentos
+
+**Problema:** La subida falla
+
+**Soluciones:**
+1. ✅ Verifica el tamaño (PDF máx 50MB, TXT/MD máx 10MB)
+2. ✅ Confirma el formato (PDF, TXT, MD, DOCX)
+3. ✅ Revisa que el nombre no tenga caracteres especiales
+4. ✅ Comprueba espacio en disco
+5. ✅ Intenta con otro archivo
+
+### La Indexación Falla
+
+**Problema:** El documento no se indexa
+
+**Soluciones:**
+1. ✅ Verifica que el archivo no esté corrupto
+2. ✅ Asegúrate de que tiene texto (no solo imágenes)
+3. ✅ Revisa logs para error específico
+4. ✅ Intenta re-subir el documento
+5. ✅ Comprueba espacio en disco
+
+### Respuestas Incorrectas
+
+**Problema:** El agente no encuentra información relevante
+
+**Soluciones:**
+1. ✅ Re-indexa los documentos
+2. ✅ Aumenta Top K en Configuración (por ej. a 7-10)
+3. ✅ Reformula la pregunta de forma más específica
+4. ✅ Verifica que los documentos relevantes estén subidos
+5. ✅ Prueba con diferentes parámetros de chunk
+
+### La App Va Lenta
+
+**Problema:** Respuestas tardan mucho
+
+**Soluciones:**
+1. ✅ Reduce Top K a 3-5
+2. ✅ Limpia caché del navegador
+3. ✅ Reinicia la aplicación
+4. ✅ Verifica recursos del sistema
+5. ✅ Considera reducir número de documentos indexados
+
+### Mensajes de Error Comunes
 
 **"Knowledge Library is Empty"**
-- Upload and index at least one document
-- Go to Knowledge Library → Upload
+- Necesitas subir e indexar al menos un documento
+- Ve a Biblioteca → Sube un documento
 
 **"LLM Provider Failed"**
-- Check API keys in Settings
-- Test providers in Admin Panel
-- Verify internet connection
-- Check API quota/limits
+- Verifica tu API key en `.env`
+- Prueba la conexión en Admin → Testing
+- Comprueba tu conexión a internet
+- Revisa tu cuota de API
 
 **"Indexing Error"**
-- Check file format is supported
-- Verify file is not corrupted
-- Review application logs
-- Try smaller documents
+- El formato del archivo no es soportado
+- El archivo puede estar corrupto
+- Revisa logs de la aplicación
+- Intenta con documentos más pequeños
 
-**"Configuration Invalid"**
-- Go to Settings → Configuration
-- Click "Validate Configuration"
-- Fix reported errors
-- Or reset to defaults
+---
 
-### Getting Help
+## ⌨️ Atajos de Teclado
 
-**Check Logs:**
-```
+| Atajo | Acción |
+|-------|--------|
+| `Enter` | Enviar mensaje en chat |
+| `Shift+Enter` | Nueva línea en chat |
+
+---
+
+## ✅ Resumen de Buenas Prácticas
+
+**Hacer:**
+- ✅ Hacer preguntas específicas y claras
+- ✅ Subir documentos bien formateados
+- ✅ Indexar documentos después de subirlos
+- ✅ Probar proveedores LLM regularmente
+- ✅ Mantener API keys seguras
+- ✅ Cerrar sesión en computadoras públicas
+
+**Evitar:**
+- ❌ Subir información sensible sin revisar
+- ❌ Hacer preguntas fuera del conocimiento
+- ❌ Compartir contraseñas de admin
+- ❌ Eliminar documentos sin backup
+- ❌ Cambiar configuración sin entender
+- ❌ Ignorar mensajes de error
+
+---
+
+## 📞 Obtener Ayuda
+
+**Revisar Logs:**
+```bash
 data/logs/application.log
 ```
 
-**Run Tests:**
+**Ejecutar Tests:**
 ```bash
 python test_integration.py
 ```
 
-**Report Issues:**
-- GitHub Issues: [Repository Issues](https://github.com/AlejandroMedina-Ar/Alura-Challenge-Agente-AI/issues)
-- Include error message
-- Describe steps to reproduce
-- Attach relevant logs (remove sensitive info)
+**Documentación Adicional:**
+- [Documentación Técnica](TECHNICAL-DOCS.md)
+- [Solución de Problemas](TROUBLESHOOTING.md)
+- [FAQ](FAQ.md)
+
+**Reportar Problemas:**
+- GitHub Issues: [Repositorio](https://github.com/AlejandroMedina-Ar/Alura-Challenge-Agente-AI/issues)
+- Incluye mensaje de error
+- Describe pasos para reproducir
+- Adjunta logs relevantes (sin información sensible)
 
 ---
 
-## Keyboard Shortcuts
-
-| Shortcut | Action |
-|----------|--------|
-| `Enter` | Send chat message |
-| `Ctrl+K` | Focus chat input |
-| `Esc` | Clear chat input |
-| `Ctrl+/` | Toggle sidebar |
-
----
-
-## Best Practices Summary
-
-✅ **Do:**
-- Use specific, clear questions
-- Upload well-formatted documents
-- Index documents after uploading
-- Test LLM providers regularly
-- Keep API keys secure
-- Logout when done
-
-❌ **Don't:**
-- Upload sensitive information without review
-- Ask questions outside knowledge base
-- Share admin credentials
-- Delete documents without backup
-- Change settings randomly
-- Ignore error messages
-
----
-
-**Need more help?** Check the [Technical Documentation](TECHNICAL-DOCS.md) or [API Reference](API-REFERENCE.md)
-
-**Version:** 1.0.0-beta  
-**Last Updated:** 2026-07-25
+**Versión:** 1.0.0  
+**Última Actualización:** Julio 2026  
+**TechFlow Solutions** - Transformación Digital con IA

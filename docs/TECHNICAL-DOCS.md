@@ -1,209 +1,186 @@
-# 🔧 TechFlow Solutions - Technical Documentation
+# 🔧 Documentación Técnica - TechFlow Solutions RAG Agent
 
-**Complete technical reference for developers**
-
----
-
-## Table of Contents
-
-1. [System Architecture](#system-architecture)
-2. [Module Reference](#module-reference)
-3. [Data Flow](#data-flow)
-4. [API Reference](#api-reference)
-5. [Configuration](#configuration)
-6. [Database Schema](#database-schema)
-7. [Deployment](#deployment)
-8. [Performance](#performance)
+**Referencia técnica completa para desarrolladores**
 
 ---
 
-## System Architecture
+## 📑 Tabla de Contenidos
 
-### High-Level Overview
+1. [Arquitectura del Sistema](#arquitectura-del-sistema)
+2. [Estructura de Módulos](#estructura-de-módulos)
+3. [Flujos de Datos](#flujos-de-datos)
+4. [Referencia de APIs](#referencia-de-apis)
+5. [Configuración](#configuración)
+6. [Base de Datos](#base-de-datos)
+7. [Despliegue](#despliegue)
+8. [Rendimiento](#rendimiento)
+
+---
+
+## 🏗️ Arquitectura del Sistema
+
+### Vista General
 
 ```
-┌─────────────────────────────────────────────────────┐
-│                  Streamlit UI Layer                 │
-│  (app.py, ui/* - User interface components)        │
-└─────────────────────┬───────────────────────────────┘
-                      │
-┌─────────────────────▼───────────────────────────────┐
-│                 Services Layer                      │
-│  (services/* - Business logic orchestration)       │
-│  - ChatService                                      │
-│  - KnowledgeLibraryService                         │
-│  - IndexingService                                  │
-│  - ConfigurationService                            │
-│  - AuthenticationService                           │
-└─────┬────────┬────────┬────────┬───────────────────┘
-      │        │        │        │
-┌─────▼──┐ ┌──▼────┐ ┌▼─────┐ ┌▼──────┐
-│  RAG   │ │  LLM  │ │ Auth │ │Storage│
-│Pipeline│ │Providers│ │     │ │       │
-└────┬───┘ └───┬───┘ └──────┘ └───┬───┘
-     │         │                   │
-┌────▼─────────▼───────────────────▼────┐
-│         Infrastructure Layer           │
-│  - ChromaDB (vector store)            │
-│  - File System (documents)            │
-│  - JSON (configuration)               │
-│  - Logging (application logs)         │
-└───────────────────────────────────────┘
+┌──────────────────────────────────────────────┐
+│         Interfaz Web (Streamlit)             │
+│  app.py + ui/* - Componentes de interfaz    │
+└────────────────┬─────────────────────────────┘
+                 │
+┌────────────────▼─────────────────────────────┐
+│            Capa de Servicios                 │
+│  services/* - Lógica de negocio             │
+│  • ChatService                                │
+│  • KnowledgeLibraryService                   │
+│  • IndexingService                           │
+│  • ConfigurationService                      │
+│  • AuthenticationService                     │
+└──┬──────┬──────┬──────┬──────────────────────┘
+   │      │      │      │
+┌──▼──┐ ┌▼────┐ ┌▼──┐ ┌▼──────┐
+│RAG  │ │ LLM │ │Auth│ │Storage│
+│Pipeline│ │Provs│ │   │ │       │
+└──┬──┘ └──┬──┘ └────┘ └───┬───┘
+   │       │                │
+┌──▼───────▼────────────────▼──────┐
+│      Capa de Infraestructura      │
+│  • ChromaDB (vector store)       │
+│  • File System (documentos)      │
+│  • JSON (configuración)          │
+│  • Logging (logs)                │
+└──────────────────────────────────┘
 ```
 
-### Component Layers
+### Capas del Sistema
 
-**Layer 1: UI (Streamlit)**
-- Handles user interactions
-- Renders pages and components
-- Manages session state
-- Routes user actions to services
+**Capa 1: UI (Streamlit)**
+- Maneja interacciones del usuario
+- Renderiza páginas y componentes
+- Gestiona estado de sesión
+- Enruta acciones a servicios
 
-**Layer 2: Services**
-- Orchestrates business logic
-- Coordinates between modules
-- Implements workflows
-- Handles error management
+**Capa 2: Servicios**
+- Orquesta lógica de negocio
+- Coordina entre módulos
+- Implementa workflows
+- Maneja gestión de errores
 
-**Layer 3: Core Modules**
-- RAG: Embedding, retrieval, prompting
-- LLM: Provider integrations
-- Auth: Authentication and sessions
-- Storage: Data persistence
+**Capa 3: Módulos Core**
+- RAG: Embeddings, retrieval, prompting
+- LLM: Integraciones de proveedores
+- Auth: Autenticación y sesiones
+- Storage: Persistencia de datos
 
-**Layer 4: Infrastructure**
-- Vector database (ChromaDB)
-- File storage
-- Configuration management
-- Logging
+**Capa 4: Infraestructura**
+- Base de datos vectorial (ChromaDB)
+- Almacenamiento de archivos
+- Gestión de configuración
+- Sistema de logging
 
 ---
 
-## Module Reference
+## 📦 Estructura de Módulos
 
 ### src/config
 
-**Purpose:** Application configuration and constants
+**Propósito:** Configuración y constantes de la aplicación
 
-**Files:**
-- `constants.py` - Application constants
-- `paths.py` - Directory paths
-- `settings.py` - Settings management
+**Archivos:**
+- `constants.py` - Constantes de la aplicación
+- `paths.py` - Rutas de directorios
+- `settings.py` - Gestión de configuración
 
-**Key Exports:**
+**Exportaciones Clave:**
 ```python
-# Paths
 from src.config import (
-    PROJECT_ROOT,
-    DATA_DIR,
-    LOGS_DIR,
-    CHROMADB_DIR,
-    KNOWLEDGE_LIBRARY_DIR
+    # Constantes RAG
+    DEFAULT_CHUNK_SIZE,      # 1000
+    DEFAULT_CHUNK_OVERLAP,   # 200
+    DEFAULT_TOP_K,           # 5
+    DEFAULT_TEMPERATURE,     # 0.7
+    
+    # Enums
+    FileFormat,
+    LLMProvider,
+    Theme,
+    SessionKey,
+    MetadataField
 )
-
-# Constants
-from src.config import (
-    DEFAULT_CHUNK_SIZE,
-    DEFAULT_CHUNK_OVERLAP,
-    DEFAULT_TOP_K,
-    DEFAULT_TEMPERATURE
-)
-
-# Settings
-from src.config import get_settings
 ```
 
 ### src/utils
 
-**Purpose:** Utility functions and helpers
+**Propósito:** Funciones utilitarias
 
-**Files:**
-- `exceptions.py` - Custom exceptions
-- `helpers.py` - Helper functions
-- `logger.py` - Logging setup
-- `validators.py` - Input validation
+**Archivos:**
+- `exceptions.py` - Excepciones personalizadas
+- `helpers.py` - Funciones auxiliares
+- `logger.py` - Configuración de logging
+- `validators.py` - Validación de entrada
 
-**Key Classes:**
+**Excepciones:**
 ```python
-# Exceptions
 from src.utils import (
-    TechFlowException,
     ConfigurationError,
     AuthenticationError,
     DocumentNotFoundError,
+    InvalidDocumentError,
     LLMError,
     RAGError
-)
-
-# Functions
-from src.utils import (
-    get_logger,
-    setup_logging,
-    validate_chunk_parameters,
-    validate_top_k,
-    sanitize_filename
 )
 ```
 
 ### src/storage
 
-**Purpose:** Data persistence layer
+**Propósito:** Capa de persistencia
 
-**Files:**
-- `config_repository.py` - Configuration storage
-- `document_repository.py` - Document tracking
-- `metadata_repository.py` - Document metadata
-- `file_manager.py` - File operations
+**Archivos:**
+- `config_repository.py` - Almacenamiento de configuración
+- `document_repository.py` - Seguimiento de documentos
+- `metadata_repository.py` - Metadata de documentos
+- `file_manager.py` - Operaciones de archivos
 
 **Singletons:**
 ```python
 from src.storage import (
-    ConfigRepository,
-    DocumentRepository,
-    MetadataRepository,
-    FileManager
+    get_config_repository,
+    get_document_repository,
+    get_metadata_repository,
+    get_file_manager
 )
 ```
 
 ### src/auth
 
-**Purpose:** Authentication and session management
+**Propósito:** Autenticación y gestión de sesiones
 
-**Files:**
-- `authentication.py` - Password verification
-- `session.py` - Session management
+**Archivos:**
+- `authentication.py` - Verificación de contraseñas
+- `session.py` - Gestión de sesiones
 
-**Singletons:**
+**Uso:**
 ```python
-from src.auth import (
-    get_authenticator,
-    get_session_manager
-)
+from src.auth import get_authenticator, get_session_manager
+
+auth = get_authenticator()
+session = get_session_manager()
 ```
 
 ### src/llm
 
-**Purpose:** LLM provider integrations
+**Propósito:** Integraciones de proveedores LLM
 
-**Files:**
-- `base_provider.py` - Abstract base class
-- `gemini_provider.py` - Google Gemini integration
-- `cohere_provider.py` - Cohere integration
+**Archivos:**
+- `base_provider.py` - Clase base abstracta
+- `gemini_provider.py` - Google Gemini 3.6 Flash
+- `cohere_provider.py` - Cohere Command-R (fallback)
 
-**Singletons:**
+**Uso:**
 ```python
-from src.llm import (
-    get_gemini_provider,
-    get_cohere_provider
-)
-```
+from src.llm import get_gemini_provider, get_cohere_provider
 
-**Usage:**
-```python
-# Initialize provider
+# Usar Gemini
 provider = get_gemini_provider()
-
-# Generate response
 response = provider.chat_completion(
     messages=[{'role': 'user', 'content': 'Hello'}],
     temperature=0.7
@@ -216,67 +193,55 @@ for chunk in provider.chat_completion_stream(messages, 0.7):
 
 ### src/rag
 
-**Purpose:** RAG pipeline components
+**Propósito:** Componentes del pipeline RAG
 
-**Files:**
-- `embedding_service.py` - Text embeddings
-- `vector_store.py` - ChromaDB wrapper
-- `chunker.py` - Text chunking
-- `retriever.py` - Document retrieval
-- `prompt_builder.py` - Prompt construction
-- `pipeline.py` - RAG orchestration
+**Archivos:**
+- `embedding_service.py` - Embeddings con Sentence Transformers
+- `vector_store.py` - Wrapper de ChromaDB
+- `chunker.py` - Fragmentación de texto
+- `retriever.py` - Recuperación de documentos
+- `prompt_builder.py` - Construcción de prompts
+- `pipeline.py` - Orquestación RAG
 
-**Singletons:**
+**Pipeline RAG:**
 ```python
-from src.rag import (
-    get_embedding_service,
-    get_vector_store,
-    get_text_chunker,
-    get_rag_pipeline
-)
-```
+from src.rag import get_rag_pipeline
 
-**RAG Pipeline Usage:**
-```python
 pipeline = get_rag_pipeline()
 
-# Query with RAG
+# Consultar con RAG
 messages = pipeline.query(
-    user_query="What is RAG?",
+    user_query="¿Qué es RAG?",
     top_k=5
 )
 
-# Check if ready
+# Verificar si está listo
 if pipeline.is_ready():
-    # Has indexed documents
+    # Tiene documentos indexados
     pass
 ```
 
 ### src/services
 
-**Purpose:** Business logic services
+**Propósito:** Servicios de lógica de negocio
 
-**Files:**
-- `authentication_service.py` - Auth operations
-- `configuration_service.py` - Config management
-- `knowledge_library_service.py` - Document CRUD
-- `indexing_service.py` - Document indexing
-- `chat_service.py` - Chat with RAG
+**Archivos:**
+- `authentication_service.py` - Operaciones de autenticación
+- `configuration_service.py` - Gestión de configuración
+- `knowledge_library_service.py` - CRUD de documentos
+- `indexing_service.py` - Indexación de documentos
+- `chat_service.py` - Chat con RAG
 
-**Singletons:**
+**Uso de Servicios:**
 ```python
 from src.services import (
     get_authentication_service,
-    get_configuration_service,
     get_knowledge_library_service,
     get_indexing_service,
     get_chat_service
 )
-```
 
-**Service Usage:**
-```python
-# Upload document
+# Subir documento
 kl_service = get_knowledge_library_service()
 metadata = kl_service.upload_document(
     file_path="/tmp/upload.pdf",
@@ -285,7 +250,7 @@ metadata = kl_service.upload_document(
     file_size=102400
 )
 
-# Index document
+# Indexar
 indexing_service = get_indexing_service()
 result = indexing_service.index_document(
     doc_id=metadata['doc_id'],
@@ -294,98 +259,95 @@ result = indexing_service.index_document(
 
 # Chat
 chat_service = get_chat_service()
-for chunk in chat_service.chat("What is RAG?", stream=True):
+for chunk in chat_service.chat("¿Qué es RAG?", stream=True):
     print(chunk, end='')
 ```
 
 ### src/ui
 
-**Purpose:** Streamlit interface components
+**Propósito:** Componentes de interfaz Streamlit
 
-**Files:**
-- `theme.py` - Theme management
-- `components.py` - Reusable widgets
-- `sidebar.py` - Navigation sidebar
-- `chat.py` - Chat interface
-- `admin_panel.py` - Admin dashboard
-- `settings_panel.py` - Settings UI
-
-**Key Functions:**
-```python
-from src.ui import (
-    apply_theme,
-    render_sidebar,
-    render_chat_page,
-    render_admin_panel,
-    render_settings_panel
-)
-```
+**Archivos:**
+- `theme.py` - Gestión de temas (claro/oscuro)
+- `components.py` - Widgets reutilizables
+- `sidebar.py` - Navegación lateral
+- `chat.py` - Interfaz de chat
+- `admin_panel.py` - Panel de administración
+- `settings_panel.py` - Interfaz de configuración
 
 ---
 
-## Data Flow
+## 🔄 Flujos de Datos
 
-### Document Upload Flow
+### Flujo de Subida de Documentos
 
 ```
-User uploads file
+Usuario sube archivo
       ↓
-UI validates file (size, type)
+UI valida archivo (tamaño, tipo)
       ↓
 KnowledgeLibraryService.upload_document()
       ↓
-FileManager.save_document() → Save to data/knowledge_library/documents/
+FileManager.save_document()
+  → Guarda en data/knowledge_library/documents/
       ↓
-MetadataRepository.create_metadata() → Save to data/knowledge_library/metadata/
+DocumentRepository.create_document()
+  → Guarda metadata
       ↓
-Return document metadata
+Retorna metadata del documento
 ```
 
-### Document Indexing Flow
+### Flujo de Indexación
 
 ```
-User clicks "Index"
+Usuario click "Indexar"
       ↓
 IndexingService.index_document(doc_id, filename)
       ↓
-FileManager.read_document() → Load document content
+FileManager.read_document()
+  → Carga contenido
       ↓
-TextChunker.chunk_document() → Split into chunks
+TextChunker.chunk_document()
+  → Divide en fragmentos (chunk_size=1000, overlap=200)
       ↓
-EmbeddingService.generate_embeddings() → Generate vectors (batch)
+EmbeddingService.generate_embeddings()
+  → Genera embeddings (multilingual-e5-base, 768d)
       ↓
-VectorStore.add_documents() → Store in ChromaDB
+VectorStore.add_documents()
+  → Almacena en ChromaDB
       ↓
-MetadataRepository.update_metadata() → Mark as indexed
+MetadataRepository.update_metadata()
+  → Marca como indexado
 ```
 
-### Chat Query Flow
+### Flujo de Consulta en Chat
 
 ```
-User sends message
+Usuario envía mensaje
       ↓
 ChatService.chat(query, stream=True)
       ↓
 RAGPipeline.query(user_query, top_k)
       ↓
   ├─► EmbeddingService.generate_query_embedding()
-  ├─► VectorStore.search() → Retrieve top-k chunks
-  └─► PromptBuilder.build_prompt() → Construct messages
+  │    → Genera embedding de la consulta
+  ├─► VectorStore.search()
+  │    → Recupera top-k fragmentos por similitud
+  └─► PromptBuilder.build_prompt()
+       → Construye mensajes con contexto
       ↓
 LLMProvider.chat_completion_stream(messages)
-  ├─► Try Gemini (primary)
-  └─► Fallback to Cohere (if fails)
+  ├─► Intenta Gemini 3.6 Flash (principal)
+  └─► Fallback a Cohere Command-R (si falla)
       ↓
-Stream response chunks to user
+Stream de respuesta al usuario
 ```
 
 ---
 
-## API Reference
+## 📚 Referencia de APIs
 
-### Service APIs
-
-#### AuthenticationService
+### AuthenticationService
 
 ```python
 from src.services import get_authentication_service
@@ -393,55 +355,28 @@ from src.services import get_authentication_service
 auth_service = get_authentication_service()
 
 # Login
-user_info = auth_service.login("password")
-# Returns: {'username': 'admin', 'role': 'admin'}
+auth_service.login("password")
 
-# Check authentication
+# Verificar autenticación
 if auth_service.is_authenticated():
-    # User is logged in
+    # Usuario está logueado
     pass
 
-# Require authentication (raises if not authenticated)
+# Requerir autenticación (raise si no autenticado)
 auth_service.require_authentication()
 
 # Logout
 auth_service.logout()
 ```
 
-#### ConfigurationService
-
-```python
-from src.services import get_configuration_service
-
-config_service = get_configuration_service()
-
-# Get LLM config
-llm_config = config_service.get_llm_config()
-# Returns: {'provider': 'gemini', 'model': '...', 'api_key': '...'}
-
-# Update RAG config
-config_service.update_rag_config(
-    chunk_size=512,
-    chunk_overlap=50,
-    top_k=5,
-    temperature=0.7
-)
-
-# Get theme
-theme = config_service.get_theme()  # 'light' or 'dark'
-
-# Validate configuration
-is_valid, errors = config_service.validate_configuration()
-```
-
-#### KnowledgeLibraryService
+### KnowledgeLibraryService
 
 ```python
 from src.services import get_knowledge_library_service
 
 kl_service = get_knowledge_library_service()
 
-# Upload document
+# Subir documento
 metadata = kl_service.upload_document(
     file_path="/tmp/file.pdf",
     filename="doc.pdf",
@@ -449,141 +384,146 @@ metadata = kl_service.upload_document(
     file_size=102400
 )
 
-# List documents
+# Listar documentos
 documents = kl_service.list_documents()
-# Returns: [{'doc_id': '...', 'filename': '...', 'indexed': True, ...}, ...]
+# Retorna: [{'doc_id': '...', 'filename': '...', 'indexed': True}, ...]
 
-# Delete document
+# Eliminar documento
 kl_service.delete_document(doc_id)
 
-# Check if exists
+# Verificar existencia
 exists = kl_service.document_exists("doc.pdf")
+
+# Obtener estadísticas
+stats = kl_service.get_storage_stats()
+# Retorna: {'total_documents': 10, 'indexed_documents': 8, 'total_size': ...}
 ```
 
-#### IndexingService
+### IndexingService
 
 ```python
 from src.services import get_indexing_service
 
 indexing_service = get_indexing_service()
 
-# Index single document
+# Indexar documento único
 result = indexing_service.index_document(doc_id, filename)
-# Returns: {'success': True, 'chunk_count': 42, ...}
+# Retorna: {'success': True, 'chunk_count': 42, ...}
 
-# Batch index
+# Indexación por lotes
 docs = [
     {'doc_id': 'doc1', 'filename': 'file1.pdf'},
     {'doc_id': 'doc2', 'filename': 'file2.pdf'}
 ]
 result = indexing_service.batch_index_documents(docs)
-# Returns: {'total': 2, 'success_count': 2, 'failed_count': 0, ...}
+# Retorna: {'total': 2, 'success_count': 2, 'failed_count': 0, ...}
 
-# Get stats
+# Obtener estadísticas
 stats = indexing_service.get_indexing_stats()
-# Returns: {'total_documents': 10, 'indexed_documents': 8, ...}
+# Retorna: {'total_documents': 10, 'indexed_documents': 8, 'pending_documents': 2, ...}
 
-# Get pending documents
+# Obtener documentos pendientes
 pending = indexing_service.get_pending_documents()
+# Retorna: [{'document_name': 'doc.pdf', 'file_size': ..., 'indexed': False}, ...]
 ```
 
-#### ChatService
+### ChatService
 
 ```python
 from src.services import get_chat_service
 
 chat_service = get_chat_service()
 
-# Streaming chat
+# Chat con streaming
 for chunk in chat_service.chat(
-    query="What is RAG?",
+    query="¿Qué es RAG?",
     conversation_history=None,
     stream=True
 ):
     print(chunk, end='', flush=True)
 
-# Non-streaming chat
+# Chat sin streaming
 response = chat_service.chat(
-    query="What is RAG?",
+    query="¿Qué es RAG?",
     stream=False
 )
 
-# Test provider
+# Probar proveedor
 result = chat_service.test_provider('gemini')
-# Returns: {'success': True, 'response_time': 1.23, ...}
-
-# Get stats
-stats = chat_service.get_chat_stats()
+# Retorna: {'success': True, 'response_time': 1.23, 'response': '...'}
 ```
 
-### RAG Pipeline API
+### RAGPipeline
 
 ```python
 from src.rag import get_rag_pipeline
 
 pipeline = get_rag_pipeline()
 
-# Query (returns messages for LLM)
+# Consultar (retorna mensajes para LLM)
 messages = pipeline.query(
-    user_query="What is RAG?",
+    user_query="¿Qué es RAG?",
     top_k=5,
-    conversation_history=[...],
-    metadata_filter={'source': 'doc.pdf'}  # Optional
+    conversation_history=[...],  # Opcional
+    metadata_filter={'source': 'doc.pdf'}  # Opcional
 )
 
-# Check if ready
+# Verificar si está listo
 if pipeline.is_ready():
-    # Has documents
+    # Tiene documentos indexados
     pass
 
-# Get relevant chunks (without prompting)
+# Obtener fragmentos relevantes (sin prompting)
 chunks = pipeline.get_relevant_chunks("query", top_k=3)
-# Returns: [{'text': '...', 'metadata': {...}, 'score': 0.12}, ...]
+# Retorna: [{'text': '...', 'metadata': {...}, 'score': 0.12}, ...]
 
-# Update configuration
+# Actualizar configuración
 pipeline.update_top_k(10)
-pipeline.update_system_instruction("Custom instruction...")
 
-# Get stats
+# Obtener estadísticas
 stats = pipeline.get_stats()
 ```
 
 ---
 
-## Configuration
+## ⚙️ Configuración
 
-### Environment Variables (.env)
+### Variables de Entorno (.env)
 
 ```bash
-# LLM API Keys
-GEMINI_API_KEY=your_gemini_api_key
-COHERE_API_KEY=your_cohere_api_key
+# API Keys de LLM (al menos una requerida)
+GEMINI_API_KEY=tu_api_key_de_gemini
+COHERE_API_KEY=tu_api_key_de_cohere
 
-# Authentication
-ADMIN_PASSWORD=your_secure_password
+# Modelo a usar (opcional, default: gemini-3.6-flash)
+GEMINI_MODEL=gemini-3.6-flash
+COHERE_MODEL=command-r7b-12-2024
 
-# Logging
+# Autenticación
+ADMIN_PASSWORD=tu_contraseña_segura
+
+# Logging (opcional)
 LOG_LEVEL=INFO  # DEBUG, INFO, WARNING, ERROR
 
-# Optional: Override defaults
-DEFAULT_CHUNK_SIZE=512
-DEFAULT_CHUNK_OVERLAP=50
+# Parámetros RAG (opcional, sobreescribe defaults)
+DEFAULT_CHUNK_SIZE=1000
+DEFAULT_CHUNK_OVERLAP=200
 DEFAULT_TOP_K=5
 DEFAULT_TEMPERATURE=0.7
 ```
 
-### Runtime Configuration (data/config.json)
+### Configuración en Tiempo de Ejecución (data/config.json)
 
 ```json
 {
   "llm": {
     "provider": "gemini",
-    "model": "gemini-1.5-flash",
-    "api_key": "encrypted_or_plain"
+    "model": "gemini-3.6-flash",
+    "api_key": ""
   },
   "rag": {
-    "chunk_size": 512,
-    "chunk_overlap": 50,
+    "chunk_size": 1000,
+    "chunk_overlap": 200,
     "top_k": 5,
     "temperature": 0.7
   },
@@ -593,89 +533,98 @@ DEFAULT_TEMPERATURE=0.7
 }
 ```
 
-**Configuration Priority:**
-1. Runtime config (data/config.json) - highest
-2. Environment variables (.env)
-3. Hard-coded defaults - lowest
+**Prioridad de Configuración:**
+1. Configuración en runtime (data/config.json) - más alta
+2. Variables de entorno (.env)
+3. Defaults hard-coded - más baja
 
 ---
 
-## Database Schema
+## 🗄️ Base de Datos
 
-### ChromaDB Collections
+### ChromaDB
 
-**Collection:** `techflow_documents`
+**Colección:** `techflow_documents`
 
-**Fields:**
-- `id`: string - Chunk ID (format: `{doc_id}_chunk_{index}`)
-- `embedding`: float[] - 768-dimensional vector
-- `document`: string - Chunk text content
-- `metadata`: object - Chunk metadata
+**Campos:**
+- `id`: string - ID del fragmento (formato: `{doc_id}_chunk_{index}`)
+- `embedding`: float[] - Vector de 768 dimensiones (multilingual-e5-base)
+- `document`: string - Contenido de texto del fragmento
+- `metadata`: object - Metadata del fragmento
 
-**Metadata Structure:**
+**Estructura de Metadata:**
 ```json
 {
   "source": "document.pdf",
   "doc_id": "uuid",
   "chunk_index": 0,
-  "total_chunks": 42
+  "total_chunks": 42,
+  "file_type": "pdf"
 }
 ```
 
-### Document Metadata (JSON files)
+### Metadata de Documentos (JSON)
 
-**Location:** `data/knowledge_library/metadata/{doc_id}.json`
+**Ubicación:** `data/knowledge_library/metadata/{document_name}.json`
 
-**Structure:**
+**Estructura:**
 ```json
 {
-  "doc_id": "uuid",
-  "filename": "document.pdf",
-  "file_type": "application/pdf",
-  "file_size": 102400,
+  "document_name": "document.pdf",
   "upload_date": "2026-07-25T10:30:00",
+  "file_size": 102400,
+  "file_format": "pdf",
+  "checksum": "sha256_hash",
   "indexed": true,
+  "index_date": "2026-07-25T10:35:00",
   "chunk_count": 42,
-  "last_indexed": "2026-07-25T10:35:00"
+  "tags": [],
+  "description": ""
 }
 ```
+
+**Campos Clave:**
+- `document_name` - Nombre del archivo (ID único)
+- `indexed` - Boolean (false = pendiente de indexar)
+- `chunk_count` - Número de fragmentos generados
+- `checksum` - SHA-256 para detección de duplicados
 
 ---
 
-## Deployment
+## 🚀 Despliegue
 
-### Local Development
+### Desarrollo Local
 
 ```bash
-# Setup
+# Configuración inicial
 python setup.py
 
-# Run tests
+# Tests de integración
 python test_integration.py
 
-# Start application
+# Iniciar aplicación
 python run.py
 ```
 
-### Production Deployment
+### Producción
 
-**Requirements:**
-- Python 3.9+
-- 2GB RAM minimum
-- 1GB disk space
-- Internet connection (for LLM APIs)
+**Requisitos:**
+- Python 3.11+
+- 2GB RAM mínimo
+- 1GB espacio en disco
+- Conexión a internet (para APIs de LLM)
 
-**Environment Setup:**
+**Configuración de Entorno:**
 ```bash
-# Production .env
-ADMIN_PASSWORD=strong_production_password
-GEMINI_API_KEY=production_key
-COHERE_API_KEY=production_key
+# .env de producción
+ADMIN_PASSWORD=contraseña_produccion_segura
+GEMINI_API_KEY=key_produccion
+COHERE_API_KEY=key_produccion
 LOG_LEVEL=WARNING
 ```
 
-**Streamlit Configuration:**
-Create `.streamlit/config.toml`:
+**Configuración de Streamlit:**
+Crear `.streamlit/config.toml`:
 ```toml
 [server]
 headless = true
@@ -690,102 +639,112 @@ gatherUsageStats = false
 base = "light"
 ```
 
-**Running:**
+**Ejecutar:**
 ```bash
-streamlit run src/app.py --server.port=8501
+streamlit run src/app.py --server.port=8501 --server.address=0.0.0.0
 ```
+
+### Streamlit Cloud
+
+**Variables de Entorno (Secrets):**
+```toml
+GEMINI_API_KEY = "tu-api-key"
+COHERE_API_KEY = "tu-api-key"
+ADMIN_PASSWORD = "tu-password"
+GEMINI_MODEL = "gemini-3.6-flash"
+```
+
+**Consideraciones:**
+- ChromaDB se reinicia con cada redeploy
+- Para persistencia, considera vector store externo (Pinecone, Weaviate)
 
 ---
 
-## Performance
+## ⚡ Rendimiento
 
-### Optimization Tips
+### Optimización de Indexación
 
-**Indexing Performance:**
-- Batch upload documents before indexing
-- Use smaller chunk sizes for faster indexing
-- Index during off-peak hours
+**Mejores Prácticas:**
+- Subir múltiples documentos antes de indexar
+- Usar chunk sizes más pequeños para indexación más rápida
+- Indexar durante horas de bajo uso
 
-**Query Performance:**
-- Reduce top-k for faster retrieval
-- Use metadata filters to narrow search
-- Keep chunk size balanced (512 recommended)
+**Tiempos Típicos:**
+- Documento 1MB (PDF): ~10-30 segundos
+- Generación de embeddings: ~100 chunks/segundo
+- Almacenamiento en ChromaDB: ~500 chunks/segundo
 
-**Memory Usage:**
-- ChromaDB uses ~100MB base + ~1KB per chunk
-- Embeddings cached in memory
-- Clear browser cache periodically
+### Optimización de Consultas
 
-### Monitoring
+**Mejores Prácticas:**
+- Reducir top-k para retrieval más rápido (3-5 recomendado)
+- Mantener chunk size balanceado (1000 caracteres)
+- Usar metadata filters para búsquedas más específicas
 
-**Check Logs:**
+**Tiempos Típicos:**
+- Embedding de consulta: ~50ms
+- Búsqueda en ChromaDB: ~100-500ms (depende del tamaño)
+- Generación LLM: ~1-3 segundos (streaming)
+
+### Uso de Memoria
+
+**Consumo Típico:**
+- ChromaDB: ~100MB base + ~1KB por chunk
+- Embeddings en caché: ~300MB
+- Streamlit UI: ~50-100MB
+- **Total:** ~500MB-1GB para 10,000 chunks
+
+### Monitoreo
+
+**Revisar Logs:**
 ```bash
 tail -f data/logs/application.log
 ```
 
-**Key Metrics:**
-- Query response time
-- Indexing time per document
-- Vector store size
-- API call latency
+**Métricas Clave:**
+- Tiempo de respuesta de consultas
+- Tiempo de indexación por documento
+- Tamaño del vector store
+- Latencia de llamadas API
 
 ---
 
-## Development Guidelines
+## 🛠️ Guías de Desarrollo
 
-### Code Style
+### Estilo de Código
 
-**Follow:**
-- PEP 8 for Python code
-- Type hints for all functions
-- Docstrings for public APIs
-- Single Responsibility Principle
+**Seguir:**
+- PEP 8 para código Python
+- Type hints para todas las funciones
+- Docstrings para APIs públicas
+- Principio de Responsabilidad Única
 
-**Example:**
+**Ejemplo:**
 ```python
 def process_document(
     file_path: str,
-    chunk_size: int = 512
+    chunk_size: int = 1000
 ) -> dict:
     """
-    Process a document for indexing.
+    Procesa un documento para indexación.
     
     Args:
-        file_path: Path to document file
-        chunk_size: Size of text chunks
+        file_path: Ruta al archivo del documento
+        chunk_size: Tamaño de fragmentos de texto
     
     Returns:
-        dict: Processing results
+        dict: Resultados del procesamiento
     
     Raises:
-        InvalidDocumentError: If file is invalid
+        InvalidDocumentError: Si el archivo es inválido
     """
-    # Implementation
+    # Implementación
     pass
 ```
 
-### Testing
-
-**Unit Tests:**
-- Test individual functions
-- Mock external dependencies
-- Use pytest fixtures
-
-**Integration Tests:**
-- Test module interactions
-- Use test database
-- Clean up after tests
-
 ### Logging
 
-**Log Levels:**
-- DEBUG: Detailed diagnostic info
-- INFO: General informational messages
-- WARNING: Warning messages
-- ERROR: Error messages
-- CRITICAL: Critical errors
-
-**Example:**
+**Niveles de Log:**
 ```python
 logger.debug(f"Processing document", filename=filename)
 logger.info(f"Document indexed", doc_id=doc_id, chunks=42)
@@ -793,32 +752,60 @@ logger.warning(f"API quota low", provider="gemini")
 logger.error(f"Indexing failed", error=str(e), exc_info=True)
 ```
 
+### Testing
+
+**Unit Tests:**
+```bash
+pytest tests/unit/
+```
+
+**Integration Tests:**
+```bash
+python test_integration.py
+```
+
 ---
 
-## Security Considerations
+## 🔒 Consideraciones de Seguridad
 
 **API Keys:**
-- Never commit API keys to git
-- Use environment variables
-- Rotate keys regularly
+- Nunca commitear API keys a git
+- Usar variables de entorno
+- Rotar keys regularmente
 
-**Authentication:**
-- Use strong passwords (bcrypt hashed)
-- Implement session timeouts
-- Logout on browser close
+**Autenticación:**
+- Usar contraseñas fuertes (hasheadas con bcrypt)
+- Implementar timeouts de sesión
+- Logout al cerrar navegador
 
-**Input Validation:**
-- Validate all user inputs
-- Sanitize filenames
-- Check file types and sizes
+**Validación de Entrada:**
+- Validar todas las entradas de usuario
+- Sanitizar nombres de archivo
+- Verificar tipos y tamaños de archivo
 
-**Data Privacy:**
-- Documents stored locally
-- No data sent to third parties (except LLM APIs)
-- Review documents before uploading
+**Privacidad de Datos:**
+- Documentos almacenados localmente
+- No se envían datos a terceros (excepto APIs de LLM)
+- Revisar documentos antes de subir
 
 ---
 
-**Version:** 1.0.0-beta  
-**Last Updated:** 2026-07-25  
-**Maintainer:** TechFlow Solutions Team
+## 📝 Stack Tecnológico
+
+| Componente | Tecnología | Versión | Propósito |
+|------------|-----------|---------|-----------|
+| **LLM Principal** | Google Gemini | 3.6 Flash | Generación de respuestas |
+| **LLM Fallback** | Cohere Command-R | command-r7b-12-2024 | Backup automático |
+| **Embeddings** | Sentence Transformers | multilingual-e5-base | Embeddings locales (768d) |
+| **Vector Store** | ChromaDB | 1.0.16 | Base de datos vectorial |
+| **Framework RAG** | LangChain | 0.3.27 | Orquestación |
+| **UI Framework** | Streamlit | 1.47.1 | Interfaz web |
+| **PDF Parser** | PyMuPDF | 1.23+ | Extracción de texto |
+| **Auth** | bcrypt | 5.0+ | Hash de contraseñas |
+| **Python** | Python | 3.11+ | Lenguaje base |
+
+---
+
+**Versión:** 1.0.0  
+**Última Actualización:** Julio 2026  
+**Mantenido por:** TechFlow Solutions

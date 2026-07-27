@@ -1,256 +1,528 @@
-# 🔒 Security Notes - API Keys and Credentials
+# 🔒 Notas de Seguridad - Claves API y Credenciales
 
-**Created:** 2026-07-25  
-**Status:** Development Environment Setup
-
----
-
-## ⚠️ IMPORTANT: API Keys Configuration
-
-This document explains how API keys are managed in this project for **security** and **deployment** purposes.
+**Actualizado:** 2026-07-25  
+**Estado:** Producción Ready
 
 ---
 
-## 📁 Files and Their Purposes
+## ⚠️ IMPORTANTE: Configuración de Claves API
 
-### `.env` (LOCAL ONLY - NOT IN GIT)
-**Location:** `d:\techflow-rag-agent\.env`  
-**Purpose:** Contains real API keys for local development and testing  
-**Git Status:** ✅ Protected by `.gitignore` - NEVER committed to repository  
-**Current Status:** ✅ Created with testing API keys
+Este documento explica cómo se gestionan las claves API en este proyecto para **seguridad** y **despliegue**.
 
-**Contents:**
+---
+
+## 📁 Archivos y Sus Propósitos
+
+### `.env` (LOCAL SOLAMENTE - NO EN GIT)
+**Ubicación:** Raíz del proyecto (e.g., `d:\techflow-rag-agent\.env`)  
+**Propósito:** Contiene claves API reales para desarrollo local  
+**Estado Git:** ✅ Protegido por `.gitignore` - NUNCA se commitea al repositorio  
+
+**Contenido:**
 ```env
-GEMINI_API_KEY=your_testing_gemini_api_key_here
-COHERE_API_KEY=your_testing_cohere_api_key_here
-ADMIN_PASSWORD=admin123
+GEMINI_API_KEY=tu_clave_gemini_real_aqui
+COHERE_API_KEY=tu_clave_cohere_real_aqui
+ADMIN_PASSWORD=tu_contraseña_segura_aqui
 ```
 
-**⚠️ IMPORTANT:** Real API keys are configured in your local `.env` file (not in Git).
-
-⚠️ **THESE ARE TESTING KEYS** - Will be replaced before production deployment.
+**⚠️ IMPORTANTE:** Las claves API reales están configuradas en tu archivo `.env` local (no en Git).
 
 ---
 
-### `.env.example` (PUBLIC - IN GIT)
-**Location:** `d:\techflow-rag-agent\.env.example`  
-**Purpose:** Template showing what variables are needed (without real values)  
-**Git Status:** ✅ Committed to repository as reference  
+### `.env.example` (PÚBLICO - EN GIT)
+**Ubicación:** Raíz del proyecto  
+**Propósito:** Template mostrando qué variables se necesitan (sin valores reales)  
+**Estado Git:** ✅ Commiteado al repositorio como referencia  
 
-**Contents:**
+**Contenido:**
 ```env
 GEMINI_API_KEY=your_gemini_api_key_here
 COHERE_API_KEY=your_cohere_api_key_here
-ADMIN_PASSWORD=admin123
+ADMIN_PASSWORD=your_secure_password_here
 ```
 
 ---
 
-## 🔐 Security Rules
+## 🔐 Reglas de Seguridad
 
-### ❌ NEVER Do This
-- Commit `.env` file to Git
-- Share API keys in public channels
-- Hardcode API keys in source code
-- Push API keys to GitHub/GitLab
-- Screenshot files containing API keys
-- Email or message API keys in plain text
+### ❌ NUNCA Hacer Esto
+- Commitear archivo `.env` a Git
+- Compartir claves API en canales públicos
+- Hardcodear claves API en el código fuente
+- Hacer push de claves API a GitHub/GitLab
+- Capturar pantallas de archivos con claves API
+- Enviar claves API por email o mensajes en texto plano
+- Reutilizar claves de desarrollo en producción
 
-### ✅ ALWAYS Do This
-- Keep API keys in `.env` (local) or Secrets (cloud)
-- Use `.env.example` as template
-- Verify `.env` is in `.gitignore`
-- Rotate keys before production deployment
-- Use different keys for dev/test/prod environments
-
----
-
-## 🛠️ Current Development Setup
-
-### Local Development (Cursor/Testing)
-**File:** `.env` (already created)  
-**Keys:** Testing keys provided by user  
-**Status:** ✅ Ready for Cursor to use during implementation
-
-### Testing Keys Information
-- **Gemini Key:** Free tier, 15 req/min, 1M tokens/day
-- **Cohere Key:** Free tier, 1000 req/month
-- **Purpose:** Development and functional testing only
-- **Replacement:** Required before production deployment
+### ✅ SIEMPRE Hacer Esto
+- Mantener claves API en `.env` (local) o Secrets (cloud)
+- Usar `.env.example` como template
+- Verificar que `.env` esté en `.gitignore`
+- Rotar claves antes del despliegue en producción
+- Usar diferentes claves para dev/test/prod
+- Usar contraseñas fuertes (12+ caracteres, mixtos)
+- Generar nuevas claves para producción
 
 ---
 
-## 🚀 Deployment Configurations
+## 🛠️ Configuración Actual del Stack
 
-### Streamlit Community Cloud
-**Method:** Secrets Management (TOML format)
+### Stack de Seguridad
 
-**Location:** Dashboard → App Settings → Secrets
+**Autenticación:**
+- Modo Guest: Sin contraseña, solo lectura
+- Modo Admin: Contraseña hasheada con bcrypt
+- Passwords hasheadas (no reversibles)
+- Session state temporal (no persistente)
 
-**Format:**
-```toml
-# LLM Providers
-GEMINI_API_KEY = "production_key_here"
-COHERE_API_KEY = "production_key_here"
+**LLM Providers:**
+- Gemini 3.6 Flash (primario)
+- Cohere Command-R (fallback)
+- Autenticación via API keys
+- Timeouts configurables
 
-# Security
-ADMIN_PASSWORD = "strong_password_here"
+**Embeddings:**
+- Modelo: intfloat/multilingual-e5-base
+- Ejecución: Local (768 dimensiones)
+- No requiere API externa
+- Privacidad: Fragmentos no salen del servidor
 
-# Embeddings
-EMBEDDING_MODEL = "intfloat/multilingual-e5-base"
+**Vector Database:**
+- ChromaDB 1.0.16
+- Almacenamiento: Local
+- Colección: techflow_knowledge_base
+- No requiere autenticación (local)
+
+**Framework:**
+- Streamlit 1.47.1
+- Sesiones: En memoria
+- HTTPS: Recomendado para producción
+- CORS: Configurado por Streamlit
+
+---
+
+## 🚀 Configuraciones de Despliegue
+
+### Desarrollo Local
+
+**Archivo:** `.env` en raíz del proyecto  
+**Ubicación:** No commiteado a Git  
+
+**Crear archivo:**
+```bash
+cp .env.example .env
+nano .env
+```
+
+**Contenido:**
+```env
+# Proveedores LLM
+GEMINI_API_KEY=tu_clave_gemini_desarrollo
+COHERE_API_KEY=tu_clave_cohere_desarrollo
+
+# Seguridad
+ADMIN_PASSWORD=admin123_temporal
+
+# Embeddings (opcional, usa default si no se especifica)
+EMBEDDING_MODEL=intfloat/multilingual-e5-base
 
 # Vector Database
+CHROMA_DB_PATH=data/chromadb
+CHROMA_COLLECTION=techflow_knowledge_base
+
+# Chunking
+CHUNK_SIZE=1000
+CHUNK_OVERLAP=200
+
+# Chat
+MAX_CONTEXT_CHUNKS=4
+TEMPERATURE=0.2
+MAX_OUTPUT_TOKENS=1024
+
+# Timeouts
+LLM_REQUEST_TIMEOUT=30
+EMBEDDING_TIMEOUT=120
+CHROMADB_TIMEOUT=10
+
+# Logging
+LOG_LEVEL=INFO
+LOG_FILE=data/logs/application.log
+```
+
+---
+
+### Streamlit Community Cloud
+
+**Método:** Secrets Management (formato TOML)
+
+**Ubicación:** Dashboard → App Settings → Secrets
+
+**Formato:**
+```toml
+# Proveedores LLM (REQUERIDO)
+GEMINI_API_KEY = "tu_clave_produccion_gemini"
+COHERE_API_KEY = "tu_clave_produccion_cohere"
+
+# Seguridad (REQUERIDO)
+ADMIN_PASSWORD = "contraseña_segura_12+_caracteres"
+
+# Embeddings (opcional, usa defaults)
+EMBEDDING_MODEL = "intfloat/multilingual-e5-base"
+
+# Vector Database (opcional)
 CHROMA_DB_PATH = "data/chromadb"
 CHROMA_COLLECTION = "techflow_knowledge_base"
 
-# Chunking
+# Chunking (opcional)
 CHUNK_SIZE = 1000
 CHUNK_OVERLAP = 200
 
-# Chat
+# Chat (opcional)
 MAX_CONTEXT_CHUNKS = 4
 TEMPERATURE = 0.2
 MAX_OUTPUT_TOKENS = 1024
 
-# Timeouts
+# Timeouts (opcional)
 LLM_REQUEST_TIMEOUT = 30
 EMBEDDING_TIMEOUT = 120
 CHROMADB_TIMEOUT = 10
 
-# Logging
+# Logging (opcional)
 LOG_LEVEL = "INFO"
 LOG_FILE = "data/logs/application.log"
 ```
 
-⚠️ **BEFORE DEPLOYMENT:**
-1. Generate new production API keys
-2. Create strong admin password (not "admin123")
-3. Never reuse development keys in production
+**⚠️ ANTES DEL DESPLIEGUE:**
+1. Generar nuevas claves API de producción
+2. Crear contraseña admin fuerte (no "admin123")
+3. Nunca reutilizar claves de desarrollo en producción
+4. Verificar que secrets estén correctamente configurados
+5. Probar en staging antes de producción
 
 ---
 
-### Render Deployment
-**Method:** Environment Variables
+### VPS/Cloud (AWS, GCP, Azure, DigitalOcean)
 
-**Location:** Dashboard → Environment → Environment Variables
+**Método:** Variables de Entorno vía archivo `.env` en servidor
 
-Add each variable as Key-Value pair:
-- `GEMINI_API_KEY` = `production_key_here`
-- `COHERE_API_KEY` = `production_key_here`
-- `ADMIN_PASSWORD` = `strong_password_here`
-- (etc.)
+**Ubicación:** `/home/usuario/Alura-Challenge-Agente-AI/.env`
+
+**Configurar:**
+```bash
+# SSH al servidor
+ssh usuario@tu-servidor-ip
+
+# Navegar al proyecto
+cd Alura-Challenge-Agente-AI
+
+# Crear .env
+nano .env
+
+# Agregar claves (mismo formato que desarrollo local)
+# Guardar: Ctrl+O, Enter, Ctrl+X
+
+# Verificar permisos (solo dueño puede leer)
+chmod 600 .env
+```
+
+**Alternativa - Variables de Sistema:**
+```bash
+# Agregar a ~/.bashrc o ~/.profile
+export GEMINI_API_KEY="tu_clave"
+export COHERE_API_KEY="tu_clave"
+export ADMIN_PASSWORD="tu_contraseña"
+
+# Recargar
+source ~/.bashrc
+```
+
+**Alternativa - Servicio Systemd:**
+```ini
+# /etc/systemd/system/techflow.service
+[Service]
+Environment="GEMINI_API_KEY=tu_clave"
+Environment="COHERE_API_KEY=tu_clave"
+Environment="ADMIN_PASSWORD=tu_contraseña"
+```
 
 ---
 
-## 🔄 Key Rotation Strategy
+### Docker (si se usa en el futuro)
 
-### When to Rotate Keys
+**Método:** Variables de entorno en docker-compose.yml
 
-**Immediately:**
-- Before production deployment
-- If keys are accidentally exposed
-- If keys are committed to Git (even if removed later)
-- If unauthorized access is suspected
+```yaml
+# docker-compose.yml
+services:
+  techflow:
+    image: techflow-solutions:latest
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - COHERE_API_KEY=${COHERE_API_KEY}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+    env_file:
+      - .env
+```
 
-**Periodically:**
-- Every 90 days for production
-- Every 6 months for development/testing
+O usar Docker secrets para mayor seguridad.
 
-### How to Rotate
+---
+
+## 🔄 Estrategia de Rotación de Claves
+
+### Cuándo Rotar Claves
+
+**Inmediatamente:**
+- Antes del despliegue en producción
+- Si las claves son expuestas accidentalmente
+- Si las claves son commiteadas a Git (incluso si se eliminan después)
+- Si se sospecha acceso no autorizado
+- Si un miembro del equipo con acceso deja el proyecto
+
+**Periódicamente:**
+- Cada 90 días para producción
+- Cada 6 meses para desarrollo/testing
+- Al cambiar de ambiente (dev → staging → prod)
+
+### Cómo Rotar
 
 **Google Gemini:**
-1. Go to: https://makersuite.google.com/app/apikey
-2. Delete old key
-3. Create new key
-4. Update `.env` (local) or Secrets (cloud)
+1. Ve a: https://makersuite.google.com/app/apikey
+2. Elimina la clave antigua
+3. Crea nueva clave ("Create API Key")
+4. Actualiza `.env` (local) o Secrets (cloud)
+5. Reinicia la aplicación
 
 **Cohere:**
-1. Go to: https://dashboard.cohere.com/api-keys
-2. Revoke old key
-3. Generate new key
-4. Update `.env` (local) or Secrets (cloud)
+1. Ve a: https://dashboard.cohere.com/api-keys
+2. Revoca la clave antigua ("Revoke")
+3. Genera nueva clave ("Create API Key")
+4. Actualiza `.env` (local) o Secrets (cloud)
+5. Reinicia la aplicación
 
----
-
-## 📋 Pre-Deployment Checklist
-
-Before deploying to production:
-
-- [ ] Generate new Gemini API key (production)
-- [ ] Generate new Cohere API key (production)
-- [ ] Create strong admin password (12+ characters, mixed case, numbers, symbols)
-- [ ] Verify `.env` is NOT in Git history
-- [ ] Configure Secrets in deployment platform
-- [ ] Test with production keys in staging environment
-- [ ] Document key expiration dates
-- [ ] Set calendar reminders for key rotation (90 days)
-
----
-
-## 🚨 What to Do If Keys Are Exposed
-
-If API keys are accidentally exposed (committed to Git, shared publicly, etc.):
-
-1. **Immediately revoke** the exposed keys in provider dashboards
-2. **Generate new keys** immediately
-3. **Update** `.env` (local) or Secrets (cloud) with new keys
-4. **Remove** exposed keys from Git history if committed:
+**Contraseña Admin:**
+1. Genera contraseña fuerte:
    ```bash
-   # Use git filter-repo or BFG Repo-Cleaner
-   # Or contact repository admin to reset
+   openssl rand -base64 32
    ```
-5. **Notify** team members if applicable
-6. **Review** access logs in provider dashboards for unauthorized usage
+2. Actualiza en `.env` o Secrets:
+   ```
+   ADMIN_PASSWORD=nueva_contraseña_generada
+   ```
+3. Reinicia la aplicación
+4. Verifica que puedes hacer login
 
 ---
 
-## 📊 Current Status Summary
+## 📋 Checklist Pre-Despliegue
 
-| Item | Status | Notes |
-|------|--------|-------|
-| `.env` file created | ✅ Done | Contains testing keys |
-| `.env` in `.gitignore` | ✅ Confirmed | Protected from Git |
-| `.env.example` updated | ✅ Done | Template without real keys |
-| Testing keys configured | ✅ Done | Gemini + Cohere |
-| Production keys generated | ❌ Pending | Before deployment |
-| Strong admin password | ❌ Pending | Before deployment |
+Antes de desplegar a producción:
+
+### Claves API
+- [ ] Generar nueva clave Gemini API (producción)
+- [ ] Generar nueva clave Cohere API (producción)
+- [ ] Verificar que ambas claves funcionan (test en local primero)
+- [ ] Documentar fecha de creación para rotación futura
+
+### Contraseñas
+- [ ] Crear contraseña admin fuerte (mínimo 12 caracteres)
+- [ ] Usar mezcla: mayúsculas, minúsculas, números, símbolos
+- [ ] **NO usar:** "admin123", "password", "12345678"
+- [ ] Guardar en gestor de contraseñas seguro
+
+### Configuración Git
+- [ ] Verificar `.env` está en `.gitignore`
+- [ ] Verificar `.env` NO está en historial de Git
+- [ ] Verificar `data/` está en `.gitignore` (contiene ChromaDB)
+- [ ] Búsqueda global: `git log --all --full-history --source -- .env`
+
+### Configuración Cloud
+- [ ] Configurar Secrets en plataforma (Streamlit/AWS/etc.)
+- [ ] Verificar formato correcto (TOML para Streamlit)
+- [ ] Probar despliegue en staging primero
+- [ ] Verificar logs de despliegue para errores
+
+### Post-Despliegue
+- [ ] Probar modo Guest funciona
+- [ ] Probar modo Admin con nueva contraseña
+- [ ] Verificar Gemini responde correctamente
+- [ ] Verificar fallback a Cohere funciona
+- [ ] Cargar documento de prueba
+- [ ] Indexar y verificar funciona
+- [ ] Hacer query y verificar respuesta
+
+### Mantenimiento
+- [ ] Documentar fechas de creación de claves
+- [ ] Configurar recordatorios para rotación (90 días)
+- [ ] Documentar ubicación de secrets/variables
+- [ ] Configurar respaldos de datos
+- [ ] Configurar monitoreo de logs
 
 ---
 
-## 👨‍💻 For Cursor (Development Phase)
+## 🚨 Qué Hacer Si Las Claves Son Expuestas
 
-The `.env` file is ready for use during implementation:
+Si las claves API son expuestas accidentalmente (commiteadas a Git, compartidas públicamente, etc.):
 
-✅ **Available for testing:**
-- Gemini API integration
-- Cohere fallback mechanism
-- Full RAG pipeline with real LLM responses
-- Embedding generation and retrieval
+### Acción Inmediata (en 15 minutos)
 
-⚠️ **Remember:**
-- These are testing keys with free tier limits
-- Gemini: 15 requests/minute
-- Cohere: 1000 requests/month
-- Monitor usage to avoid hitting limits during development
+1. **Revocar inmediatamente** las claves expuestas:
+   - Gemini: https://makersuite.google.com/app/apikey → Delete
+   - Cohere: https://dashboard.cohere.com/api-keys → Revoke
+
+2. **Generar nuevas claves** inmediatamente:
+   - Crear nuevas en ambos dashboards
+   - Usar nombres descriptivos: "Prod-2026-07-25"
+
+3. **Actualizar** configuración:
+   - Local: Actualizar `.env`
+   - Cloud: Actualizar Secrets
+   - Reiniciar aplicación
+
+### Acción Secundaria (en 1 hora)
+
+4. **Si commiteadas a Git**, eliminar del historial:
+   ```bash
+   # Opción 1: BFG Repo-Cleaner (recomendado)
+   java -jar bfg.jar --delete-files .env
+   git reflog expire --expire=now --all
+   git gc --prune=now --aggressive
+   git push --force
+
+   # Opción 2: git filter-branch (más complejo)
+   # O contactar administrador de repositorio para reset
+   ```
+
+5. **Revisar logs de uso**:
+   - Gemini: Revisar dashboard para uso no autorizado
+   - Cohere: Revisar dashboard para uso inusual
+   - Si hay uso sospechoso, contactar soporte
+
+6. **Notificar** equipo si aplica:
+   - Informar qué claves fueron expuestas
+   - Compartir nuevas claves de forma segura
+   - Actualizar documentación
+
+### Prevención Futura
+
+7. **Agregar protecciones**:
+   - Pre-commit hook para detectar secrets
+   - Usar git-secrets o similar
+   - Revisar PRs cuidadosamente
 
 ---
 
-## 📞 Support Resources
+## 🔍 Auditoría de Seguridad
 
-**If you need help with:**
+### Revisar Configuración Actual
+
+**Verificar `.gitignore`:**
+```bash
+cat .gitignore | grep -E "\.env|data/"
+# Debe mostrar:
+# .env
+# data/
+```
+
+**Verificar historial Git (buscar secrets):**
+```bash
+# Buscar .env en historial
+git log --all --full-history --source -- .env
+
+# Buscar posibles claves en commits
+git log -p | grep -i "api_key"
+```
+
+**Verificar permisos de archivos:**
+```bash
+# .env debe ser 600 (solo dueño lee/escribe)
+ls -la .env
+# Debería mostrar: -rw------- (600)
+
+# Si no, corregir:
+chmod 600 .env
+```
+
+---
+
+## 📊 Resumen de Estado Actual
+
+| Componente | Configuración | Estado |
+|------------|---------------|--------|
+| `.env` file | Creado localmente | ✅ Listo |
+| `.env` en `.gitignore` | Protegido | ✅ Confirmado |
+| `.env.example` | Template público | ✅ Listo |
+| Gemini API | Requiere clave | ⚠️ Configurar |
+| Cohere API | Requiere clave | ⚠️ Configurar |
+| Password hash | bcrypt | ✅ Implementado |
+| Session state | Temporal | ✅ Seguro |
+| Embeddings | Local (768d) | ✅ Sin API externa |
+| ChromaDB | Local | ✅ Sin auth necesaria |
+| Logs | Aplicación solo | ✅ No expone secrets |
+| Tema default | Light | ✅ Configurado |
+
+---
+
+## 📞 Recursos de Soporte
+
+**Si necesitas ayuda con:**
 
 **Google Gemini:**
 - Dashboard: https://makersuite.google.com/
-- Documentation: https://ai.google.dev/docs
-- Rate limits: https://ai.google.dev/pricing
+- Documentación: https://ai.google.dev/docs
+- Límites de tasa: https://ai.google.dev/pricing
+- Cuota gratuita: 15 req/min, 1M tokens/día
 
 **Cohere:**
 - Dashboard: https://dashboard.cohere.com/
-- Documentation: https://docs.cohere.com/
-- Rate limits: https://cohere.com/pricing
+- Documentación: https://docs.cohere.com/
+- Límites de tasa: https://cohere.com/pricing
+- Cuota gratuita: 1000 req/mes
+
+**Streamlit Cloud:**
+- Dashboard: https://share.streamlit.io
+- Documentación: https://docs.streamlit.io/streamlit-community-cloud
+- Soporte: https://discuss.streamlit.io/
+
+**Seguridad General:**
+- OWASP Top 10: https://owasp.org/www-project-top-ten/
+- API Security: https://owasp.org/www-project-api-security/
 
 ---
 
-**Document maintained by:** Project team  
-**Last updated:** 2026-07-25  
-**Next review:** Before production deployment
+## 🎯 Mejores Prácticas de Seguridad
+
+### Para Desarrollo
+
+✅ Usar claves de prueba separadas  
+✅ No compartir `.env` entre desarrolladores  
+✅ Cada dev tiene sus propias claves  
+✅ Commitear solo `.env.example`  
+✅ Documentar cambios en variables  
+
+### Para Producción
+
+✅ Claves únicas para producción  
+✅ Contraseñas fuertes (12+ caracteres)  
+✅ HTTPS siempre (usar Nginx + Let's Encrypt)  
+✅ Rotar claves cada 90 días  
+✅ Monitorear logs de acceso  
+✅ Respaldos cifrados  
+✅ Revisar dashboards de API regularmente  
+
+### Para Equipo
+
+✅ Usar gestor de contraseñas compartido (1Password, LastPass)  
+✅ Principio de mínimo privilegio  
+✅ Revocar acceso cuando alguien deja el equipo  
+✅ Documentar quién tiene acceso a qué  
+✅ Auditorías periódicas de acceso  
+
+---
+
+**Documento mantenido por:** Equipo del Proyecto  
+**Última actualización:** 2026-07-25  
+**Próxima revisión:** Antes de cada despliegue a producción
+
+**Versión:** 1.0.0  
+**Estado:** Producción Ready

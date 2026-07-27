@@ -1,353 +1,393 @@
-# 🚀 TechFlow Solutions - Deployment Guide
+# 🚀 TechFlow Solutions - Guía de Despliegue
 
-**Complete guide for deploying TechFlow Solutions RAG Agent**
-
----
-
-## Table of Contents
-
-1. [Deployment Options](#deployment-options)
-2. [Local Deployment](#local-deployment)
-3. [Docker Deployment](#docker-deployment)
-4. [Cloud Deployment](#cloud-deployment)
-5. [Production Considerations](#production-considerations)
-6. [Monitoring](#monitoring)
-7. [Backup & Recovery](#backup--recovery)
-8. [Scaling](#scaling)
+**Guía completa para desplegar TechFlow Solutions RAG Agent**
 
 ---
 
-## Deployment Options
+## Tabla de Contenidos
 
-### Option 1: Local Deployment
-- **Pros:** Simple, no Docker needed, direct access
-- **Cons:** Manual setup, OS-dependent
-- **Best for:** Development, testing, single-user
-
-### Option 2: Docker
-- **Pros:** Consistent environment, easy deployment, portable
-- **Cons:** Requires Docker, slight overhead
-- **Best for:** Production, multi-environment, reproducible
-
-### Option 3: Streamlit Community Cloud
-- **Pros:** Free hosting, automatic deployment, HTTPS
-- **Cons:** Public repository required, limited resources
-- **Best for:** Demos, public projects, free tier
-
-### Option 4: Cloud VM (AWS, GCP, Azure)
-- **Pros:** Full control, scalable, secure
-- **Cons:** Costs money, requires DevOps knowledge
-- **Best for:** Enterprise, production, high availability
-
-### Option 5: Kubernetes
-- **Pros:** Highly scalable, resilient, cloud-native
-- **Cons:** Complex setup, overkill for small apps
-- **Best for:** Large-scale, multi-instance deployments
+1. [Opciones de Despliegue](#opciones-de-despliegue)
+2. [Despliegue Local](#despliegue-local)
+3. [Despliegue en Streamlit Community Cloud](#despliegue-en-streamlit-community-cloud)
+4. [Despliegue en VPS/Cloud](#despliegue-en-vpscloud)
+5. [Consideraciones de Producción](#consideraciones-de-producción)
+6. [Monitoreo](#monitoreo)
+7. [Respaldo y Recuperación](#respaldo-y-recuperación)
 
 ---
 
-## Local Deployment
+## Opciones de Despliegue
 
-### Prerequisites
+### Opción 1: Despliegue Local
+- **Pros:** Simple, sin Docker necesario, acceso directo
+- **Cons:** Configuración manual, dependiente del SO
+- **Mejor para:** Desarrollo, pruebas, usuario único
 
-- Python 3.9 or higher
+### Opción 2: Streamlit Community Cloud ⭐ RECOMENDADO
+- **Pros:** Hosting gratuito, despliegue automático, HTTPS, sin servidor
+- **Cons:** Repositorio público requerido (o plan pagado), recursos limitados
+- **Mejor para:** Demos, proyectos públicos, despliegue rápido sin servidor propio
+
+### Opción 3: VPS/Cloud (AWS, GCP, Azure, DigitalOcean)
+- **Pros:** Control total, escalable, seguro, IP dedicada
+- **Cons:** Cuesta dinero, requiere conocimiento DevOps
+- **Mejor para:** Empresas, producción, alta disponibilidad
+
+---
+
+## Despliegue Local
+
+### Requisitos Previos
+
+- Python 3.9 o superior
 - pip package manager
-- 2GB RAM minimum
-- 1GB free disk space
+- 2GB RAM mínimo
+- 1GB espacio libre en disco
 
-### Step-by-Step
+### Paso a Paso
 
 ```bash
-# 1. Clone repository
+# 1. Clonar repositorio
 git clone https://github.com/AlejandroMedina-Ar/Alura-Challenge-Agente-AI.git
 cd Alura-Challenge-Agente-AI
 
-# 2. Create virtual environment
+# 2. Crear entorno virtual
 python -m venv venv
 
-# Activate (Linux/Mac)
+# Activar (Linux/Mac)
 source venv/bin/activate
 
-# Activate (Windows)
+# Activar (Windows)
 venv\Scripts\activate
 
-# 3. Install dependencies
+# 3. Instalar dependencias
 pip install -r requirements.txt
 
-# 4. Configure environment
+# 4. Configurar entorno
 cp .env.example .env
-# Edit .env with your API keys
+# Editar .env con tus claves API
 
-# 5. Run setup
+# 5. Ejecutar setup
 python setup.py
 
-# 6. Start application
+# 6. Iniciar aplicación
 python run.py
-# or: streamlit run src/app.py
+# o: streamlit run src/app.py
 ```
 
-### Access
+### Acceso
 
-Open browser at: **http://localhost:8501**
+Abre el navegador en: **http://localhost:8501**
 
-### Stopping
+### Detener
 
-Press `Ctrl+C` in terminal
+Presiona `Ctrl+C` en la terminal
 
 ---
 
-## Docker Deployment
+## Despliegue en Streamlit Community Cloud
 
-### Prerequisites
+**Hosting gratuito para aplicaciones Streamlit - RECOMENDADO para despliegue rápido**
 
-- Docker installed
-- Docker Compose (optional but recommended)
-- 4GB RAM minimum
+### Requisitos Previos
+- Cuenta GitHub
+- Repositorio GitHub (público o plan pagado de Streamlit)
+- Claves API de Gemini y Cohere
 
-### Quick Start with Docker Compose
+### Paso 1: Preparar el Repositorio
 
-```bash
-# 1. Clone repository
-git clone https://github.com/AlejandroMedina-Ar/Alura-Challenge-Agente-AI.git
-cd Alura-Challenge-Agente-AI
-
-# 2. Create .env file
-cp .env.example .env
-# Edit .env with your API keys
-
-# 3. Build and start
-docker-compose up -d
-
-# 4. Check logs
-docker-compose logs -f
-
-# 5. Access application
-# Open http://localhost:8501
-```
-
-### Using Docker Directly
+**1.1. Asegúrate que tu código esté en GitHub:**
 
 ```bash
-# Build image
-docker build -t techflow-solutions:latest .
-
-# Run container
-docker run -d \
-  --name techflow-solutions \
-  -p 8501:8501 \
-  -e GEMINI_API_KEY=your_key \
-  -e COHERE_API_KEY=your_key \
-  -e ADMIN_PASSWORD=secure_password \
-  -v $(pwd)/data:/app/data \
-  techflow-solutions:latest
-
-# Check logs
-docker logs -f techflow-solutions
-
-# Stop container
-docker stop techflow-solutions
-
-# Remove container
-docker rm techflow-solutions
+# Si aún no has subido el código
+git init
+git add .
+git commit -m "Initial commit"
+git remote add origin https://github.com/tu-usuario/tu-repo.git
+git push -u origin main
 ```
 
-### Docker Management
+**1.2. Verifica que tengas estos archivos:**
+
+- ✅ `requirements.txt` - Dependencias Python
+- ✅ `src/app.py` - Aplicación principal Streamlit
+- ✅ `.gitignore` - Para excluir `.env` y `data/`
+- ✅ `.env.example` - Template de variables de entorno
+
+**Nota:** NO subas `.env` con tus claves reales a GitHub.
+
+### Paso 2: Crear Cuenta en Streamlit Cloud
+
+1. **Visita:** https://share.streamlit.io
+2. **Inicia sesión** con tu cuenta GitHub
+3. Streamlit pedirá permisos para acceder a tus repositorios (acepta)
+
+### Paso 3: Desplegar la Aplicación
+
+**3.1. Click en "New app"**
+
+**3.2. Configurar el despliegue:**
+
+- **Repository:** Selecciona `tu-usuario/tu-repo`
+- **Branch:** `main` (o la rama que uses)
+- **Main file path:** `src/app.py`
+- **App URL (opcional):** Personaliza tu URL: `tu-app.streamlit.app`
+
+**3.3. Click en "Advanced settings"**
+
+### Paso 4: Configurar Secrets (Variables de Entorno)
+
+En la sección "Secrets", agrega tus claves API en formato TOML:
+
+```toml
+# Secrets de Streamlit Cloud
+GEMINI_API_KEY = "tu_clave_gemini_real"
+COHERE_API_KEY = "tu_clave_cohere_real"
+ADMIN_PASSWORD = "tu_contraseña_segura"
+```
+
+**⚠️ IMPORTANTE:**
+- Usa claves de **producción**, no las de desarrollo
+- Usa contraseña **fuerte** (no "admin123")
+- Estas claves son privadas (no aparecen en el código público)
+
+### Paso 5: Desplegar
+
+1. Click en **"Deploy!"**
+2. Streamlit comenzará a construir la aplicación (3-5 minutos)
+3. Verás logs del proceso de construcción
+4. Cuando termine, tu app estará en: `https://tu-app.streamlit.app`
+
+### Paso 6: Verificar el Despliegue
+
+**6.1. Accede a tu URL:** `https://tu-app.streamlit.app`
+
+**6.2. Prueba la aplicación:**
+- ✅ Modo Guest funciona (sin login)
+- ✅ Modo Admin funciona (con contraseña correcta)
+- ✅ Gemini 3.6 Flash responde
+- ✅ Fallback a Cohere funciona si Gemini falla
+
+**6.3. Si hay errores:**
+- Revisa los logs en el panel de Streamlit Cloud
+- Verifica que las claves API sean correctas
+- Verifica que `requirements.txt` tenga todas las dependencias
+
+### Actualizar la Aplicación Desplegada
+
+**Streamlit re-despliega automáticamente cuando haces push:**
 
 ```bash
-# List running containers
-docker ps
+# Hacer cambios en el código
+git add .
+git commit -m "Actualizar funcionalidad X"
+git push origin main
 
-# View logs
-docker logs techflow-solutions
-
-# Access container shell
-docker exec -it techflow-solutions bash
-
-# Restart container
-docker restart techflow-solutions
-
-# Stop all
-docker-compose down
-
-# Rebuild after code changes
-docker-compose up -d --build
+# Streamlit detecta el push y re-despliega automáticamente (2-3 minutos)
 ```
 
-### Data Persistence
+**Re-despliegue manual:**
+1. Ve a https://share.streamlit.io
+2. Click en tu app
+3. Click en "Reboot" o "Redeploy"
 
-Data is persisted in Docker volumes:
-- ChromaDB: `./data/chromadb`
-- Documents: `./data/knowledge_library`
-- Logs: `./data/logs`
-- Config: `./data/config.json`
+### Actualizar Secrets
+
+1. Ve a tu app en https://share.streamlit.io
+2. Click en "Settings" → "Secrets"
+3. Edita los valores
+4. Click en "Save"
+5. La app se reiniciará automáticamente
+
+### Limitaciones de Streamlit Community Cloud
+
+**Recursos:**
+- **RAM:** 1GB (puede causar problemas con muchos documentos grandes)
+- **CPU:** Compartida (puede ser lenta en horas pico)
+- **Storage:** Temporal (se pierde al reiniciar)
+- **Apps:** 3 apps gratuitas máximo
+
+**Persistencia de Datos:**
+- ⚠️ Los datos en `data/` se pierden al reiniciar la app
+- ⚠️ ChromaDB se reinicia (vectores se pierden)
+- ⚠️ Documentos cargados se pierden
+
+**Solución para persistencia:**
+- Usa almacenamiento externo (S3, Google Drive, etc.)
+- O considera VPS si necesitas datos persistentes
+
+**Otros límites:**
+- Apps públicas por defecto (o plan pagado para privadas)
+- Timeouts en operaciones largas
+- Sin acceso a shell/terminal
+
+### Costo
+
+- **Plan Community:** Gratuito
+  - 3 apps públicas
+  - 1GB RAM por app
+  - Storage temporal
+  
+- **Plan Team:** ~$20/mes por miembro
+  - Apps privadas
+  - Más recursos
+  - Soporte prioritario
 
 ---
 
-## Cloud Deployment
+## Despliegue en VPS/Cloud
 
-### Streamlit Community Cloud
+**Para proyectos que requieren más control y persistencia de datos**
 
-**Free hosting for Streamlit apps**
+### Opción 1: DigitalOcean Droplet
 
-#### Prerequisites
-- GitHub account
-- Public repository (or paid Streamlit plan)
-- API keys
+**Crear Droplet:**
 
-#### Steps
+1. **Cuenta:** Regístrate en https://digitalocean.com
+2. **Create Droplet:**
+   - **Distribución:** Ubuntu 22.04 LTS
+   - **Plan:** Basic ($6/mes) o Premium ($12/mes)
+   - **CPU:** 1-2 vCPUs
+   - **RAM:** 2-4GB
+   - **Storage:** 50GB SSD
+   - **Datacenter:** Más cercano a tus usuarios
 
-1. **Push to GitHub:**
-   ```bash
-   git push origin main
-   ```
+3. **Agregar SSH Key** (recomendado) o usa contraseña
 
-2. **Go to Streamlit Cloud:**
-   - Visit: https://share.streamlit.io
-   - Sign in with GitHub
+4. **Create Droplet**
 
-3. **Deploy App:**
-   - Click "New app"
-   - Select repository
-   - Branch: `main`
-   - Main file: `src/app.py`
-
-4. **Configure Secrets:**
-   - Click "Advanced settings"
-   - Add secrets in TOML format:
-   ```toml
-   GEMINI_API_KEY = "your_key_here"
-   COHERE_API_KEY = "your_key_here"
-   ADMIN_PASSWORD = "secure_password"
-   ```
-
-5. **Deploy:**
-   - Click "Deploy"
-   - Wait for build (3-5 minutes)
-   - Access your app at: `https://your-app.streamlit.app`
-
-#### Limitations
-- 1GB RAM limit
-- CPU throttling
-- Public by default
-- Limited to 3 apps on free tier
-
-### AWS EC2
-
-**Deploy on Amazon EC2 instance**
-
-#### Launch Instance
+**Configurar servidor:**
 
 ```bash
-# 1. Launch EC2 instance
-# - Ubuntu 22.04 LTS
-# - t2.medium (4GB RAM)
-# - 20GB storage
-# - Allow HTTP (80), HTTPS (443), Custom TCP (8501)
+# 1. Conectar via SSH
+ssh root@tu-droplet-ip
 
-# 2. Connect via SSH
-ssh -i your-key.pem ubuntu@your-ec2-ip
+# 2. Actualizar sistema
+apt update && apt upgrade -y
 
-# 3. Update system
-sudo apt update && sudo apt upgrade -y
+# 3. Instalar Python y dependencias
+apt install python3 python3-pip python3-venv git -y
 
-# 4. Install Docker
-curl -fsSL https://get.docker.com -o get-docker.sh
-sudo sh get-docker.sh
-sudo usermod -aG docker ubuntu
+# 4. Crear usuario no-root (opcional pero recomendado)
+adduser techflow
+usermod -aG sudo techflow
+su - techflow
 
-# 5. Install Docker Compose
-sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
-
-# 6. Clone repository
+# 5. Clonar repositorio
 git clone https://github.com/AlejandroMedina-Ar/Alura-Challenge-Agente-AI.git
 cd Alura-Challenge-Agente-AI
 
-# 7. Configure
+# 6. Crear entorno virtual
+python3 -m venv venv
+source venv/bin/activate
+
+# 7. Instalar dependencias
+pip install -r requirements.txt
+
+# 8. Configurar variables de entorno
 nano .env
-# Add your API keys
+# Agregar:
+# GEMINI_API_KEY=tu_clave
+# COHERE_API_KEY=tu_clave
+# ADMIN_PASSWORD=tu_contraseña
 
-# 8. Deploy
-docker-compose up -d
+# 9. Ejecutar setup
+python setup.py
 
-# 9. Setup reverse proxy (optional, for HTTPS)
-# See Nginx section below
+# 10. Probar aplicación
+streamlit run src/app.py --server.port 8501
 ```
 
-#### Access
-- HTTP: `http://your-ec2-ip:8501`
-- HTTPS: Configure Nginx + Let's Encrypt (see below)
+**Acceder:**
+- Abre: `http://tu-droplet-ip:8501`
 
-### Google Cloud Platform (GCP)
-
-**Deploy on Google Compute Engine**
+**Ejecutar como servicio (para que corra siempre):**
 
 ```bash
-# 1. Create VM instance
-gcloud compute instances create techflow-solutions \
+# Crear archivo de servicio systemd
+sudo nano /etc/systemd/system/techflow.service
+```
+
+Contenido:
+
+```ini
+[Unit]
+Description=TechFlow Solutions RAG Agent
+After=network.target
+
+[Service]
+Type=simple
+User=techflow
+WorkingDirectory=/home/techflow/Alura-Challenge-Agente-AI
+Environment="PATH=/home/techflow/Alura-Challenge-Agente-AI/venv/bin"
+ExecStart=/home/techflow/Alura-Challenge-Agente-AI/venv/bin/streamlit run src/app.py --server.port 8501 --server.address 0.0.0.0
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Activar servicio:
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable techflow
+sudo systemctl start techflow
+sudo systemctl status techflow
+```
+
+### Opción 2: AWS EC2
+
+**Lanzar instancia:**
+
+```bash
+# 1. Lanzar instancia EC2
+# - Ubuntu 22.04 LTS
+# - t2.small o t3.small (2GB RAM)
+# - 20GB storage
+# - Security Group: permitir puerto 22 (SSH), 8501 (Streamlit)
+
+# 2. Conectar via SSH
+ssh -i tu-key.pem ubuntu@tu-ec2-ip
+
+# 3. Seguir mismos pasos que DigitalOcean
+```
+
+### Opción 3: Google Cloud Platform (GCP)
+
+```bash
+# 1. Crear VM instance
+gcloud compute instances create techflow-vm \
   --zone=us-central1-a \
-  --machine-type=e2-medium \
+  --machine-type=e2-small \
   --image-family=ubuntu-2204-lts \
   --image-project=ubuntu-os-cloud \
-  --boot-disk-size=20GB \
-  --tags=http-server
+  --boot-disk-size=20GB
 
-# 2. SSH into instance
-gcloud compute ssh techflow-solutions --zone=us-central1-a
+# 2. Conectar
+gcloud compute ssh techflow-vm --zone=us-central1-a
 
-# 3. Follow same steps as AWS EC2 (Docker installation)
+# 3. Seguir mismos pasos que DigitalOcean
 ```
 
-### Azure
+### Configurar HTTPS (Opcional pero Recomendado)
 
-**Deploy on Azure VM**
+**Usando Nginx como reverse proxy + Let's Encrypt:**
 
 ```bash
-# 1. Create VM
-az vm create \
-  --resource-group techflow-rg \
-  --name techflow-vm \
-  --image Ubuntu2204 \
-  --size Standard_B2s \
-  --admin-username azureuser \
-  --generate-ssh-keys
-
-# 2. Open port 8501
-az vm open-port --port 8501 --resource-group techflow-rg --name techflow-vm
-
-# 3. SSH and deploy
-ssh azureuser@your-vm-ip
-# Follow Docker deployment steps
-```
-
----
-
-## Production Considerations
-
-### Security
-
-#### 1. Use Strong Passwords
-```bash
-# Generate secure password
-openssl rand -base64 32
-
-# Set in .env
-ADMIN_PASSWORD=your_generated_password
-```
-
-#### 2. HTTPS with Nginx + Let's Encrypt
-
-**Install Nginx:**
-```bash
+# 1. Instalar Nginx
 sudo apt install nginx certbot python3-certbot-nginx -y
+
+# 2. Configurar dominio (necesitas un dominio apuntando a tu IP)
+sudo nano /etc/nginx/sites-available/techflow
 ```
 
-**Configure Nginx:**
+Contenido:
+
 ```nginx
-# /etc/nginx/sites-available/techflow
 server {
     listen 80;
-    server_name your-domain.com;
+    server_name tu-dominio.com;
 
     location / {
         proxy_pass http://localhost:8501;
@@ -362,19 +402,36 @@ server {
 }
 ```
 
-**Enable site:**
+Activar y obtener SSL:
+
 ```bash
 sudo ln -s /etc/nginx/sites-available/techflow /etc/nginx/sites-enabled/
 sudo nginx -t
 sudo systemctl restart nginx
+
+# Obtener certificado SSL gratis
+sudo certbot --nginx -d tu-dominio.com
 ```
 
-**Get SSL certificate:**
+Ahora accede via: `https://tu-dominio.com`
+
+---
+
+## Consideraciones de Producción
+
+### Seguridad
+
+#### 1. Contraseñas Fuertes
+
 ```bash
-sudo certbot --nginx -d your-domain.com
+# Generar contraseña segura
+openssl rand -base64 32
+
+# Usar en .env
+ADMIN_PASSWORD=contraseña_generada_fuerte
 ```
 
-#### 3. Firewall Configuration
+#### 2. Firewall
 
 ```bash
 # Ubuntu/Debian (ufw)
@@ -383,166 +440,127 @@ sudo ufw allow 80/tcp    # HTTP
 sudo ufw allow 443/tcp   # HTTPS
 sudo ufw enable
 
-# Only allow Streamlit from localhost if using Nginx
-sudo ufw deny 8501/tcp
+# Si no usas Nginx, permitir Streamlit
+sudo ufw allow 8501/tcp
 ```
 
-#### 4. Environment Variables
+#### 3. Actualizar Regularmente
 
-**Never commit `.env` to git!**
-
-Use secret management:
-- AWS Secrets Manager
-- GCP Secret Manager
-- Azure Key Vault
-- HashiCorp Vault
-
-#### 5. API Key Rotation
-
-Rotate API keys regularly:
 ```bash
-# 1. Generate new keys from provider
-# 2. Update .env
-# 3. Restart application
-docker-compose restart
+# Actualizar sistema
+sudo apt update && sudo apt upgrade -y
+
+# Actualizar dependencias Python
+pip install -r requirements.txt --upgrade
 ```
 
-### Performance
+#### 4. Rotar Claves API
 
-#### 1. Resource Allocation
+- Rotar cada 90 días
+- Generar nuevas en dashboards de Google/Cohere
+- Actualizar en `.env` o Secrets
+- Reiniciar aplicación
 
-**Minimum:**
-- 2GB RAM
-- 2 CPU cores
-- 10GB storage
+### Rendimiento
 
-**Recommended:**
-- 4GB RAM
-- 4 CPU cores
-- 50GB storage
+#### Recursos Mínimos Recomendados:
 
-#### 2. Optimize Docker
+- **2GB RAM** - Para operación básica
+- **4GB RAM** - Para mejor rendimiento
+- **2 CPU cores** - Mínimo
+- **20GB storage** - Para app + datos
 
-```dockerfile
-# Use multi-stage builds (already in Dockerfile)
-# Minimize layers
-# Use .dockerignore
-```
+#### Optimización:
 
-#### 3. Database Optimization
+1. Reducir Top-K si respuestas son lentas
+2. Usar SSD para almacenamiento
+3. Aumentar RAM si procesas muchos documentos
+4. Considerar CDN para assets estáticos
 
-```python
-# ChromaDB settings in src/rag/vector_store.py
-# Adjust batch sizes for large datasets
-```
+### Confiabilidad
 
-### Reliability
+#### Auto-reinicio en caso de falla:
 
-#### 1. Auto-restart
+Ya configurado en el servicio systemd con `Restart=always`.
 
-**Docker Compose:**
-```yaml
-restart: unless-stopped
-```
+#### Health checks:
 
-**Systemd Service:**
-```ini
-# /etc/systemd/system/techflow.service
-[Unit]
-Description=TechFlow Solutions RAG Agent
-After=docker.service
-Requires=docker.service
-
-[Service]
-Type=oneshot
-RemainAfterExit=yes
-WorkingDirectory=/home/ubuntu/Alura-Challenge-Agente-AI
-ExecStart=/usr/local/bin/docker-compose up -d
-ExecStop=/usr/local/bin/docker-compose down
-TimeoutStartSec=0
-
-[Install]
-WantedBy=multi-user.target
-```
-
-Enable:
 ```bash
-sudo systemctl enable techflow
-sudo systemctl start techflow
+# Crear script de monitoreo
+nano /home/techflow/health_check.sh
 ```
 
-#### 2. Health Checks
+```bash
+#!/bin/bash
+if ! curl -f http://localhost:8501/_stcore/health; then
+    sudo systemctl restart techflow
+    echo "$(date): TechFlow restarted" >> /var/log/techflow-health.log
+fi
+```
 
-Already configured in Docker:
-```yaml
-healthcheck:
-  test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]
-  interval: 30s
-  timeout: 10s
-  retries: 3
+```bash
+chmod +x /home/techflow/health_check.sh
+
+# Agregar a crontab (cada 5 minutos)
+crontab -e
+*/5 * * * * /home/techflow/health_check.sh
 ```
 
 ---
 
-## Monitoring
+## Monitoreo
 
-### Application Logs
+### Logs de Aplicación
 
-**Docker:**
+**Local/VPS:**
 ```bash
-docker logs -f techflow-solutions
-```
-
-**Local:**
-```bash
+# Ver logs de aplicación
 tail -f data/logs/application.log
+
+# Ver logs de servicio systemd
+sudo journalctl -u techflow -f
 ```
 
-### System Monitoring
+**Streamlit Cloud:**
+- Ve a tu app en https://share.streamlit.io
+- Click en "Logs"
 
-**Install monitoring tools:**
+### Monitoreo de Recursos
+
 ```bash
-# htop for resource monitoring
+# Instalar htop
 sudo apt install htop
 
-# Docker stats
-docker stats techflow-solutions
+# Monitorear recursos
+htop
+
+# Uso de disco
+df -h
+
+# Memoria
+free -h
 ```
 
-### Application Metrics
+### Métricas de Aplicación
 
-Check in Admin Panel → Dashboard:
-- Total documents
-- Indexed documents
-- Vector store size
-- Storage used
-
-### Log Aggregation
-
-**Option 1: Loki + Grafana (Advanced)**
-```bash
-# Setup Loki for log aggregation
-# Setup Grafana for visualization
-```
-
-**Option 2: CloudWatch (AWS)**
-```bash
-# Configure CloudWatch agent
-# Send logs to CloudWatch
-```
+En el Panel de Administración:
+- Total de documentos
+- Documentos indexados
+- Tamaño de vector store
+- Almacenamiento usado
 
 ---
 
-## Backup & Recovery
+## Respaldo y Recuperación
 
-### What to Backup
+### Qué Respaldar
 
-1. **Vector Database:** `data/chromadb/`
-2. **Documents:** `data/knowledge_library/`
-3. **Configuration:** `data/config.json`
-4. **Environment:** `.env` file (keep secure!)
+1. **Base de datos vectorial:** `data/chromadb/`
+2. **Documentos:** `data/knowledge_library/`
+3. **Configuración:** `data/config.json`
+4. **Variables de entorno:** `.env` (¡mantener seguro!)
 
-### Backup Script
+### Script de Respaldo
 
 ```bash
 #!/bin/bash
@@ -551,184 +569,130 @@ Check in Admin Panel → Dashboard:
 BACKUP_DIR="/backup/techflow-$(date +%Y%m%d-%H%M%S)"
 mkdir -p "$BACKUP_DIR"
 
-# Backup data
+# Respaldar data
 cp -r data/chromadb "$BACKUP_DIR/"
 cp -r data/knowledge_library "$BACKUP_DIR/"
 cp data/config.json "$BACKUP_DIR/"
 
-# Create archive
+# Crear archivo comprimido
 tar -czf "$BACKUP_DIR.tar.gz" "$BACKUP_DIR"
 rm -rf "$BACKUP_DIR"
 
-echo "Backup created: $BACKUP_DIR.tar.gz"
+echo "Respaldo creado: $BACKUP_DIR.tar.gz"
 ```
 
-### Automated Backups
+### Respaldos Automáticos
 
-**Cron job:**
 ```bash
-# Edit crontab
+# Editar crontab
 crontab -e
 
-# Add daily backup at 2 AM
-0 2 * * * /home/ubuntu/backup.sh
+# Agregar respaldo diario a las 2 AM
+0 2 * * * /home/techflow/backup.sh
 ```
 
-### Recovery
+### Recuperación
 
 ```bash
-# 1. Stop application
-docker-compose down
+# 1. Detener aplicación
+sudo systemctl stop techflow
 
-# 2. Extract backup
+# 2. Extraer respaldo
 tar -xzf backup-20260725-020000.tar.gz
 
-# 3. Restore data
+# 3. Restaurar datos
 cp -r backup-20260725-020000/chromadb data/
 cp -r backup-20260725-020000/knowledge_library data/
 cp backup-20260725-020000/config.json data/
 
-# 4. Start application
-docker-compose up -d
+# 4. Iniciar aplicación
+sudo systemctl start techflow
 ```
 
 ---
 
-## Scaling
+## Estimación de Costos
 
-### Vertical Scaling
+### Streamlit Community Cloud
+- **Costo:** Gratuito (plan community)
+- **Limitaciones:** 3 apps, 1GB RAM, público
 
-**Increase resources:**
-- More RAM
-- More CPU cores
-- Faster disk (SSD)
+### DigitalOcean Droplet
+- **Basic (2GB RAM):** $12/mes
+- **Premium (4GB RAM):** $24/mes
 
-**Docker resource limits:**
-```yaml
-services:
-  techflow-solutions:
-    deploy:
-      resources:
-        limits:
-          cpus: '4'
-          memory: 8G
-        reservations:
-          cpus: '2'
-          memory: 4G
-```
+### AWS EC2
+- **t3.small (2GB RAM):** ~$15-20/mes
+- **t3.medium (4GB RAM):** ~$30-40/mes
 
-### Horizontal Scaling
+### Google Cloud (GCP)
+- **e2-small (2GB RAM):** ~$13-18/mes
+- **e2-medium (4GB RAM):** ~$27-35/mes
 
-**Not recommended for this application:**
-- ChromaDB is not distributed
-- Session state is local
-- File storage is local
+### Costos Adicionales
+- **Dominio:** ~$10-15/año
+- **Certificado SSL:** Gratuito (Let's Encrypt)
+- **Almacenamiento respaldos:** ~$1-5/mes
+- **Transferencia de datos:** Usualmente incluida
 
-**For horizontal scaling, need:**
-- Distributed vector database (Pinecone, Weaviate)
-- Shared session storage (Redis)
-- Shared file storage (S3, NFS)
+---
 
-### Load Balancing
+## Mejores Prácticas
 
-**If horizontal scaling:**
-```nginx
-upstream techflow {
-    server 10.0.1.10:8501;
-    server 10.0.1.11:8501;
-    server 10.0.1.12:8501;
-}
+✅ **Hacer:**
+- Usar HTTPS en producción
+- Respaldar datos regularmente
+- Monitorear logs
+- Actualizar dependencias
+- Usar contraseñas fuertes
+- Rotar claves API
+- Configurar health checks
 
-server {
-    listen 80;
-    location / {
-        proxy_pass http://techflow;
-    }
-}
-```
+❌ **No hacer:**
+- Exponer puerto 8501 directamente (usar reverse proxy)
+- Commitear secretos a git
+- Usar contraseñas por defecto
+- Ignorar actualizaciones de seguridad
+- Saltear respaldos
 
 ---
 
 ## Troubleshooting
 
-### Container won't start
+### La aplicación no inicia
 
 ```bash
-# Check logs
-docker logs techflow-solutions
+# Verificar logs
+sudo journalctl -u techflow -n 50
 
-# Check if port is in use
+# Verificar puerto en uso
 sudo lsof -i :8501
 
-# Rebuild image
-docker-compose up -d --build
+# Reiniciar servicio
+sudo systemctl restart techflow
 ```
 
-### Out of memory
+### Sin memoria
 
 ```bash
-# Check memory usage
-docker stats
+# Verificar uso de memoria
+free -h
 
-# Increase Docker memory limit
-# Docker Desktop: Settings → Resources
+# Aumentar RAM del servidor
+# O reducir Top-K y tamaño de chunk
 ```
 
-### Slow performance
+### Rendimiento lento
 
-- Reduce top-k value
-- Increase server resources
-- Use SSD for storage
-- Check internet connection
-
----
-
-## Cost Estimates
-
-### Streamlit Community Cloud
-- **Cost:** Free (limited resources)
-
-### AWS EC2 (t2.medium)
-- **Cost:** ~$30-40/month
-- 4GB RAM, 2 vCPUs
-
-### GCP (e2-medium)
-- **Cost:** ~$25-35/month
-- 4GB RAM, 2 vCPUs
-
-### Azure (B2s)
-- **Cost:** ~$30-40/month
-- 4GB RAM, 2 vCPUs
-
-### Additional Costs
-- Domain name: ~$10-15/year
-- SSL certificate: Free (Let's Encrypt)
-- Backup storage: ~$1-5/month
+- Reducir valor de Top-K
+- Aumentar recursos del servidor
+- Usar SSD para storage
+- Verificar conexión a Internet
+- Revisar logs para errores de API
 
 ---
 
-## Best Practices
+**¿Necesitas ayuda con el despliegue?** Revisa [FAQ](FAQ.md) o abre un issue en GitHub.
 
-✅ **Do:**
-- Use HTTPS in production
-- Backup data regularly
-- Monitor logs
-- Update dependencies
-- Use strong passwords
-- Rotate API keys
-- Set up health checks
-
-❌ **Don't:**
-- Expose port 8501 directly (use reverse proxy)
-- Commit secrets to git
-- Run as root in Docker
-- Skip backups
-- Ignore security updates
-- Use default passwords
-
----
-
-**Need help with deployment?** Check [FAQ](FAQ.md) or open an issue on GitHub.
-
-**Version:** 1.0.0-beta  
-**Last Updated:** 2026-07-25
+**Versión:** 1.0.0  
+**Última Actualización:** 2026-07-25
