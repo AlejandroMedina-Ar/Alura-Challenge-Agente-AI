@@ -141,27 +141,34 @@ def render_dashboard_tab() -> None:
 def render_documents_tab() -> None:
     """
     Renderiza la pestaña de gestión de documentos.
+    
+    Verifica permisos: Subir/Eliminar solo para admin, Ver para todos.
     """
     st.markdown("### 📚 Gestión de Documentos")
     
+    # Check if user is admin
+    from src.config import SessionKey
+    is_admin = st.session_state.get(SessionKey.IS_ADMIN, False)
+    
     kl_service = get_knowledge_library_service()
     
-    # Upload section
-    st.markdown("#### ⬆️ Subir Documento")
+    # Upload section (ONLY for admin)
+    if is_admin:
+        st.markdown("#### ⬆️ Subir Documento")
+        
+        uploaded_file = render_file_uploader(
+            label="Selecciona un documento",
+            accepted_types=['txt', 'pdf', 'md', 'docx'],
+            help_text="Soportados: TXT, PDF, MD, DOCX (Máx 10MB)",
+            key="admin_file_upload"
+        )
+        
+        if uploaded_file:
+            handle_file_upload(uploaded_file, kl_service)
+        
+        st.divider()
     
-    uploaded_file = render_file_uploader(
-        label="Selecciona un documento",
-        accepted_types=['txt', 'pdf', 'md', 'docx'],
-        help_text="Soportados: TXT, PDF, MD, DOCX (Máx 10MB)",
-        key="admin_file_upload"
-    )
-    
-    if uploaded_file:
-        handle_file_upload(uploaded_file, kl_service)
-    
-    st.divider()
-    
-    # Documents list
+    # Documents list (visible for all, but actions only for admin)
     st.markdown("#### 📄 Documentos Subidos")
     
     documents = kl_service.list_documents()
@@ -170,20 +177,28 @@ def render_documents_tab() -> None:
         render_empty_state(
             icon="📄",
             title="Sin Documentos",
-            message="Sube tu primer documento para comenzar"
+            message="Sube tu primer documento para comenzar" if is_admin else "No hay documentos disponibles"
         )
     else:
-        render_documents_table(documents, kl_service)
+        render_documents_table(documents, kl_service, is_admin=is_admin)
 
 
 def handle_file_upload(uploaded_file, kl_service) -> None:
     """
-    Maneja el proceso de carga de archivos.
+    Maneja el proceso de carga de archivos (requiere permisos de admin).
     
     Args:
         uploaded_file: Archivo subido de Streamlit
         kl_service: Instancia de KnowledgeLibraryService
     """
+    # Verify admin permissions
+    from src.config import SessionKey
+    is_admin = st.session_state.get(SessionKey.IS_ADMIN, False)
+    if not is_admin:
+        render_info_message("🔒 Esta operación requiere permisos de administrador", "error")
+        logger.warning("Attempted to upload document without admin permissions")
+        return
+    
     filename = uploaded_file.name
     file_size = uploaded_file.size
     file_type = uploaded_file.type
@@ -239,13 +254,14 @@ def handle_file_upload(uploaded_file, kl_service) -> None:
             logger.error(f"Upload failed", filename=filename, error=str(e))
 
 
-def render_documents_table(documents: list[dict], kl_service) -> None:
+def render_documents_table(documents: list[dict], kl_service, is_admin: bool = False) -> None:
     """
     Renderiza tabla de documentos con acciones.
     
     Args:
         documents: Lista de metadatos de documentos
         kl_service: Instancia de KnowledgeLibraryService
+        is_admin: Si True, muestra botones de acción (eliminar, indexar)
     """
     for doc in documents:
         doc_id = doc['doc_id']
@@ -257,7 +273,12 @@ def render_documents_table(documents: list[dict], kl_service) -> None:
         
         # Document card
         with st.container():
-            col1, col2, col3 = st.columns([3, 1, 1])
+            if is_admin:
+                # Admin view: With action buttons
+                col1, col2, col3 = st.columns([3, 1, 1])
+            else:
+                # Guest view: Read-only
+                col1 = st.columns(1)[0]
             
             with col1:
                 st.markdown(f"**📄 {filename}**")
@@ -268,30 +289,40 @@ def render_documents_table(documents: list[dict], kl_service) -> None:
                 else:
                     st.warning("⚠️ No indexado")
             
-            with col2:
-                if st.button("🗑️ Eliminar", key=f"delete_{doc_id}"):
-                    handle_document_delete(doc_id, filename, kl_service)
-            
-            with col3:
-                if not indexed:
-                    if st.button("⚡ Indexar", key=f"index_{doc_id}"):
-                        handle_document_index(doc_id, filename)
-                else:
-                    if st.button("🔄 Re-indexar", key=f"reindex_{doc_id}"):
-                        handle_document_reindex(doc_id, filename)
+            # Action buttons (ONLY for admin)
+            if is_admin:
+                with col2:
+                    if st.button("🗑️ Eliminar", key=f"delete_{doc_id}"):
+                        handle_document_delete(doc_id, filename, kl_service)
+                
+                with col3:
+                    if not indexed:
+                        if st.button("⚡ Indexar", key=f"index_{doc_id}"):
+                            handle_document_index(doc_id, filename)
+                    else:
+                        if st.button("🔄 Re-indexar", key=f"reindex_{doc_id}"):
+                            handle_document_reindex(doc_id, filename)
             
             st.divider()
 
 
 def handle_document_delete(doc_id: str, filename: str, kl_service) -> None:
     """
-    Maneja la eliminación de documentos.
+    Maneja la eliminación de documentos (requiere permisos de admin).
     
     Args:
         doc_id: ID del documento
         filename: Nombre del archivo del documento
         kl_service: Instancia de KnowledgeLibraryService
     """
+    # Verify admin permissions
+    from src.config import SessionKey
+    is_admin = st.session_state.get(SessionKey.IS_ADMIN, False)
+    if not is_admin:
+        render_info_message("🔒 Esta operación requiere permisos de administrador", "error")
+        logger.warning("Attempted to delete document without admin permissions", doc_id=doc_id)
+        return
+    
     with render_spinner(f"Eliminando {filename}..."):
         try:
             # Remove from index first
@@ -320,12 +351,20 @@ def handle_document_delete(doc_id: str, filename: str, kl_service) -> None:
 
 def handle_document_index(doc_id: str, filename: str) -> None:
     """
-    Maneja la indexación de documentos.
+    Maneja la indexación de documentos (requiere permisos de admin).
     
     Args:
         doc_id: ID del documento
         filename: Nombre del archivo del documento
     """
+    # Verify admin permissions
+    from src.config import SessionKey
+    is_admin = st.session_state.get(SessionKey.IS_ADMIN, False)
+    if not is_admin:
+        render_info_message("🔒 Esta operación requiere permisos de administrador", "error")
+        logger.warning("Attempted to index document without admin permissions", doc_id=doc_id)
+        return
+    
     with render_spinner(f"Indexando {filename}..."):
         try:
             indexing_service = get_indexing_service()
@@ -350,12 +389,20 @@ def handle_document_index(doc_id: str, filename: str) -> None:
 
 def handle_document_reindex(doc_id: str, filename: str) -> None:
     """
-    Maneja la re-indexación de documentos.
+    Maneja la re-indexación de documentos (requiere permisos de admin).
     
     Args:
         doc_id: ID del documento
         filename: Nombre del archivo del documento
     """
+    # Verify admin permissions
+    from src.config import SessionKey
+    is_admin = st.session_state.get(SessionKey.IS_ADMIN, False)
+    if not is_admin:
+        render_info_message("🔒 Esta operación requiere permisos de administrador", "error")
+        logger.warning("Attempted to reindex document without admin permissions", doc_id=doc_id)
+        return
+    
     with render_spinner(f"Re-indexando {filename}..."):
         try:
             indexing_service = get_indexing_service()
@@ -379,9 +426,18 @@ def handle_document_reindex(doc_id: str, filename: str) -> None:
 
 def render_indexing_tab() -> None:
     """
-    Renderiza la pestaña de operaciones de indexación.
+    Renderiza la pestaña de operaciones de indexación (solo admin).
     """
     st.markdown("### ⚡ Operaciones de Indexación")
+    
+    # Check if user is admin
+    from src.config import SessionKey
+    is_admin = st.session_state.get(SessionKey.IS_ADMIN, False)
+    
+    if not is_admin:
+        st.warning("🔒 Esta sección requiere autenticación de administrador")
+        st.info("💡 Las operaciones de indexación están restringidas a usuarios con permisos de administrador.")
+        return
     
     indexing_service = get_indexing_service()
     
