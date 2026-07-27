@@ -43,11 +43,18 @@ def render_sidebar() -> str:
         # Navigation menu
         st.markdown("### 📋 Menú")
         
+        # Check if user is admin
+        is_admin = st.session_state.get('is_admin', False)
+        
         menu_items = {
             "💬 Chat": "Chat",
             "📚 Biblioteca de Conocimiento": "Knowledge",
             "⚙️ Configuración": "Settings"
         }
+        
+        # Add Admin panel only for admins
+        if is_admin:
+            menu_items["🔧 Panel de Administración"] = "Admin"
         
         selected = st.radio(
             label="Navegación",
@@ -99,7 +106,15 @@ def render_user_info() -> None:
             auth_service.logout()
             st.rerun()
     else:
-        st.info("No autenticado")
+        # Guest user mode
+        st.markdown("**👤 Usuario:** Invitado")
+        st.caption("Acceso de solo lectura")
+        
+        # Login as admin option
+        if st.button("🔐 Login como Admin", key="login_admin_btn", use_container_width=True):
+            # Force redirect to login page by clearing any cached state
+            st.session_state.clear()
+            st.rerun()
 
 
 def render_theme_toggle() -> None:

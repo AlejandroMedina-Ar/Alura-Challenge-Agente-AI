@@ -56,7 +56,7 @@ class GeminiProvider(BaseProvider):
     
     def __init__(
         self,
-        model: str = 'gemini-1.5-flash-latest',
+        model: str = 'gemini-3.6-flash',  # Gemini 3.6 Flash (latest stable)
         api_key: Optional[str] = None,
         timeout: int = 30,
         **kwargs
@@ -65,7 +65,7 @@ class GeminiProvider(BaseProvider):
         Initialize Gemini provider with NEW SDK.
         
         Args:
-            model: Gemini model name (default: gemini-1.5-flash-latest)
+            model: Gemini model name (default: gemini-3.6-flash)
             api_key: Gemini API key
             timeout: Request timeout in seconds
             **kwargs: Additional parameters

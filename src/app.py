@@ -85,15 +85,28 @@ def main():
     # Check authentication
     auth_service = get_authentication_service()
     
-    if not auth_service.is_authenticated():
-        render_login_page()
+    # Check if there are documents in the system
+    from src.services import get_knowledge_library_service
+    kl_service = get_knowledge_library_service()
+    has_documents = kl_service.get_document_count() > 0
+    
+    # Determine access mode:
+    # - If NO documents: require admin login (setup mode)
+    # - If HAS documents: allow guest access (user mode) or admin login
+    if not has_documents and not auth_service.is_authenticated():
+        # Setup mode: require admin login to upload first documents
+        render_login_page(setup_mode=True)
     else:
-        render_main_app()
+        # User mode: allow access (admin or guest)
+        render_main_app(is_admin=auth_service.is_authenticated())
 
 
-def render_login_page():
+def render_login_page(setup_mode=False):
     """
     Renderiza la página de inicio de sesión para usuarios no autenticados.
+    
+    Args:
+        setup_mode: Si True, indica que se requiere login para setup inicial
     """
     # Compact sidebar for login
     render_compact_sidebar()
@@ -102,6 +115,9 @@ def render_login_page():
     st.title("🤖 TechFlow Solutions")
     st.markdown("### Agente de Conocimiento con RAG")
     st.divider()
+    
+    if setup_mode:
+        st.info("👋 **Bienvenido!** Se requiere autenticación de administrador para cargar los primeros documentos.")
     
     st.markdown("#### 🔐 Inicio de Sesión Admin")
     
@@ -138,11 +154,11 @@ def render_login_page():
         - 🔍 **Chat con RAG** - Respuestas contextuales desde tus documentos
         - 📚 **Biblioteca de Conocimiento** - Sube y administra documentos
         - ⚡ **Indexación Inteligente** - Fragmentación y embedding automático
-        - 🤖 **Soporte Dual de LLM** - Gemini 1.5 Flash + respaldo Cohere
+        - 🤖 **Soporte Dual de LLM** - Gemini 3.6 Flash + respaldo Cohere
         - ⚙️ **Configurable** - Personaliza RAG y configuración de LLM
         
         ### Stack Tecnológico
-        - **LLM:** Google Gemini 1.5 Flash (principal), Cohere Command-R (respaldo)
+        - **LLM:** Google Gemini 3.6 Flash (principal), Cohere Command-R (respaldo)
         - **Embeddings:** Multilingual E5-base (768 dimensiones)
         - **Vector Store:** ChromaDB (persistente)
         - **Framework:** Streamlit
@@ -153,29 +169,52 @@ def render_login_page():
         """)
 
 
-def render_main_app():
+def render_main_app(is_admin=False):
     """
     Renderiza la aplicación principal con navegación.
+    
+    Args:
+        is_admin: Si True, el usuario tiene privilegios de administrador
     """
+    # Store admin status in session state
+    st.session_state['is_admin'] = is_admin
+    
     # Render sidebar and get selected page
     selected_page = render_sidebar()
     
-    # Route to selected page
+    # Route to selected page (with access control)
     if selected_page == "Chat":
         render_chat_page()
     
     elif selected_page == "Knowledge":
+        # Allow viewing documents for all users
         render_knowledge_page()
     
     elif selected_page == "Admin":
-        render_admin_panel()
+        # Admin panel only accessible to admins
+        if is_admin:
+            render_admin_panel()
+        else:
+            st.warning("🔒 Esta sección requiere autenticación de administrador")
+            render_admin_login_link()
     
     elif selected_page == "Settings":
+        # Settings accessible to all, but some options require admin
         render_settings_panel()
     
     else:
         # Default to chat
         render_chat_page()
+
+
+def render_admin_login_link():
+    """Renderiza un enlace para que usuarios comunes puedan login como admin."""
+    st.markdown("---")
+    if st.button("🔐 Iniciar Sesión como Administrador", use_container_width=True):
+        # Clear authentication and rerun
+        auth_service = get_authentication_service()
+        auth_service.logout()
+        st.rerun()
 
 
 def render_knowledge_page():
