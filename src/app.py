@@ -327,7 +327,6 @@ def render_knowledge_page():
         
         # Use the documents tab from admin panel with unique key
         render_documents_tab(key_prefix="knowledge")
-    render_documents_tab()
 
 
 def initialize_session_state():
