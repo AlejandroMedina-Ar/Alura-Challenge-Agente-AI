@@ -183,7 +183,7 @@ def render_documents_tab(key_prefix: str = "admin") -> None:
             message="Sube tu primer documento para comenzar" if is_admin else "No hay documentos disponibles"
         )
     else:
-        render_documents_table(documents, kl_service, is_admin=is_admin)
+        render_documents_table(documents, kl_service, is_admin=is_admin, key_prefix=key_prefix)
 
 
 def handle_file_upload(uploaded_file, kl_service) -> None:
@@ -257,7 +257,7 @@ def handle_file_upload(uploaded_file, kl_service) -> None:
             logger.error(f"Upload failed", filename=filename, error=str(e))
 
 
-def render_documents_table(documents: list[dict], kl_service, is_admin: bool = False) -> None:
+def render_documents_table(documents: list[dict], kl_service, is_admin: bool = False, key_prefix: str = "admin") -> None:
     """
     Renderiza tabla de documentos con acciones.
     
@@ -265,6 +265,7 @@ def render_documents_table(documents: list[dict], kl_service, is_admin: bool = F
         documents: Lista de metadatos de documentos
         kl_service: Instancia de KnowledgeLibraryService
         is_admin: Si True, muestra botones de acción (eliminar, indexar)
+        key_prefix: Prefijo para keys de Streamlit (evita duplicados)
     """
     for doc in documents:
         doc_id = doc['doc_id']
@@ -295,15 +296,15 @@ def render_documents_table(documents: list[dict], kl_service, is_admin: bool = F
             # Action buttons (ONLY for admin)
             if is_admin:
                 with col2:
-                    if st.button("🗑️ Eliminar", key=f"delete_{doc_id}"):
+                    if st.button("🗑️ Eliminar", key=f"{key_prefix}_delete_{doc_id}"):
                         handle_document_delete(doc_id, filename, kl_service)
                 
                 with col3:
                     if not indexed:
-                        if st.button("⚡ Indexar", key=f"index_{doc_id}"):
+                        if st.button("⚡ Indexar", key=f"{key_prefix}_index_{doc_id}"):
                             handle_document_index(doc_id, filename)
                     else:
-                        if st.button("🔄 Re-indexar", key=f"reindex_{doc_id}"):
+                        if st.button("🔄 Re-indexar", key=f"{key_prefix}_reindex_{doc_id}"):
                             handle_document_reindex(doc_id, filename)
             
             st.divider()
@@ -483,8 +484,12 @@ def render_indexing_tab() -> None:
         
         try:
             for doc in pending:
-                # Safe access with fallback
-                filename = doc.get('filename') or doc.get('name', 'Documento sin nombre')
+                # Try multiple field names (metadata uses 'document_name')
+                filename = (
+                    doc.get('filename') or 
+                    doc.get('document_name') or 
+                    doc.get('name', 'Documento sin nombre')
+                )
                 st.text(f"📄 {filename}")
         except Exception as e:
             st.error(f"❌ Error mostrando documentos pendientes: {str(e)}")
@@ -507,10 +512,12 @@ def handle_batch_index_all() -> None:
     with render_spinner(f"Indexando {len(pending)} documentos..."):
         try:
             # Validate and extract doc info with fallbacks
+            # Metadata uses 'document_name' not 'filename'
             docs_to_index = []
             for doc in pending:
-                doc_id = doc.get('doc_id') or doc.get('id')
-                filename = doc.get('filename') or doc.get('name', 'unknown')
+                # Try multiple field names
+                doc_id = doc.get('doc_id') or doc.get('id') or doc.get('document_name')
+                filename = doc.get('filename') or doc.get('document_name') or doc.get('name', 'unknown')
                 
                 if doc_id and filename:
                     docs_to_index.append({'doc_id': doc_id, 'filename': filename})
@@ -519,6 +526,7 @@ def handle_batch_index_all() -> None:
             
             if not docs_to_index:
                 render_info_message("❌ No se pudieron procesar los documentos pendientes", "error")
+                logger.error(f"No valid documents to index", pending_count=len(pending), pending_sample=pending[:2] if pending else [])
                 return
             
             result = indexing_service.batch_index_documents(docs_to_index)

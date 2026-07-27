@@ -123,6 +123,17 @@ h1 {
     color: white !important;
 }
 
+/* Chat input container (fixed bottom) */
+[data-testid="stBottom"] > div {
+    background-color: #0e1117 !important;
+    border-top: 1px solid #262730 !important;
+    padding-top: 1rem !important;
+}
+
+[data-testid="stChatInputContainer"] {
+    background-color: #0e1117 !important;
+}
+
 /* Sidebar - ALWAYS VISIBLE, NO COLLAPSE */
 [data-testid="stSidebar"] {
     background-color: #171b26;
