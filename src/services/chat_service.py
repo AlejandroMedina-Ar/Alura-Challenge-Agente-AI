@@ -141,9 +141,10 @@ class ChatService:
         try:
             logger.info(f"Attempting streaming with primary provider", provider=primary_name)
             
-            for chunk in primary_provider.chat_completion_stream(
+            for chunk in primary_provider.chat_completion(
                 messages=messages,
-                temperature=temperature
+                temperature=temperature,
+                stream=True
             ):
                 yield chunk
             
