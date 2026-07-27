@@ -149,7 +149,7 @@ def render_sidebar_footer() -> None:
     st.markdown("---")
     st.caption("TechFlow Solutions Agente RAG")
     st.caption("Versión 1.0.0")
-    st.caption("© 2024 TechFlow")
+    st.caption("© 2026 TechFlow")
 
 
 def render_admin_sidebar() -> str:

@@ -196,7 +196,8 @@ def render_button(
     button_type: str = "primary",
     disabled: bool = False,
     help_text: str = None,
-    key: str = None
+    key: str = None,
+    use_container_width: bool = False
 ) -> bool:
     """
     Renderiza botón.
@@ -208,6 +209,7 @@ def render_button(
         disabled: Si el botón está deshabilitado
         help_text: Texto de ayuda opcional
         key: Clave de widget opcional
+        use_container_width: Si el botón ocupa todo el ancho del contenedor
     
     Retorna:
         bool: True si se hizo clic
@@ -222,7 +224,8 @@ def render_button(
         type=button_type,
         disabled=disabled,
         help=help_text,
-        key=key
+        key=key,
+        use_container_width=use_container_width
     )
 
 

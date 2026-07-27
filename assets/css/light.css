@@ -109,6 +109,26 @@ h1 {
     margin: 0.25rem 0;
 }
 
+/* Sidebar text in light mode - DARK TEXT */
+[data-testid="stSidebar"] label,
+[data-testid="stSidebar"] p,
+[data-testid="stSidebar"] span,
+[data-testid="stSidebar"] div[role="radiogroup"] label {
+    color: #262730 !important;
+}
+
+/* Radio buttons in sidebar - visible text */
+[data-testid="stSidebar"] [role="radiogroup"] label {
+    color: #262730 !important;
+    font-weight: 500;
+}
+
+/* Radio button selected state */
+[data-testid="stSidebar"] [role="radiogroup"] label[data-checked="true"] {
+    color: #1f77b4 !important;
+    font-weight: 600;
+}
+
 /* Hide collapse button */
 [data-testid="collapsedControl"],
 button[kind="header"] {

@@ -81,7 +81,7 @@ class KnowledgeLibraryService:
         """
         try:
             # Check if document already exists
-            if self.doc_repo.exists(filename):
+            if self.doc_repo.document_exists(filename):
                 logger.warning(f"Document already exists", filename=filename)
                 raise DocumentAlreadyExistsError(filename)
             
@@ -252,7 +252,7 @@ class KnowledgeLibraryService:
             >>> if service.document_exists("manual.pdf"):
             ...     print("Document already uploaded")
         """
-        return self.doc_repo.exists(filename)
+        return self.doc_repo.document_exists(filename)
     
     def get_document_count(self) -> int:
         """
