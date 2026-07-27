@@ -85,22 +85,39 @@ class KnowledgeLibraryService:
                 logger.warning(f"Document already exists", filename=filename)
                 raise DocumentAlreadyExistsError(filename)
             
+            # Read file content from temp location
+            from pathlib import Path
+            content = Path(file_path).read_bytes()
+            
             # Save document file
-            doc_id = self.file_manager.save_file(file_path, filename)
+            saved_path = self.file_manager.save_file(content, filename)
+            
+            # Calculate checksum for metadata
+            from src.utils.helpers import calculate_content_checksum
+            checksum = calculate_content_checksum(content)
+            
+            # Extract file format from filename
+            file_format = filename.rsplit('.', 1)[-1].lower() if '.' in filename else 'unknown'
             
             # Create metadata
             metadata = self.metadata_repo.create_metadata(
-                doc_id=doc_id,
-                filename=filename,
-                file_type=file_type,
-                file_size=file_size
+                document_name=filename,
+                file_size=file_size,
+                file_format=file_format,
+                checksum=checksum,
+                description="",
+                tags=[]
             )
+            
+            # Add doc_id and filename for compatibility with UI
+            metadata['doc_id'] = filename  # doc_id IS the filename
+            metadata['filename'] = filename
             
             logger.info(
                 f"Document uploaded",
-                doc_id=doc_id,
                 filename=filename,
-                size=file_size
+                size=file_size,
+                format=file_format
             )
             
             return metadata
@@ -118,7 +135,7 @@ class KnowledgeLibraryService:
         Removes both file and metadata.
         
         Args:
-            doc_id: Document ID
+            doc_id: Document ID (which is the filename)
         
         Returns:
             bool: True if deleted successfully
@@ -128,21 +145,22 @@ class KnowledgeLibraryService:
         
         Example:
             >>> service = KnowledgeLibraryService()
-            >>> service.delete_document("doc_123")
+            >>> service.delete_document("manual.pdf")
         """
         try:
-            # Check if document exists
-            metadata = self.metadata_repo.get_metadata(doc_id)
-            if not metadata:
-                raise DocumentNotFoundError(doc_id)
+            # doc_id IS the filename
+            filename = doc_id
             
-            filename = metadata['filename']
+            # Check if document exists
+            metadata = self.metadata_repo.get_metadata(filename)
+            if not metadata:
+                raise DocumentNotFoundError(filename)
             
             # Delete file
-            self.file_manager.delete_document(filename)
+            self.file_manager.delete_file(filename)
             
             # Delete metadata
-            self.metadata_repo.delete_metadata(doc_id)
+            self.metadata_repo.delete_metadata(filename)
             
             logger.info(
                 f"Document deleted",
@@ -196,7 +214,15 @@ class KnowledgeLibraryService:
             >>> for doc in docs:
             ...     print(f"{doc['filename']} - {doc['file_size']} bytes")
         """
-        return self.metadata_repo.list_all_metadata()
+        all_metadata = self.metadata_repo.list_all_metadata()
+        
+        # Add doc_id and filename fields for UI compatibility
+        for metadata in all_metadata:
+            if 'document_name' in metadata:
+                metadata['doc_id'] = metadata['document_name']  # doc_id IS the filename
+                metadata['filename'] = metadata['document_name']
+        
+        return all_metadata
     
     def get_document_info(self, doc_id: str) -> Optional[dict]:
         """

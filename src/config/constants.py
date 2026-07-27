@@ -208,18 +208,36 @@ TOKYO_NIGHT_COLORS: Final[dict[str, str]] = {
 
 class MetadataField:
     """Document metadata field names."""
+    # Document identification
+    DOCUMENT_NAME: Final[str] = "document_name"
     FILENAME: Final[str] = "filename"
     ORIGINAL_FILENAME: Final[str] = "original_filename"
+    
+    # File properties
     FILE_SIZE: Final[str] = "file_size"
     FILE_TYPE: Final[str] = "file_type"
+    FILE_FORMAT: Final[str] = "file_format"
+    CHECKSUM: Final[str] = "checksum"
+    
+    # Dates
     UPLOAD_DATE: Final[str] = "upload_date"
     LAST_INDEXED: Final[str] = "last_indexed"
+    INDEX_DATE: Final[str] = "index_date"
+    
+    # Indexing info
+    INDEXED: Final[str] = "indexed"
     NUM_CHUNKS: Final[str] = "num_chunks"
+    CHUNK_COUNT: Final[str] = "chunk_count"
+    
+    # Document analysis
     LANGUAGE: Final[str] = "language"
-    CHECKSUM: Final[str] = "checksum"
     PAGE_COUNT: Final[str] = "page_count"  # For PDFs
     WORD_COUNT: Final[str] = "word_count"
     CHAR_COUNT: Final[str] = "char_count"
+    
+    # Metadata
+    TAGS: Final[str] = "tags"
+    DESCRIPTION: Final[str] = "description"
 
 
 # ==========================================
