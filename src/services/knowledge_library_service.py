@@ -42,7 +42,7 @@ class KnowledgeLibraryService:
     def __init__(self):
         """Initialize knowledge library service."""
         self.doc_repo = DocumentRepository()
-        self.metadata_repo = MetadataRepository()
+        self.meta_repo = MetadataRepository()  # Standardized name
         self.file_manager = FileManager()
         logger.debug("KnowledgeLibraryService initialized")
     
@@ -100,7 +100,7 @@ class KnowledgeLibraryService:
             file_format = filename.rsplit('.', 1)[-1].lower() if '.' in filename else 'unknown'
             
             # Create metadata
-            metadata = self.metadata_repo.create_metadata(
+            metadata = self.meta_repo.create_metadata(
                 document_name=filename,
                 file_size=file_size,
                 file_format=file_format,
@@ -152,7 +152,7 @@ class KnowledgeLibraryService:
             filename = doc_id
             
             # Check if document exists
-            metadata = self.metadata_repo.get_metadata(filename)
+            metadata = self.meta_repo.get_metadata(filename)
             if not metadata:
                 raise DocumentNotFoundError(filename)
             
@@ -160,7 +160,7 @@ class KnowledgeLibraryService:
             self.file_manager.delete_file(filename)
             
             # Delete metadata
-            self.metadata_repo.delete_metadata(filename)
+            self.meta_repo.delete_metadata(filename)
             
             logger.info(
                 f"Document deleted",
@@ -210,7 +210,7 @@ class KnowledgeLibraryService:
             >>> for doc in docs:
             ...     print(f"{doc['filename']} - {doc['file_size']} bytes")
         """
-        all_metadata = self.metadata_repo.list_all_metadata()
+        all_metadata = self.meta_repo.list_all_metadata()
         
         # Add doc_id and filename fields for UI compatibility
         for metadata in all_metadata:
