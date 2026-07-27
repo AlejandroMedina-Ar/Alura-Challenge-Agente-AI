@@ -99,7 +99,7 @@ def initialize_configuration():
     config_repo = ConfigRepository()
     
     # Check if config exists
-    if config_repo.config_file.exists():
+    if config_repo.config_path.exists():
         print(f"   ℹ️  Configuration file already exists")
         return
     
