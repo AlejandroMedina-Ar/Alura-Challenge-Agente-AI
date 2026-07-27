@@ -138,9 +138,12 @@ def render_dashboard_tab() -> None:
         st.caption(f"Top-K: {chat_stats['top_k']}")
 
 
-def render_documents_tab() -> None:
+def render_documents_tab(key_prefix: str = "admin") -> None:
     """
     Renderiza la pestaña de gestión de documentos.
+    
+    Args:
+        key_prefix: Prefijo para keys de Streamlit (evita duplicados)
     
     Verifica permisos: Subir/Eliminar solo para admin, Ver para todos.
     """
@@ -160,7 +163,7 @@ def render_documents_tab() -> None:
             label="Selecciona un documento",
             accepted_types=['txt', 'pdf', 'md', 'docx'],
             help_text="Soportados: TXT, PDF, MD, DOCX (Máx 10MB)",
-            key="admin_file_upload"
+            key=f"{key_prefix}_file_upload"
         )
         
         if uploaded_file:
@@ -478,8 +481,14 @@ def render_indexing_tab() -> None:
     if pending:
         st.markdown(f"#### ⏳ Documentos Pendientes ({len(pending)})")
         
-        for doc in pending:
-            st.text(f"📄 {doc['filename']}")
+        try:
+            for doc in pending:
+                # Safe access with fallback
+                filename = doc.get('filename') or doc.get('name', 'Documento sin nombre')
+                st.text(f"📄 {filename}")
+        except Exception as e:
+            st.error(f"❌ Error mostrando documentos pendientes: {str(e)}")
+            logger.error(f"Error displaying pending docs", error=str(e), pending=pending)
     else:
         st.success("✅ Todos los documentos están indexados")
 
@@ -497,10 +506,20 @@ def handle_batch_index_all() -> None:
     
     with render_spinner(f"Indexando {len(pending)} documentos..."):
         try:
-            docs_to_index = [
-                {'doc_id': doc['doc_id'], 'filename': doc['filename']}
-                for doc in pending
-            ]
+            # Validate and extract doc info with fallbacks
+            docs_to_index = []
+            for doc in pending:
+                doc_id = doc.get('doc_id') or doc.get('id')
+                filename = doc.get('filename') or doc.get('name', 'unknown')
+                
+                if doc_id and filename:
+                    docs_to_index.append({'doc_id': doc_id, 'filename': filename})
+                else:
+                    logger.warning(f"Skipping document with missing fields: {doc}")
+            
+            if not docs_to_index:
+                render_info_message("❌ No se pudieron procesar los documentos pendientes", "error")
+                return
             
             result = indexing_service.batch_index_documents(docs_to_index)
             
@@ -520,6 +539,7 @@ def handle_batch_index_all() -> None:
             
         except Exception as e:
             render_info_message(f"❌ Indexación por lotes fallida: {str(e)}", "error")
+            logger.error(f"Batch indexing failed", error=str(e), exc_info=True)
 
 
 def handle_clear_all_indexes() -> None:

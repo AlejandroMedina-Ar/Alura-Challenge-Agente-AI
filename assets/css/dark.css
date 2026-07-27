@@ -101,6 +101,28 @@ h1 {
     border-left: 3px solid #6c757d;
 }
 
+/* Chat input - DARK MODE */
+.stChatInput > div > div {
+    background-color: #262730 !important;
+    border: 1px solid #3d4451 !important;
+    border-radius: 0.5rem !important;
+}
+
+.stChatInput textarea {
+    background-color: #262730 !important;
+    color: #fafafa !important;
+    border: none !important;
+}
+
+.stChatInput textarea::placeholder {
+    color: #9ca3af !important;
+}
+
+.stChatInput button {
+    background-color: #4da6ff !important;
+    color: white !important;
+}
+
 /* Sidebar - ALWAYS VISIBLE, NO COLLAPSE */
 [data-testid="stSidebar"] {
     background-color: #171b26;

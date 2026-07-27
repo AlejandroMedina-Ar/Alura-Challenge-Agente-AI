@@ -325,8 +325,8 @@ def render_knowledge_page():
         st.caption("Administra tu colección de documentos")
         st.divider()
         
-        # Use the documents tab from admin panel
-        render_documents_tab()
+        # Use the documents tab from admin panel with unique key
+        render_documents_tab(key_prefix="knowledge")
     render_documents_tab()
 
 
