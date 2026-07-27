@@ -79,6 +79,7 @@ Progreso general: ████████████████░░░░ 8
 
 ### 📄 Documentación Adicional
 
+- [TROUBLESHOOTING](docs/TROUBLESHOOTING.md) - **🔧 Guía de resolución de problemas**
 - [FINAL SUMMARY](docs/FINAL-SUMMARY.md) - Resumen completo del proyecto
 - [AGENT AUDIT RESOLUTION](docs/AGENT-AUDIT-RESOLUTION.md) - Auditoría resuelta
 - [UI ARCHITECTURE](docs/UI-ARCHITECTURE-CLARIFICATION.md) - Arquitectura UI clarificada
