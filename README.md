@@ -129,7 +129,7 @@ source venv/bin/activate  # En Windows: venv\Scripts\activate
 pip install -r requirements.txt
 
 # 4. Configurar variables de entorno
-cp .env.example .env
+cp .env.example .env  # En Windows: copy .env.example .env
 # Editar .env con tus API keys
 
 # 5. Ejecutar setup
@@ -143,31 +143,56 @@ python run.py
 # o directamente: streamlit run src/app.py
 ```
 
+> **💡 Nota:** Si el comando `python setup.py` falla con un error de importación, asegúrate de tener la última versión del código ejecutando `git pull origin main`. El problema fue corregido en versiones recientes. Ver [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) para más detalles.
+
 ---
 
 ## 🔑 Configuración
 
+### Obtener API Keys
+
+Necesitas al menos una API key (Gemini o Cohere) para usar el agente:
+
+#### Google Gemini (Recomendado)
+1. Ve a [Google AI Studio](https://makersuite.google.com/app/apikey)
+2. Inicia sesión con tu cuenta de Google
+3. Haz clic en "Create API Key"
+4. Copia la key generada
+
+#### Cohere (Alternativa/Fallback)
+1. Ve a [Cohere Dashboard](https://dashboard.cohere.com/api-keys)
+2. Regístrate o inicia sesión
+3. Ve a "API Keys"
+4. Copia tu "Trial Key" (free tier)
+
 ### Variables de Entorno (`.env`)
 
 ```bash
-# LLM API Keys
+# LLM API Keys (necesitas al menos una)
 GEMINI_API_KEY=tu_api_key_aqui
 COHERE_API_KEY=tu_api_key_aqui
 
-# Modelos
+# Modelos (opcional, usa defaults si no se especifica)
 GEMINI_MODEL=gemini-1.5-flash
 COHERE_MODEL=command-r
 
-# Embeddings
+# Embeddings (opcional, usa default)
 EMBEDDING_MODEL=intfloat/multilingual-e5-base
 
-# Autenticación
-ADMIN_PASSWORD_HASH=bcrypt_hash_aqui
+# Autenticación (opcional, genera hash automáticamente si solo pones password)
+ADMIN_PASSWORD=mi_password_seguro
+# o si prefieres usar hash directo:
+# ADMIN_PASSWORD_HASH=bcrypt_hash_aqui
 
-# RAG
+# RAG (opcional, usa defaults)
 CHUNK_SIZE=1000
 CHUNK_OVERLAP=200
 TOP_K_RESULTS=5
+```
+
+**Mínimo requerido en `.env`:**
+```bash
+GEMINI_API_KEY=tu_api_key_aqui
 ```
 
 ### Configuración Runtime (`data/config.json`)
@@ -244,15 +269,17 @@ techflow-rag-agent/
 ## 🧪 Testing
 
 ```bash
-# Ejecutar todos los tests
-pytest
+# Ejecutar tests de integración
+python test_integration.py
 
-# Tests con coverage
-pytest --cov=src --cov-report=html
+# Verificar que todos los módulos se importan correctamente
+python -c "from src.config import get_paths; print('✅ Imports OK')"
 
-# Ver reporte de coverage
-open htmlcov/index.html  # En Windows: start htmlcov/index.html
+# Ver configuración actual
+python -c "from src.config import get_paths; import json; print(json.dumps(get_paths().get_summary(), indent=2))"
 ```
+
+**Nota:** Los tests unitarios con pytest serán implementados en la Fase 6 del desarrollo.
 
 ---
 
