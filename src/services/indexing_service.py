@@ -47,8 +47,10 @@ class IndexingService:
     
     def __init__(self):
         """Initialize indexing service."""
+        from src.services.knowledge_base_service import get_knowledge_library_service
         self.file_manager = FileManager()
-        self.metadata_repo = MetadataRepository()
+        self.meta_repo = MetadataRepository()
+        self.kl_service = get_knowledge_library_service()
         self.chunker = get_text_chunker()
         self.embedding_service = get_embedding_service()
         self.vector_store = get_vector_store()
@@ -77,30 +79,55 @@ class IndexingService:
         try:
             logger.info(f"Starting document indexing", doc_id=doc_id, filename=filename)
             
-            # Load document
-            doc_path = self.file_manager.get_document_path(filename)
-            text_content = self.file_manager.read_document(doc_path)
+            # Get document path
+            doc_path = self.kl_service.get_document_path(filename)
+            
+            # Read document as bytes
+            file_bytes = self.file_manager.read_file(filename)
+            
+            # Extract text based on file type
+            if filename.lower().endswith('.pdf'):
+                from PyPDF2 import PdfReader
+                import io
+                reader = PdfReader(io.BytesIO(file_bytes))
+                text_content = ""
+                for page in reader.pages:
+                    text_content += page.extract_text() + "\n"
+            elif filename.lower().endswith(('.txt', '.md')):
+                text_content = file_bytes.decode('utf-8')
+            elif filename.lower().endswith('.docx'):
+                from docx import Document
+                import io
+                doc = Document(io.BytesIO(file_bytes))
+                text_content = "\n".join([para.text for para in doc.paragraphs])
+            else:
+                # Try to decode as text
+                text_content = file_bytes.decode('utf-8')
             
             if not text_content or not text_content.strip():
-                raise IndexingError(f"Document is empty: {filename}")
+                raise IndexingError(filename, "Document is empty or contains no extractable text")
             
             # Chunk document
-            chunks = self.chunker.chunk_document(
-                text=text_content,
-                metadata={'source': filename, 'doc_id': doc_id}
-            )
+            chunks = self.chunker.chunk_text(text_content)
             
             if not chunks:
-                raise IndexingError(f"No chunks generated for: {filename}")
+                raise IndexingError(filename, "No chunks generated")
             
             logger.info(f"Document chunked", doc_id=doc_id, chunk_count=len(chunks))
             
-            # Extract texts and metadatas
-            texts = [chunk['text'] for chunk in chunks]
-            metadatas = [chunk['metadata'] for chunk in chunks]
+            # Prepare metadatas
+            metadatas = [
+                {
+                    'source': filename,
+                    'doc_id': doc_id,
+                    'chunk_index': i,
+                    'total_chunks': len(chunks)
+                }
+                for i in range(len(chunks))
+            ]
             
             # Generate embeddings (batch)
-            embeddings = self.embedding_service.generate_embeddings(texts)
+            embeddings = self.embedding_service.generate_embeddings_batch(chunks)
             
             logger.info(f"Embeddings generated", doc_id=doc_id, count=len(embeddings))
             
@@ -111,17 +138,20 @@ class IndexingService:
             self.vector_store.add_documents(
                 ids=ids,
                 embeddings=embeddings,
-                documents=texts,
+                documents=chunks,
                 metadatas=metadatas
             )
             
             logger.info(f"Chunks added to vector store", doc_id=doc_id)
             
             # Update document metadata
-            self.metadata_repo.update_metadata(
-                doc_id=doc_id,
-                indexed=True,
-                chunk_count=len(chunks)
+            self.meta_repo.update_metadata(
+                document_name=filename,
+                updates={
+                    'indexed': True,
+                    'chunk_count': len(chunks),
+                    'index_date': __import__('datetime').datetime.now().isoformat()
+                }
             )
             
             logger.info(
@@ -149,7 +179,7 @@ class IndexingService:
                 error=str(e),
                 exc_info=True
             )
-            raise IndexingError(f"Indexing failed for {filename}: {e}")
+            raise IndexingError(filename, str(e))
     
     def remove_document_from_index(self, doc_id: str) -> bool:
         """
@@ -166,8 +196,14 @@ class IndexingService:
             >>> service.remove_document_from_index("doc_123")
         """
         try:
+            # Try to get filename from doc_id (usually doc_id is the filename)
             # Get document metadata to find chunk count
-            metadata = self.metadata_repo.get_metadata(doc_id)
+            try:
+                metadata = self.meta_repo.get_metadata(doc_id)
+            except:
+                # If doc_id doesn't work, it might BE the filename
+                logger.warning(f"Could not find metadata for doc_id, trying as filename", doc_id=doc_id)
+                return False
             
             if not metadata:
                 logger.warning(f"Document metadata not found", doc_id=doc_id)
@@ -186,10 +222,13 @@ class IndexingService:
             self.vector_store.delete_documents(chunk_ids)
             
             # Update metadata
-            self.metadata_repo.update_metadata(
-                doc_id=doc_id,
-                indexed=False,
-                chunk_count=0
+            filename = metadata.get('filename', doc_id)
+            self.meta_repo.update_metadata(
+                document_name=filename,
+                updates={
+                    'indexed': False,
+                    'chunk_count': 0
+                }
             )
             
             logger.info(
