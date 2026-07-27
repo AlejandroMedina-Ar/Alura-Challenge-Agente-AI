@@ -269,7 +269,7 @@ def style_info_box(
 
 def hide_streamlit_elements() -> None:
     """
-    Hide default Streamlit UI elements (menu, footer).
+    Hide default Streamlit UI elements (menu, footer) but keep sidebar toggle visible.
     
     Example:
         >>> hide_streamlit_elements()
@@ -279,6 +279,19 @@ def hide_streamlit_elements() -> None:
         #MainMenu {visibility: hidden;}
         footer {visibility: hidden;}
         header {visibility: hidden;}
+        
+        /* Ensure sidebar collapse button is always visible */
+        [data-testid="collapsedControl"] {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+        
+        /* Make collapse button more visible */
+        button[kind="header"] {
+            display: block !important;
+            visibility: visible !important;
+        }
     </style>
     """
     st.markdown(hide_css, unsafe_allow_html=True)

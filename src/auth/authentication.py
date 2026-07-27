@@ -35,6 +35,12 @@ class Authenticator:
     def __init__(self):
         """Initialize authenticator with settings."""
         self.settings = get_settings()
+        
+        # If ADMIN_PASSWORD is set but not ADMIN_PASSWORD_HASH, hash it
+        if self.settings.ADMIN_PASSWORD and not self.settings.ADMIN_PASSWORD_HASH:
+            self.settings.ADMIN_PASSWORD_HASH = hash_password(self.settings.ADMIN_PASSWORD)
+            logger.info("Auto-hashed ADMIN_PASSWORD on first use")
+        
         logger.debug("Authenticator initialized")
     
     def verify_admin_password(self, password: str) -> bool:
