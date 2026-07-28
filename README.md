@@ -108,6 +108,151 @@ La aplicación se abrirá automáticamente en `http://localhost:8501`
 
 ---
 
+## 🚀 Despliegue en Producción
+
+### Opciones de Despliegue
+
+| Plataforma | RAM | Costo | Persistencia | Mejor Para |
+|------------|-----|-------|--------------|------------|
+| **AWS EC2 Free Tier** ⭐ | 1GB | **GRATIS** (12 meses) | ✅ Completa | Producción, aprendizaje |
+| Fly.io | 512MB-1GB | $5-10/mes | ✅ Completa | Deploy rápido |
+| VPS (DigitalOcean, etc.) | 1GB+ | $5-10/mes | ✅ Completa | Control total |
+
+---
+
+## ☁️ Despliegue en AWS EC2 Free Tier
+
+### ¿Por qué AWS EC2?
+
+AWS EC2 Free Tier es la **mejor opción** para desplegar TechFlow RAG Agent porque ofrece:
+- ✅ **GRATIS por 12 meses** (t2.micro con 1GB RAM)
+- ✅ **750 horas/mes** (suficiente para 24/7)
+- ✅ **Persistencia completa** de datos
+- ✅ **30GB de almacenamiento** EBS incluido
+- ✅ **IP pública** y elastic IP disponible
+- ✅ **Escalable** cuando termina el free tier
+
+### Recursos del Free Tier
+
+**Instancia t2.micro incluye:**
+- 1 vCPU
+- 1GB RAM (suficiente para la app con lazy loading)
+- 30GB almacenamiento SSD
+- Red de alta velocidad
+
+### Guía Rápida de Despliegue
+
+#### Prerequisitos
+
+1. **Cuenta AWS**: Crear en [aws.amazon.com](https://aws.amazon.com) (requiere tarjeta, no se cobra)
+2. **API Keys**:
+   - [Gemini API Key](https://makersuite.google.com/app/apikey) - Gratuito
+   - [Cohere API Key](https://dashboard.cohere.com/api-keys) - Gratuito (opcional)
+
+#### Pasos de Despliegue
+
+**1. Crear Instancia EC2**
+
+En la consola AWS:
+- Launch Instance → Ubuntu Server 22.04 LTS
+- Instance type: `t2.micro` (Free tier eligible)
+- Create new key pair: `techflow-key.pem` (¡guárdala bien!)
+- Security Group:
+  - SSH (22) desde My IP
+  - HTTP (80) desde 0.0.0.0/0
+  - HTTPS (443) desde 0.0.0.0/0
+- Storage: 20GB gp3
+- Launch instance
+
+**2. Conectarse a la Instancia**
+
+```bash
+# Windows PowerShell
+ssh -i techflow-key.pem ubuntu@TU-IP-PUBLICA
+
+# macOS/Linux
+chmod 400 techflow-key.pem
+ssh -i techflow-key.pem ubuntu@TU-IP-PUBLICA
+```
+
+**3. Ejecutar Script de Instalación Automatizada**
+
+```bash
+# Descargar e instalar (10-15 minutos)
+wget https://raw.githubusercontent.com/AlejandroMedina-Ar/Alura-Challenge-Agente-AI/main/aws/install.sh
+chmod +x install.sh
+bash install.sh
+```
+
+El script instalará automáticamente:
+- ✅ Python 3.11 y todas las dependencias
+- ✅ Aplicación completa desde GitHub
+- ✅ Nginx como reverse proxy
+- ✅ Servicio systemd (auto-inicio)
+- ✅ Firewall configurado
+- ✅ Todo listo para usar
+
+**4. Configurar API Keys**
+
+Durante la instalación se te pedirá:
+```
+Enter your Gemini API Key: [pegar aquí]
+Enter your Cohere API Key: [pegar o Enter]
+Enter Admin Password: [contraseña segura]
+```
+
+**5. Acceder a la Aplicación**
+
+Abre tu navegador:
+```
+http://TU-IP-PUBLICA
+```
+
+¡Listo! Tu aplicación está en producción 🎉
+
+### Comandos Útiles
+
+```bash
+# Ver estado
+sudo systemctl status techflow-rag
+
+# Ver logs
+sudo journalctl -u techflow-rag -f
+
+# Reiniciar
+sudo systemctl restart techflow-rag
+
+# Actualizar (cuando haya cambios en GitHub)
+cd /home/ubuntu/techflow-rag-agent/aws
+bash update.sh
+
+# Configurar seguridad adicional
+sudo bash security-setup.sh
+```
+
+### 📚 Documentación Completa
+
+Para guía detallada paso a paso con screenshots conceptuales:
+**[Ver Guía Completa de AWS EC2 →](aws/DEPLOYMENT-GUIDE.md)**
+
+Incluye:
+- Creación de instancia con imágenes paso a paso
+- Configuración de Security Groups
+- Troubleshooting detallado
+- Backups y mantenimiento
+- Estimación de costos
+
+### 💰 Costos
+
+**Free Tier (12 meses)**: $0/mes
+- 750 horas/mes t2.micro
+- 30GB almacenamiento
+- 15GB tráfico de salida
+
+**Después del Free Tier**: ~$8-10/mes (t2.micro 24/7)
+
+---
+
 ## ☁️ Despliegue en Fly.io
 
 ### ¿Por qué Fly.io?
