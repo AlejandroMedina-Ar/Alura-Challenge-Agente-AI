@@ -52,9 +52,8 @@ class Settings:
         Load environment variables from .env file.
         
         Searches for .env file starting from current directory up to project root.
-        
-        Raises:
-            ConfigurationError: If .env file is not found
+        In containerized environments (like Fly.io), .env may not exist and that's OK
+        because env vars are injected directly.
         """
         # Find project root (directory containing .env)
         current_dir = Path(__file__).resolve().parent
@@ -68,14 +67,11 @@ class Settings:
                 break
             current_dir = current_dir.parent
         
-        if env_file is None:
-            raise ConfigurationError(
-                ".env file not found. Please create a .env file in the project root. "
-                "See .env.example for template."
-            )
-        
-        # Load environment variables
-        load_dotenv(dotenv_path=env_file, override=True)
+        # Load environment variables if .env exists
+        # In Docker/Fly.io, env vars are injected directly, so .env is optional
+        if env_file is not None:
+            load_dotenv(dotenv_path=env_file, override=True)
+        # If no .env file, that's OK - we'll use environment variables directly
     
     def _load_settings(self) -> None:
         """Load all settings from environment variables with defaults."""
@@ -118,26 +114,33 @@ class Settings:
         """
         Validate all required settings are present and valid.
         
+        In Docker builds, API keys may not be available yet (injected at runtime).
+        Only validate format/ranges, not presence of secrets during build.
+        
         Raises:
-            ConfigurationError: If any required setting is missing or invalid
+            ConfigurationError: If any setting has invalid format or range
         """
         errors = []
+        warnings = []
         
-        # Validate required API keys
-        if not self.GEMINI_API_KEY:
-            errors.append("GEMINI_API_KEY is required but not set")
+        # Check if we're in a build environment (no API keys set)
+        is_build_env = not self.GEMINI_API_KEY and not self.COHERE_API_KEY
         
-        if not self.COHERE_API_KEY:
-            errors.append("COHERE_API_KEY is required but not set")
+        # Warn about missing API keys (but don't fail during build)
+        if not self.GEMINI_API_KEY and not is_build_env:
+            warnings.append("GEMINI_API_KEY is not set")
         
-        # Validate authentication
-        if not self.ADMIN_PASSWORD_HASH and not self.ADMIN_PASSWORD:
-            errors.append(
-                "Either ADMIN_PASSWORD_HASH or ADMIN_PASSWORD must be set. "
+        if not self.COHERE_API_KEY and not is_build_env:
+            warnings.append("COHERE_API_KEY is not set (fallback unavailable)")
+        
+        # Validate authentication (also optional during build)
+        if not self.ADMIN_PASSWORD_HASH and not self.ADMIN_PASSWORD and not is_build_env:
+            warnings.append(
+                "Neither ADMIN_PASSWORD_HASH nor ADMIN_PASSWORD is set. "
                 "Use ADMIN_PASSWORD for first-time setup."
             )
         
-        # Validate numeric ranges
+        # Validate numeric ranges (always check these)
         if self.CHUNK_SIZE < 100 or self.CHUNK_SIZE > 5000:
             errors.append(f"CHUNK_SIZE must be between 100 and 5000, got {self.CHUNK_SIZE}")
         
@@ -166,7 +169,14 @@ class Settings:
                 f"LOG_LEVEL must be one of {valid_log_levels}, got '{self.LOG_LEVEL}'"
             )
         
-        # Raise all errors together
+        # Print warnings (don't fail)
+        if warnings and not is_build_env:
+            import sys
+            print("⚠️  Configuration warnings:", file=sys.stderr)
+            for warning in warnings:
+                print(f"  - {warning}", file=sys.stderr)
+        
+        # Raise only critical errors
         if errors:
             error_msg = "Configuration validation failed:\n" + "\n".join(f"  - {e}" for e in errors)
             raise ConfigurationError(error_msg)

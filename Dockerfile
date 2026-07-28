@@ -45,8 +45,11 @@ RUN mkdir -p data/chromadb \
     data/knowledge_library/metadata \
     data/logs
 
-# Run setup (crear archivos de configuración iniciales)
-RUN python setup.py
+# Crear archivo de configuración por defecto si no existe
+RUN mkdir -p data && \
+    if [ ! -f data/config.json ]; then \
+        echo '{"llm":{"provider":"gemini","model":"gemini-3.6-flash","api_key":""},"rag":{"chunk_size":1000,"chunk_overlap":200,"top_k":5,"temperature":0.7},"ui":{"theme":"light"}}' > data/config.json; \
+    fi
 
 # Expose Streamlit port
 EXPOSE 8501
