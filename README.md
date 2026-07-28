@@ -2,6 +2,12 @@
 
 Asistente inteligente basado en Retrieval-Augmented Generation (RAG) para consultar documentos corporativos internos. Permite indexar documentos (PDF, TXT, MD, DOCX), generar embeddings vectoriales y realizar consultas en lenguaje natural que el agente responde utilizando exclusivamente el contenido de los documentos de la empresa.
 
+## 🌐 Demo en Vivo
+
+**[Ver Demo en Fly.io →](https://techflow-rag-agent.fly.dev/)**
+
+> **Nota:** La demo está desplegada en Fly.io con persistencia completa de datos. Puede tardar unos segundos en cargar la primera vez (cold start).
+
 ---
 
 ## 📋 Características Principales
@@ -107,29 +113,42 @@ La aplicación se abrirá automáticamente en `http://localhost:8501`
 ### ¿Por qué Fly.io?
 
 Fly.io es la plataforma recomendada para desplegar TechFlow RAG Agent porque ofrece:
-- ✅ **Persistencia de datos** con volúmenes
+- ✅ **Persistencia de datos** con volúmenes (tus documentos NO se pierden al actualizar)
 - ✅ **Free tier generoso** (3GB volumen + 256MB RAM incluidos)
 - ✅ **Despliegue global** en múltiples regiones
 - ✅ **HTTPS automático** con certificados SSL
 - ✅ **Health checks y auto-scaling**
 - ✅ **CLI potente** para gestión
 
+> **Demo funcionando:** [https://techflow-rag-agent.fly.dev/](https://techflow-rag-agent.fly.dev/)
+
 ### Requisitos Previos
 
 1. **Cuenta en Fly.io**
    - Regístrate en [fly.io](https://fly.io/app/sign-up)
    - Free tier incluye: 3 VMs compartidas, 3GB volumen persistente
-   - Se requiere tarjeta de crédito (no se cobra en free tier)
+   - Se requiere tarjeta de crédito para verificación (no se cobra en free tier)
 
 2. **Instalar flyctl (CLI de Fly.io)**
    
-   ```bash
-   # Windows (PowerShell)
+   **Windows (PowerShell como Administrador):**
+   ```powershell
    iwr https://fly.io/install.ps1 -useb | iex
+   ```
    
-   # macOS/Linux
+   **macOS (Homebrew):**
+   ```bash
+   brew install flyctl
+   ```
+   
+   **Linux:**
+   ```bash
    curl -L https://fly.io/install.sh | sh
+   ```
    
+   Luego **cierra y abre tu terminal** para que reconozca `flyctl`
+   
+   ```bash
    # Verificar instalación
    flyctl version
    ```
@@ -139,10 +158,21 @@ Fly.io es la plataforma recomendada para desplegar TechFlow RAG Agent porque ofr
    ```bash
    flyctl auth login
    ```
+   
+   Esto abrirá tu navegador para completar la autenticación.
 
 ### Pasos para Desplegar
 
-#### 1. Preparar el Proyecto
+#### 1. Clonar y Preparar el Proyecto
+
+```bash
+# Clonar repositorio
+git clone https://github.com/AlejandroMedina-Ar/Alura-Challenge-Agente-AI.git
+cd Alura-Challenge-Agente-AI
+
+# Verificar que fly.toml existe
+ls fly.toml  # Windows: dir fly.toml
+```
 
 El proyecto ya incluye los archivos necesarios:
 - ✅ `fly.toml` - Configuración de Fly.io
@@ -152,52 +182,78 @@ El proyecto ya incluye los archivos necesarios:
 #### 2. Crear la Aplicación en Fly.io
 
 ```bash
-# Navegar al directorio del proyecto
-cd techflow-rag-agent
-
-# Lanzar la aplicación (usa fly.toml existente)
+# Crear app (usará la configuración de fly.toml)
 flyctl launch --no-deploy
 
-# Esto creará la app pero NO la desplegará aún
-# Responde las preguntas:
-# - Use existing fly.toml? YES
-# - Would you like to set up a PostgreSQL database? NO
-# - Would you like to set up an Upstash Redis database? NO
+# Responde a las preguntas:
+# - Would you like to copy its configuration? → YES
+# - Would you like to set up a PostgreSQL database? → NO
+# - Would you like to set up an Upstash Redis database? → NO
 ```
 
-#### 3. Crear Volumen Persistente
+**Importante:** Anota el nombre de tu app (por defecto: `techflow-rag-agent`)
+
+#### 3. Verificar y Crear Volumen Persistente
 
 ```bash
-# Crear volumen de 3GB para datos (incluido en free tier)
-flyctl volumes create techflow_data --size 3 --region mia
+# Ver región de tu app
+flyctl status
+
+# Crear volumen en la MISMA región que tu app
+# Si tu app está en 'dfw' (Dallas):
+flyctl volumes create techflow_data --size 3 --region dfw
+
+# Si tu app está en 'gru' (São Paulo):
+flyctl volumes create techflow_data --size 3 --region gru
 
 # Verificar que se creó
 flyctl volumes list
 ```
 
-#### 4. Configurar Secrets (Variables de Entorno)
+**Regiones recomendadas para Latinoamérica:**
+- `gru` - São Paulo, Brasil (mejor latencia)
+- `scl` - Santiago, Chile
+- `iad` - Virginia, USA (buena alternativa)
+- `dfw` - Dallas, USA
+
+#### 4. Configurar Secrets (API Keys y Password)
 
 ```bash
-# Configurar API keys y contraseña de admin
-flyctl secrets set GEMINI_API_KEY="tu-api-key-de-gemini"
-flyctl secrets set COHERE_API_KEY="tu-api-key-de-cohere"
-flyctl secrets set ADMIN_PASSWORD="tu-password-segura"
+# IMPORTANTE: NO uses comillas al configurar los secrets
+# Reemplaza con tus valores reales
 
-# Opcional: Configurar modelos específicos
-flyctl secrets set GEMINI_MODEL="gemini-3.6-flash"
-flyctl secrets set COHERE_MODEL="command-r7b-12-2024"
+# Gemini API Key (OBLIGATORIO)
+flyctl secrets set GEMINI_API_KEY=tu-gemini-api-key-aqui
 
-# Ver secrets configurados (valores ocultos)
+# Cohere API Key (RECOMENDADO para fallback)
+flyctl secrets set COHERE_API_KEY=tu-cohere-api-key-aqui
+
+# Contraseña de Administrador (OBLIGATORIO)
+flyctl secrets set ADMIN_PASSWORD=tu-password-segura
+
+# Opcional: Modelos específicos
+flyctl secrets set GEMINI_MODEL=gemini-3.6-flash
+flyctl secrets set COHERE_MODEL=command-r7b-12-2024
+
+# Verificar que se configuraron
 flyctl secrets list
 ```
+
+**¿Dónde obtener las API Keys?**
+- **Gemini:** [Google AI Studio](https://makersuite.google.com/app/apikey) (Gratuito)
+- **Cohere:** [Cohere Dashboard](https://dashboard.cohere.com/api-keys) (Gratuito)
 
 #### 5. Desplegar la Aplicación
 
 ```bash
-# Primera vez (puede tomar 5-10 minutos)
+# Primera vez (tomará 5-10 minutos)
 flyctl deploy
 
-# La aplicación se construirá y desplegará automáticamente
+# Verás el progreso de:
+# - Building image
+# - Pushing image  
+# - Deploying
+# - Health checks
 ```
 
 #### 6. Verificar el Despliegue
@@ -206,31 +262,33 @@ flyctl deploy
 # Abrir la aplicación en el navegador
 flyctl open
 
-# Ver logs en tiempo real
-flyctl logs
-
 # Ver estado de la aplicación
 flyctl status
 
-# Ver información de la máquina
+# Ver logs en tiempo real
+flyctl logs
+
+# Ver información de las máquinas
 flyctl machine list
 ```
 
-Tu aplicación estará disponible en: `https://techflow-rag-agent.fly.dev`
+**Tu aplicación estará disponible en:**
+```
+https://tu-app-name.fly.dev
+```
 
 ### Actualizaciones y Mantenimiento
 
 #### Actualizar la Aplicación
 
 ```bash
-# Después de hacer cambios en el código
-git add .
-git commit -m "Descripción de cambios"
+# Después de hacer cambios en el código local
+git pull origin main  # Si clonaste desde GitHub
 
-# Re-desplegar
+# Re-desplegar (toma 3-5 minutos)
 flyctl deploy
 
-# Fly.io reconstruirá y desplegará automáticamente
+# Los datos en el volumen persisten automáticamente
 ```
 
 #### Ver Logs
@@ -250,24 +308,32 @@ flyctl logs --level error
 
 ```bash
 # Actualizar un secret
-flyctl secrets set ADMIN_PASSWORD="nueva-password"
+flyctl secrets set ADMIN_PASSWORD=nueva-password
 
-# Eliminar un secret
-flyctl secrets unset NOMBRE_SECRET
-
-# Listar secrets
+# Listar secrets configurados
 flyctl secrets list
+
+# La app se reinicia automáticamente al cambiar secrets
 ```
 
 #### Escalar Recursos
 
 ```bash
-# Cambiar tamaño de VM (si necesitas más recursos)
-flyctl scale vm shared-cpu-2x --memory 1024
-
 # Ver configuración actual
 flyctl scale show
+
+# Cambiar a máquina con más memoria (costo adicional)
+flyctl scale vm shared-cpu-2x --memory 512
+
+# Cambiar a máquina dedicada (mejor rendimiento)
+flyctl scale vm dedicated-cpu-1x --memory 2048
 ```
+
+**Precios de referencia:**
+- `shared-cpu-1x` (256MB): **Incluido en free tier**
+- `shared-cpu-2x` (512MB): ~$5-7/mes
+- `shared-cpu-4x` (1GB): ~$10-12/mes
+- `dedicated-cpu-1x` (2GB): ~$15-20/mes
 
 #### Gestionar Volumen
 
@@ -279,16 +345,19 @@ flyctl volumes list
 flyctl volumes snapshots create techflow_data
 
 # Listar snapshots
-flyctl volumes snapshots list
+flyctl volumes snapshots list techflow_data
+
+# Aumentar tamaño del volumen
+flyctl volumes extend vol_xxxxx --size 5
 ```
 
 ### Monitoreo y Debugging
 
 ```bash
-# Ver métricas
+# Ver métricas en dashboard web
 flyctl dashboard
 
-# SSH a la máquina (para debugging avanzado)
+# SSH a la máquina (debugging avanzado)
 flyctl ssh console
 
 # Ver estado de health checks
@@ -307,29 +376,31 @@ flyctl apps restart techflow-rag-agent
 - **Global:** Despliega en la región más cercana a tus usuarios
 - **HTTPS:** Certificados SSL automáticos
 - **CLI:** Herramientas poderosas para gestión
+- **Zero Downtime:** Rolling deployments sin interrupciones
 
 #### ⚠️ Limitaciones del Free Tier
 
 - **3 VMs compartidas:** Suficiente para proyectos pequeños/medianos
-- **256MB RAM por VM:** Puede ser limitado para muchos documentos
-- **Solución:** Upgrade a máquinas más grandes ($5-10/mes)
+- **256MB RAM por VM:** Puede ser limitado con muchos documentos grandes
+- **Solución:** Upgrade a máquinas más grandes cuando sea necesario
 
 #### 💰 Costos Estimados
 
-- **Free Tier:** $0/mes
-  - 3 VMs compartidas (shared-cpu-1x)
-  - 3GB volumen persistente
-  - 160GB tráfico de salida/mes
-  
-- **Producción Básica:** ~$5-10/mes
-  - shared-cpu-2x con 512MB-1GB RAM
-  - 3GB volumen
-  - Suficiente para 10-50 usuarios concurrentes
+**Free Tier:** $0/mes
+- 3 VMs compartidas (shared-cpu-1x)
+- 3GB volumen persistente
+- 160GB tráfico de salida/mes
+- Suficiente para 5-10 usuarios concurrentes
 
-- **Producción Media:** ~$15-25/mes
-  - dedicated-cpu-1x con 2GB RAM
-  - 10GB volumen
-  - Para 50-200 usuarios concurrentes
+**Producción Básica:** ~$5-10/mes
+- shared-cpu-2x con 512MB-1GB RAM
+- 3-5GB volumen
+- Para 10-50 usuarios concurrentes
+
+**Producción Media:** ~$15-25/mes
+- dedicated-cpu-1x con 2GB RAM
+- 10GB volumen
+- Para 50-200 usuarios concurrentes
 
 ### Troubleshooting
 
@@ -346,14 +417,11 @@ flyctl config display
 flyctl checks list
 ```
 
-#### Sin memoria
+#### Sin memoria (OOM)
 
 ```bash
 # Aumentar RAM
 flyctl scale vm shared-cpu-2x --memory 512
-
-# O cambiar a máquina más grande
-flyctl scale vm shared-cpu-4x --memory 1024
 ```
 
 #### Problemas con volumen
@@ -362,8 +430,8 @@ flyctl scale vm shared-cpu-4x --memory 1024
 # Verificar que el volumen existe
 flyctl volumes list
 
-# Si no existe, crear
-flyctl volumes create techflow_data --size 3 --region mia
+# Verificar que está en la misma región que la app
+flyctl status
 ```
 
 #### Secrets no se cargan
@@ -373,13 +441,42 @@ flyctl volumes create techflow_data --size 3 --region mia
 flyctl secrets list
 
 # Re-configurar si es necesario
-flyctl secrets set GEMINI_API_KEY="tu-key"
+flyctl secrets set GEMINI_API_KEY=tu-key
+```
+
+### Comandos Útiles de Referencia Rápida
+
+```bash
+# Despliegue inicial completo
+flyctl launch --no-deploy
+flyctl volumes create techflow_data --size 3 --region REGION
+flyctl secrets set GEMINI_API_KEY=xxx COHERE_API_KEY=xxx ADMIN_PASSWORD=xxx
+flyctl deploy
+
+# Monitoreo
+flyctl status
+flyctl logs
+flyctl open
+
+# Actualización
+flyctl deploy
+
+# Gestión
+flyctl scale show
+flyctl volumes list
+flyctl secrets list
+
+# Backup
+flyctl volumes snapshots create techflow_data
+
+# Debugging
+flyctl ssh console
 ```
 
 ### Eliminar la Aplicación
 
 ```bash
-# CUIDADO: Esto eliminará la app y todos los datos
+# CUIDADO: Esto eliminará la app y TODOS los datos
 flyctl apps destroy techflow-rag-agent
 
 # Confirmar cuando se solicite
