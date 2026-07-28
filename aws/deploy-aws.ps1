@@ -115,19 +115,42 @@ Write-Host "✓ AMI encontrado: $AMI_ID" -ForegroundColor Green
 
 # Paso 6: Lanzar instancia
 Write-Host ""
-Write-Host "[6/9] Lanzando instancia EC2 t2.micro..." -ForegroundColor Yellow
-$INSTANCE_ID = aws ec2 run-instances `
-  --image-id $AMI_ID `
-  --instance-type t2.micro `
-  --key-name $KEY_NAME `
-  --security-group-ids $SG_ID `
-  --block-device-mappings "DeviceName=/dev/sda1,Ebs={VolumeSize=20,VolumeType=gp3,DeleteOnTermination=true}" `
-  --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$INSTANCE_NAME}]" `
-  --region $REGION `
-  --query 'Instances[0].InstanceId' `
-  --output text
+Write-Host "[6/9] Lanzando instancia EC2 (Free Tier eligible)..." -ForegroundColor Yellow
 
-Write-Host "✓ Instancia lanzada: $INSTANCE_ID" -ForegroundColor Green
+# Intentar primero con t3.micro (recomendado para nuevas cuentas)
+try {
+    $INSTANCE_ID = aws ec2 run-instances `
+      --image-id $AMI_ID `
+      --instance-type t3.micro `
+      --key-name $KEY_NAME `
+      --security-group-ids $SG_ID `
+      --block-device-mappings "DeviceName=/dev/sda1,Ebs={VolumeSize=20,VolumeType=gp3,DeleteOnTermination=true}" `
+      --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$INSTANCE_NAME}]" `
+      --region $REGION `
+      --query 'Instances[0].InstanceId' `
+      --output text 2>&1
+    
+    if ($INSTANCE_ID -like "i-*") {
+        Write-Host "✓ Instancia t3.micro lanzada: $INSTANCE_ID" -ForegroundColor Green
+    } else {
+        throw "Error al lanzar t3.micro"
+    }
+} catch {
+    Write-Host "⚠ t3.micro no disponible, intentando con t2.micro..." -ForegroundColor Yellow
+    
+    $INSTANCE_ID = aws ec2 run-instances `
+      --image-id $AMI_ID `
+      --instance-type t2.micro `
+      --key-name $KEY_NAME `
+      --security-group-ids $SG_ID `
+      --block-device-mappings "DeviceName=/dev/sda1,Ebs={VolumeSize=20,VolumeType=gp3,DeleteOnTermination=true}" `
+      --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$INSTANCE_NAME}]" `
+      --region $REGION `
+      --query 'Instances[0].InstanceId' `
+      --output text
+    
+    Write-Host "✓ Instancia t2.micro lanzada: $INSTANCE_ID" -ForegroundColor Green
+}
 
 # Paso 7: Esperar a que esté running
 Write-Host ""
