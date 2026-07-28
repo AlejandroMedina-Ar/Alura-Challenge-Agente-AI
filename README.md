@@ -598,6 +598,57 @@ EMBEDDING_MODEL=intfloat/multilingual-e5-base
 
 ---
 
+---
+
+## 📸 Capturas de Pantalla
+
+### 💬 Interfaz de Chat
+
+<table>
+  <tr>
+    <td width="50%">
+      <h4>🌞 Modo Claro</h4>
+      <img src="assets/images/screenshots/chat-interface-claro.jpg" alt="Chat Interface - Modo Claro" />
+      <p>Interfaz principal del chat con tema claro. Conversación natural con el agente RAG consultando la base de conocimiento corporativa.</p>
+    </td>
+    <td width="50%">
+      <h4>🌙 Modo Oscuro</h4>
+      <img src="assets/images/screenshots/chat-interface-obscuro.jpg" alt="Chat Interface - Modo Oscuro" />
+      <p>Misma interfaz con tema oscuro para reducir fatiga visual. Los usuarios pueden cambiar entre temas desde el sidebar.</p>
+    </td>
+  </tr>
+</table>
+
+### 🔐 Autenticación
+
+<div align="center">
+  <img src="assets/images/screenshots/login.jpg" alt="Login" width="80%" />
+  <p><i>Pantalla de login para administradores. Los usuarios invitados acceden directamente al chat sin login.</i></p>
+</div>
+
+### 👨‍💼 Panel de Administración
+
+<div align="center">
+  <img src="assets/images/screenshots/admin-panel.jpg" alt="Panel de Administración" width="80%" />
+  <p><i>Panel completo de administración con métricas, estadísticas y gestión del sistema.</i></p>
+</div>
+
+### 📚 Gestión de Documentos
+
+<div align="center">
+  <img src="assets/images/screenshots/document-management.jpg" alt="Gestión de Documentos" width="80%" />
+  <p><i>Interfaz para subir, indexar y gestionar documentos. Soporta PDF, TXT, MD y DOCX con detección automática de duplicados.</i></p>
+</div>
+
+### ⚙️ Configuración
+
+<div align="center">
+  <img src="assets/images/screenshots/configuration.jpg" alt="Configuración" width="80%" />
+  <p><i>Panel de configuración para ajustar parámetros RAG, modelos LLM, y exportar/importar configuración.</i></p>
+</div>
+
+---
+
 ## 📚 Documentación Adicional
 
 | Documento | Descripción |
