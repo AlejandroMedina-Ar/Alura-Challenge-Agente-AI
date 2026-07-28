@@ -145,7 +145,7 @@ class EmbeddingService:
     def generate_embeddings_batch(
         self,
         texts: list[str],
-        batch_size: int = 32,
+        batch_size: int = 8,  # Reduced from 32 to 8 for low-RAM environments
         show_progress: bool = False
     ) -> list[np.ndarray]:
         """
@@ -198,6 +198,10 @@ class EmbeddingService:
                 batch_size=batch_size
             )
             
+            # Force garbage collection to free memory in low-RAM environments
+            import gc
+            gc.collect()
+            
             return list(embeddings)
             
         except Exception as e:
@@ -231,7 +235,7 @@ class EmbeddingService:
     def generate_document_embeddings(
         self,
         documents: list[str],
-        batch_size: int = 32
+        batch_size: int = 8  # Reduced from 32 to 8 for low-RAM environments
     ) -> list[np.ndarray]:
         """
         Generate embeddings for document chunks.
