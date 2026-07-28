@@ -63,7 +63,8 @@ class EmbeddingService:
         """
         self.model_name = model_name
         self.device = device
-        self.model = None
+        self.model = None  # Lazy loading - will load on first use
+        self._model_loaded = False
         
         if not SENTENCE_TRANSFORMERS_AVAILABLE:
             logger.error("sentence-transformers not available")
@@ -72,17 +73,25 @@ class EmbeddingService:
                 "sentence-transformers package not installed"
             )
         
+        logger.info(f"EmbeddingService initialized (lazy loading)", model=model_name)
+    
+    def _ensure_model_loaded(self):
+        """Load the model if not already loaded (lazy loading)."""
+        if self._model_loaded:
+            return
+        
         try:
-            logger.info(f"Loading embedding model", model=model_name)
-            self.model = SentenceTransformer(model_name, device=device)
+            logger.info(f"Loading embedding model", model=self.model_name)
+            self.model = SentenceTransformer(self.model_name, device=self.device)
+            self._model_loaded = True
             logger.info(
                 f"Embedding model loaded successfully",
-                model=model_name,
+                model=self.model_name,
                 dimension=self.get_embedding_dimension()
             )
         except Exception as e:
             logger.error(f"Failed to load embedding model", error=str(e), exc_info=True)
-            raise EmbeddingError(model_name, f"Failed to load model: {e}")
+            raise EmbeddingError(self.model_name, f"Failed to load model: {e}")
     
     def generate_embedding(self, text: str) -> np.ndarray:
         """
@@ -105,6 +114,9 @@ class EmbeddingService:
         """
         if not text or not text.strip():
             raise EmbeddingError("text", "Cannot generate embedding for empty text")
+        
+        # Lazy load model on first use
+        self._ensure_model_loaded()
         
         try:
             # E5 models require "query: " or "passage: " prefix for best performance
@@ -165,6 +177,9 @@ class EmbeddingService:
         
         if not non_empty_texts:
             raise EmbeddingError("texts", "All texts are empty")
+        
+        # Lazy load model on first use
+        self._ensure_model_loaded()
         
         try:
             # Add "passage: " prefix for document chunks
