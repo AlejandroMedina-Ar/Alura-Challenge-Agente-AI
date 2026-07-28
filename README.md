@@ -102,57 +102,294 @@ La aplicación se abrirá automáticamente en `http://localhost:8501`
 
 ---
 
-## ☁️ Despliegue en Streamlit Cloud
+## ☁️ Despliegue en Fly.io
+
+### ¿Por qué Fly.io?
+
+Fly.io es la plataforma recomendada para desplegar TechFlow RAG Agent porque ofrece:
+- ✅ **Persistencia de datos** con volúmenes
+- ✅ **Free tier generoso** (3GB volumen + 256MB RAM incluidos)
+- ✅ **Despliegue global** en múltiples regiones
+- ✅ **HTTPS automático** con certificados SSL
+- ✅ **Health checks y auto-scaling**
+- ✅ **CLI potente** para gestión
 
 ### Requisitos Previos
-- Cuenta en [Streamlit Community Cloud](https://share.streamlit.io)
-- Repositorio en GitHub (público o privado)
 
-### Pasos
+1. **Cuenta en Fly.io**
+   - Regístrate en [fly.io](https://fly.io/app/sign-up)
+   - Free tier incluye: 3 VMs compartidas, 3GB volumen persistente
+   - Se requiere tarjeta de crédito (no se cobra en free tier)
 
-1. **Conectar Repositorio**
-   - Ir a [share.streamlit.io](https://share.streamlit.io)
-   - Click en **"New app"**
-   - Seleccionar tu repositorio
-   - **Main file path:** `src/app.py`
-   - **Python version:** 3.11
-
-2. **Configurar Secrets**
-   En **Settings → Secrets**, agregar:
+2. **Instalar flyctl (CLI de Fly.io)**
    
-   ```toml
-   GEMINI_API_KEY = "tu-api-key-aqui"
-   COHERE_API_KEY = "tu-api-key-aqui"
-   ADMIN_PASSWORD = "tu-password-aqui"
-   GEMINI_MODEL = "gemini-3.6-flash"
+   ```bash
+   # Windows (PowerShell)
+   iwr https://fly.io/install.ps1 -useb | iex
+   
+   # macOS/Linux
+   curl -L https://fly.io/install.sh | sh
+   
+   # Verificar instalación
+   flyctl version
    ```
 
-3. **Deploy**
-   - Streamlit Cloud despliega automáticamente
-   - Tu app estará en: `https://tu-app.streamlit.app`
+3. **Autenticarse**
+   
+   ```bash
+   flyctl auth login
+   ```
 
-### ⚠️ Consideraciones Streamlit Cloud
+### Pasos para Desplegar
 
-- **Persistencia:** ChromaDB se reinicia con cada redeploy
-- **Solución:** Considera usar vector store externo (Pinecone, Weaviate, Qdrant) para producción
-- **Límites:** 1 GB RAM, sin persistencia de archivos entre reinicios
-- **Documentos:** Deberás re-subir documentos después de cada redeploy
+#### 1. Preparar el Proyecto
 
-### 🔧 Alternativa: Persistencia con S3
+El proyecto ya incluye los archivos necesarios:
+- ✅ `fly.toml` - Configuración de Fly.io
+- ✅ `Dockerfile` - Imagen Docker optimizada
+- ✅ `.dockerignore` - Exclusiones para build
 
-Para mantener documentos entre redeploys:
+#### 2. Crear la Aplicación en Fly.io
 
-```toml
-# En Secrets
-AWS_ACCESS_KEY_ID = "tu-access-key"
-AWS_SECRET_ACCESS_KEY = "tu-secret-key"
-S3_BUCKET_NAME = "tu-bucket"
-S3_REGION = "us-east-1"
+```bash
+# Navegar al directorio del proyecto
+cd techflow-rag-agent
+
+# Lanzar la aplicación (usa fly.toml existente)
+flyctl launch --no-deploy
+
+# Esto creará la app pero NO la desplegará aún
+# Responde las preguntas:
+# - Use existing fly.toml? YES
+# - Would you like to set up a PostgreSQL database? NO
+# - Would you like to set up an Upstash Redis database? NO
+```
+
+#### 3. Crear Volumen Persistente
+
+```bash
+# Crear volumen de 3GB para datos (incluido en free tier)
+flyctl volumes create techflow_data --size 3 --region mia
+
+# Verificar que se creó
+flyctl volumes list
+```
+
+#### 4. Configurar Secrets (Variables de Entorno)
+
+```bash
+# Configurar API keys y contraseña de admin
+flyctl secrets set GEMINI_API_KEY="tu-api-key-de-gemini"
+flyctl secrets set COHERE_API_KEY="tu-api-key-de-cohere"
+flyctl secrets set ADMIN_PASSWORD="tu-password-segura"
+
+# Opcional: Configurar modelos específicos
+flyctl secrets set GEMINI_MODEL="gemini-3.6-flash"
+flyctl secrets set COHERE_MODEL="command-r7b-12-2024"
+
+# Ver secrets configurados (valores ocultos)
+flyctl secrets list
+```
+
+#### 5. Desplegar la Aplicación
+
+```bash
+# Primera vez (puede tomar 5-10 minutos)
+flyctl deploy
+
+# La aplicación se construirá y desplegará automáticamente
+```
+
+#### 6. Verificar el Despliegue
+
+```bash
+# Abrir la aplicación en el navegador
+flyctl open
+
+# Ver logs en tiempo real
+flyctl logs
+
+# Ver estado de la aplicación
+flyctl status
+
+# Ver información de la máquina
+flyctl machine list
+```
+
+Tu aplicación estará disponible en: `https://techflow-rag-agent.fly.dev`
+
+### Actualizaciones y Mantenimiento
+
+#### Actualizar la Aplicación
+
+```bash
+# Después de hacer cambios en el código
+git add .
+git commit -m "Descripción de cambios"
+
+# Re-desplegar
+flyctl deploy
+
+# Fly.io reconstruirá y desplegará automáticamente
+```
+
+#### Ver Logs
+
+```bash
+# Logs en tiempo real
+flyctl logs
+
+# Últimas 100 líneas
+flyctl logs --lines 100
+
+# Filtrar por nivel
+flyctl logs --level error
+```
+
+#### Gestionar Secrets
+
+```bash
+# Actualizar un secret
+flyctl secrets set ADMIN_PASSWORD="nueva-password"
+
+# Eliminar un secret
+flyctl secrets unset NOMBRE_SECRET
+
+# Listar secrets
+flyctl secrets list
+```
+
+#### Escalar Recursos
+
+```bash
+# Cambiar tamaño de VM (si necesitas más recursos)
+flyctl scale vm shared-cpu-2x --memory 1024
+
+# Ver configuración actual
+flyctl scale show
+```
+
+#### Gestionar Volumen
+
+```bash
+# Ver volúmenes
+flyctl volumes list
+
+# Crear snapshot (backup)
+flyctl volumes snapshots create techflow_data
+
+# Listar snapshots
+flyctl volumes snapshots list
+```
+
+### Monitoreo y Debugging
+
+```bash
+# Ver métricas
+flyctl dashboard
+
+# SSH a la máquina (para debugging avanzado)
+flyctl ssh console
+
+# Ver estado de health checks
+flyctl checks list
+
+# Reiniciar la aplicación
+flyctl apps restart techflow-rag-agent
+```
+
+### Consideraciones Importantes
+
+#### ✅ Ventajas de Fly.io
+
+- **Persistencia:** Los datos se mantienen entre despliegues (volumen persistente)
+- **Escalabilidad:** Fácil aumentar recursos cuando lo necesites
+- **Global:** Despliega en la región más cercana a tus usuarios
+- **HTTPS:** Certificados SSL automáticos
+- **CLI:** Herramientas poderosas para gestión
+
+#### ⚠️ Limitaciones del Free Tier
+
+- **3 VMs compartidas:** Suficiente para proyectos pequeños/medianos
+- **256MB RAM por VM:** Puede ser limitado para muchos documentos
+- **Solución:** Upgrade a máquinas más grandes ($5-10/mes)
+
+#### 💰 Costos Estimados
+
+- **Free Tier:** $0/mes
+  - 3 VMs compartidas (shared-cpu-1x)
+  - 3GB volumen persistente
+  - 160GB tráfico de salida/mes
+  
+- **Producción Básica:** ~$5-10/mes
+  - shared-cpu-2x con 512MB-1GB RAM
+  - 3GB volumen
+  - Suficiente para 10-50 usuarios concurrentes
+
+- **Producción Media:** ~$15-25/mes
+  - dedicated-cpu-1x con 2GB RAM
+  - 10GB volumen
+  - Para 50-200 usuarios concurrentes
+
+### Troubleshooting
+
+#### La aplicación no inicia
+
+```bash
+# Ver logs detallados
+flyctl logs
+
+# Verificar configuración
+flyctl config display
+
+# Verificar health checks
+flyctl checks list
+```
+
+#### Sin memoria
+
+```bash
+# Aumentar RAM
+flyctl scale vm shared-cpu-2x --memory 512
+
+# O cambiar a máquina más grande
+flyctl scale vm shared-cpu-4x --memory 1024
+```
+
+#### Problemas con volumen
+
+```bash
+# Verificar que el volumen existe
+flyctl volumes list
+
+# Si no existe, crear
+flyctl volumes create techflow_data --size 3 --region mia
+```
+
+#### Secrets no se cargan
+
+```bash
+# Verificar secrets
+flyctl secrets list
+
+# Re-configurar si es necesario
+flyctl secrets set GEMINI_API_KEY="tu-key"
+```
+
+### Eliminar la Aplicación
+
+```bash
+# CUIDADO: Esto eliminará la app y todos los datos
+flyctl apps destroy techflow-rag-agent
+
+# Confirmar cuando se solicite
 ```
 
 ---
 
-## 🖥️ Despliegue en VPS
+## 🖥️ Despliegue Alternativo en VPS/Cloud
+
+**Nota:** Fly.io es la opción recomendada. Usa VPS solo si necesitas control total del servidor.
 
 ### Instalación en Servidor
 

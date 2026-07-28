@@ -8,7 +8,7 @@
 
 1. [Opciones de Despliegue](#opciones-de-despliegue)
 2. [Despliegue Local](#despliegue-local)
-3. [Despliegue en Streamlit Community Cloud](#despliegue-en-streamlit-community-cloud)
+3. [Despliegue en Fly.io](#despliegue-en-flyio) ⭐ **RECOMENDADO**
 4. [Despliegue en VPS/Cloud](#despliegue-en-vpscloud)
 5. [Consideraciones de Producción](#consideraciones-de-producción)
 6. [Monitoreo](#monitoreo)
@@ -23,15 +23,15 @@
 - **Cons:** Configuración manual, dependiente del SO
 - **Mejor para:** Desarrollo, pruebas, usuario único
 
-### Opción 2: Streamlit Community Cloud ⭐ RECOMENDADO
-- **Pros:** Hosting gratuito, despliegue automático, HTTPS, sin servidor
-- **Cons:** Repositorio público requerido (o plan pagado), recursos limitados
-- **Mejor para:** Demos, proyectos públicos, despliegue rápido sin servidor propio
+### Opción 2: Fly.io ⭐ RECOMENDADO
+- **Pros:** Persistencia de datos, free tier generoso, HTTPS automático, global CDN, fácil escalabilidad
+- **Cons:** Requiere tarjeta de crédito (no cobra en free tier)
+- **Mejor para:** Producción, proyectos corporativos, aplicaciones que necesitan persistencia
 
 ### Opción 3: VPS/Cloud (AWS, GCP, Azure, DigitalOcean)
 - **Pros:** Control total, escalable, seguro, IP dedicada
 - **Cons:** Cuesta dinero, requiere conocimiento DevOps
-- **Mejor para:** Empresas, producción, alta disponibilidad
+- **Mejor para:** Empresas grandes, alta disponibilidad, requisitos de compliance específicos
 
 ---
 
@@ -85,153 +85,618 @@ Presiona `Ctrl+C` en la terminal
 
 ---
 
-## Despliegue en Streamlit Community Cloud
+## Despliegue en Fly.io
 
-**Hosting gratuito para aplicaciones Streamlit - RECOMENDADO para despliegue rápido**
+**Plataforma recomendada para despliegue en producción de TechFlow RAG Agent**
+
+### ¿Por qué Fly.io?
+
+Fly.io es la mejor opción para desplegar esta aplicación porque:
+
+✅ **Persistencia de Datos**
+- Volúmenes persistentes que mantienen ChromaDB y documentos entre despliegues
+- No pierdes documentos indexados al actualizar la aplicación
+
+✅ **Free Tier Generoso**
+- 3 máquinas virtuales compartidas incluidas
+- 3GB de almacenamiento persistente gratis
+- 160GB de tráfico de salida mensual
+- Suficiente para proyectos pequeños/medianos
+
+✅ **Despliegue Global**
+- Data centers en 30+ regiones mundiales
+- Despliega cerca de tus usuarios para baja latencia
+- Anycast IPv4 y IPv6
+
+✅ **HTTPS Automático**
+- Certificados SSL gratuitos y automáticos
+- Soporte para dominios personalizados
+
+✅ **Developer Experience**
+- CLI potente y fácil de usar
+- Logs en tiempo real
+- SSH a las máquinas para debugging
+- Health checks automáticos
 
 ### Requisitos Previos
-- Cuenta GitHub
-- Repositorio GitHub (público o plan pagado de Streamlit)
-- Claves API de Gemini y Cohere
 
-### Paso 1: Preparar el Repositorio
+1. **Crear cuenta en Fly.io**
+   - Ir a [fly.io/app/sign-up](https://fly.io/app/sign-up)
+   - Se requiere tarjeta de crédito para verificación
+   - No se cobra nada en el free tier
 
-**1.1. Asegúrate que tu código esté en GitHub:**
+2. **Instalar flyctl CLI**
 
-```bash
-# Si aún no has subido el código
-git init
-git add .
-git commit -m "Initial commit"
-git remote add origin https://github.com/tu-usuario/tu-repo.git
-git push -u origin main
+   **Windows (PowerShell como administrador):**
+   ```powershell
+   iwr https://fly.io/install.ps1 -useb | iex
+   ```
+
+   **macOS (Homebrew):**
+   ```bash
+   brew install flyctl
+   ```
+
+   **Linux:**
+   ```bash
+   curl -L https://fly.io/install.sh | sh
+   ```
+
+   **Verificar instalación:**
+   ```bash
+   flyctl version
+   ```
+
+3. **Autenticarse**
+   ```bash
+   flyctl auth login
+   ```
+   Esto abrirá tu navegador para completar la autenticación.
+
+### Guía Paso a Paso
+
+#### Paso 1: Preparar el Proyecto
+
+El repositorio ya incluye los archivos necesarios:
+
+```
+techflow-rag-agent/
+├── fly.toml              # Configuración de Fly.io
+├── Dockerfile            # Imagen Docker optimizada
+└── .dockerignore         # Archivos a excluir del build
 ```
 
-**1.2. Verifica que tengas estos archivos:**
+Verifica que estás en el directorio del proyecto:
+```bash
+cd techflow-rag-agent
+```
 
-- ✅ `requirements.txt` - Dependencias Python
-- ✅ `src/app.py` - Aplicación principal Streamlit
-- ✅ `.gitignore` - Para excluir `.env` y `data/`
-- ✅ `.env.example` - Template de variables de entorno
+#### Paso 2: Lanzar la Aplicación
 
-**Nota:** NO subas `.env` con tus claves reales a GitHub.
+```bash
+# Crear la aplicación sin desplegar aún
+flyctl launch --no-deploy
+```
 
-### Paso 2: Crear Cuenta en Streamlit Cloud
+**Responde las preguntas interactivas:**
 
-1. **Visita:** https://share.streamlit.io
-2. **Inicia sesión** con tu cuenta GitHub
-3. Streamlit pedirá permisos para acceder a tus repositorios (acepta)
+- **Choose an app name:** `techflow-rag-agent` (o el nombre que prefieras)
+- **Choose a region for deployment:** Selecciona la más cercana a tus usuarios
+  - `mia` - Miami, Florida (Recomendado para Latinoamérica)
+  - `iad` - Ashburn, Virginia (USA Este)
+  - `lax` - Los Angeles (USA Oeste)
+  - `gru` - São Paulo, Brasil
+  - `mad` - Madrid, España
+- **Would you like to set up a PostgreSQL database?** → **NO**
+- **Would you like to set up an Upstash Redis database?** → **NO**
+- **Would you like to deploy now?** → **NO**
 
-### Paso 3: Desplegar la Aplicación
+El comando creará la aplicación en Fly.io pero no la desplegará aún.
 
-**3.1. Click en "New app"**
+#### Paso 3: Crear Volumen Persistente
 
-**3.2. Configurar el despliegue:**
+Crea un volumen para almacenar datos de forma persistente:
 
-- **Repository:** Selecciona `tu-usuario/tu-repo`
-- **Branch:** `main` (o la rama que uses)
-- **Main file path:** `src/app.py`
-- **App URL (opcional):** Personaliza tu URL: `tu-app.streamlit.app`
+```bash
+# Crear volumen de 3GB (incluido en free tier)
+flyctl volumes create techflow_data --region mia --size 3
 
-**3.3. Click en "Advanced settings"**
+# Verificar que se creó correctamente
+flyctl volumes list
+```
 
-### Paso 4: Configurar Secrets (Variables de Entorno)
+**Salida esperada:**
+```
+ID          NAME            SIZE    REGION  ATTACHED VM
+vol_xxxxx   techflow_data   3 GB    mia     
+```
 
-En la sección "Secrets", agrega tus claves API en formato TOML:
+**Notas importantes:**
+- El volumen se crea en la misma región que elegiste para tu app
+- Los datos en el volumen persisten entre despliegues
+- Puedes aumentar el tamaño más adelante si es necesario
 
+#### Paso 4: Configurar Secrets (Variables de Entorno)
+
+Configura las API keys y contraseña de administrador como secrets:
+
+```bash
+# API Key de Google Gemini (obligatorio)
+flyctl secrets set GEMINI_API_KEY="tu-gemini-api-key-aqui"
+
+# API Key de Cohere (opcional, para fallback)
+flyctl secrets set COHERE_API_KEY="tu-cohere-api-key-aqui"
+
+# Contraseña de administrador (obligatorio)
+flyctl secrets set ADMIN_PASSWORD="tu-password-segura-aqui"
+
+# Opcional: Configurar modelos específicos
+flyctl secrets set GEMINI_MODEL="gemini-3.6-flash"
+flyctl secrets set COHERE_MODEL="command-r7b-12-2024"
+
+# Opcional: Configuración de logging
+flyctl secrets set LOG_LEVEL="INFO"
+```
+
+**Verificar secrets configurados:**
+```bash
+flyctl secrets list
+```
+
+**Notas de seguridad:**
+- Los valores de los secrets nunca se muestran en texto plano
+- Los secrets se inyectan como variables de entorno en tiempo de ejecución
+- Cambiar un secret reinicia automáticamente la aplicación
+
+#### Paso 5: Desplegar la Aplicación
+
+```bash
+# Primera vez (puede tomar 5-10 minutos)
+flyctl deploy
+```
+
+**Qué sucede durante el despliegue:**
+
+1. **Build de la imagen Docker:**
+   - Fly.io construye la imagen desde el Dockerfile
+   - Instala dependencias de Python
+   - Copia el código de la aplicación
+   
+2. **Push al registro:**
+   - La imagen se sube al registro de Fly.io
+   
+3. **Despliegue:**
+   - Se crea una máquina virtual
+   - Se monta el volumen persistente
+   - Se inyectan los secrets
+   - Se inicia la aplicación
+   
+4. **Health checks:**
+   - Fly.io verifica que la app está saludable
+   - Espera a que `/health` responda correctamente
+
+**Salida esperada al finalizar:**
+```
+--> Pushing image done
+==> Creating release
+--> Release v1 created
+--> Deploying release
+
+Monitoring Deployment
+  1 desired, 1 placed, 1 healthy, 0 unhealthy
+
+--> v1 deployed successfully
+```
+
+#### Paso 6: Verificar el Despliegue
+
+```bash
+# Abrir la aplicación en el navegador
+flyctl open
+
+# Ver estado de la aplicación
+flyctl status
+
+# Ver información de las máquinas
+flyctl machine list
+
+# Ver logs en tiempo real
+flyctl logs
+```
+
+**Tu aplicación estará disponible en:**
+```
+https://techflow-rag-agent.fly.dev
+```
+
+O en tu dominio personalizado si lo configuraste.
+
+### Configuración Adicional
+
+#### Cambiar Región de Despliegue
+
+```bash
+# Listar regiones disponibles
+flyctl platform regions
+
+# Agregar una nueva región
+flyctl regions add gru  # São Paulo
+
+# Remover una región
+flyctl regions remove mia
+
+# Ver regiones actuales
+flyctl regions list
+```
+
+#### Escalar Recursos
+
+**Cambiar tamaño de VM:**
+
+```bash
+# Ver configuración actual
+flyctl scale show
+
+# Cambiar a máquina con más memoria (costo adicional)
+flyctl scale vm shared-cpu-2x --memory 512
+
+# Cambiar a máquina dedicada (mejor rendimiento)
+flyctl scale vm dedicated-cpu-1x --memory 2048
+```
+
+**Precios de referencia:**
+- `shared-cpu-1x` (256MB): Incluido en free tier
+- `shared-cpu-2x` (512MB): ~$5-7/mes
+- `shared-cpu-4x` (1GB): ~$10-12/mes
+- `dedicated-cpu-1x` (2GB): ~$15-20/mes
+
+**Aumentar número de instancias (escalado horizontal):**
+
+```bash
+# Agregar más instancias para alta disponibilidad
+flyctl scale count 2
+
+# Volver a una instancia
+flyctl scale count 1
+```
+
+#### Gestionar Volumen
+
+**Ver información del volumen:**
+```bash
+flyctl volumes list
+```
+
+**Crear snapshot (backup):**
+```bash
+flyctl volumes snapshots create techflow_data
+```
+
+**Listar snapshots:**
+```bash
+flyctl volumes snapshots list techflow_data
+```
+
+**Aumentar tamaño del volumen:**
+```bash
+# Aumentar a 5GB (requiere reinicio)
+flyctl volumes extend vol_xxxxx --size 5
+```
+
+#### Configurar Dominio Personalizado
+
+```bash
+# Agregar certificado SSL para tu dominio
+flyctl certs create tudominio.com
+
+# Verificar certificado
+flyctl certs show tudominio.com
+
+# Obtener la IP de Fly.io
+flyctl ips list
+```
+
+Luego, en tu DNS:
+```
+A     tudominio.com        -> IPv4 de Fly.io
+AAAA  tudominio.com        -> IPv6 de Fly.io
+```
+
+### Actualizaciones y Mantenimiento
+
+#### Actualizar la Aplicación
+
+```bash
+# Después de hacer cambios en el código local
+git add .
+git commit -m "Descripción de cambios"
+
+# Re-desplegar (sin push a GitHub)
+flyctl deploy
+
+# Fly.io construirá y desplegará automáticamente
+```
+
+**Estrategia de despliegue:**
+- Por defecto usa "rolling" (zero-downtime)
+- La nueva versión se despliega gradualmente
+- Si hay errores, se revierte automáticamente
+
+#### Ver Logs
+
+```bash
+# Logs en tiempo real (útil durante el despliegue)
+flyctl logs
+
+# Últimas 100 líneas
+flyctl logs --lines 100
+
+# Filtrar por nivel de log
+flyctl logs --level error
+flyctl logs --level warn
+
+# Buscar en logs
+flyctl logs | grep "ERROR"
+```
+
+#### Debugging Avanzado
+
+**SSH a la máquina:**
+```bash
+# Abrir una consola SSH
+flyctl ssh console
+
+# Una vez dentro, puedes:
+# - Ver archivos: ls /app
+# - Ver logs: cat /app/data/logs/application.log
+# - Verificar procesos: ps aux
+# - Ver uso de recursos: df -h, free -h
+```
+
+**Ejecutar comandos remotos:**
+```bash
+# Ejecutar comando sin abrir consola interactiva
+flyctl ssh console -C "ls -la /app/data"
+```
+
+#### Gestionar Secrets
+
+**Actualizar un secret:**
+```bash
+flyctl secrets set ADMIN_PASSWORD="nueva-password-segura"
+# La app se reinicia automáticamente
+```
+
+**Eliminar un secret:**
+```bash
+flyctl secrets unset COHERE_API_KEY
+```
+
+**Importar múltiples secrets desde archivo:**
+```bash
+# Crear archivo .env.production (no commitearlo)
+# GEMINI_API_KEY=xxx
+# COHERE_API_KEY=yyy
+# ADMIN_PASSWORD=zzz
+
+flyctl secrets import < .env.production
+```
+
+### Monitoreo
+
+#### Dashboard Web
+
+Accede al dashboard en: [fly.io/apps/techflow-rag-agent](https://fly.io/apps/techflow-rag-agent)
+
+**Métricas disponibles:**
+- CPU usage
+- Memory usage
+- Network traffic
+- Request rate
+- Response times
+- Health check status
+
+#### CLI
+
+```bash
+# Ver estado general
+flyctl status
+
+# Ver checks de salud
+flyctl checks list
+
+# Ver métricas en tiempo real
+flyctl dashboard
+```
+
+#### Configurar Alertas
+
+En el dashboard web:
+1. Ve a tu app → Monitoring
+2. Configura alertas para:
+   - CPU > 80%
+   - Memory > 90%
+   - Health checks fallando
+   - Crashes de aplicación
+
+### Troubleshooting
+
+#### La aplicación no inicia
+
+```bash
+# Ver logs detallados
+flyctl logs
+
+# Buscar errores específicos
+flyctl logs | grep -i error
+
+# Verificar configuración
+flyctl config display
+
+# Verificar secrets
+flyctl secrets list
+```
+
+**Problemas comunes:**
+- Secret de API key mal configurado
+- Volumen no montado correctamente
+- Puerto incorrecto expuesto
+
+#### Error de memoria (OOM - Out of Memory)
+
+```bash
+# Síntomas en logs:
+# "Killed" o "OOM killed"
+
+# Solución: Aumentar memoria
+flyctl scale vm shared-cpu-2x --memory 512
+```
+
+#### Health checks fallando
+
+```bash
+# Ver estado de health checks
+flyctl checks list
+
+# Si fallan constantemente:
+# 1. Verificar que Streamlit esté sirviendo en puerto 8501
+# 2. Verificar que /_stcore/health responde
+# 3. Aumentar grace period en fly.toml si la app tarda en iniciar
+```
+
+Edita `fly.toml`:
 ```toml
-# Secrets de Streamlit Cloud
-GEMINI_API_KEY = "tu_clave_gemini_real"
-COHERE_API_KEY = "tu_clave_cohere_real"
-ADMIN_PASSWORD = "tu_contraseña_segura"
+[[services.http_checks]]
+  grace_period = "120s"  # Aumentar si la app tarda en iniciar
 ```
 
-**⚠️ IMPORTANTE:**
-- Usa claves de **producción**, no las de desarrollo
-- Usa contraseña **fuerte** (no "admin123")
-- Estas claves son privadas (no aparecen en el código público)
-
-### Paso 5: Desplegar
-
-1. Click en **"Deploy!"**
-2. Streamlit comenzará a construir la aplicación (3-5 minutos)
-3. Verás logs del proceso de construcción
-4. Cuando termine, tu app estará en: `https://tu-app.streamlit.app`
-
-### Paso 6: Verificar el Despliegue
-
-**6.1. Accede a tu URL:** `https://tu-app.streamlit.app`
-
-**6.2. Prueba la aplicación:**
-- ✅ Modo Guest funciona (sin login)
-- ✅ Modo Admin funciona (con contraseña correcta)
-- ✅ Gemini 3.6 Flash responde
-- ✅ Fallback a Cohere funciona si Gemini falla
-
-**6.3. Si hay errores:**
-- Revisa los logs en el panel de Streamlit Cloud
-- Verifica que las claves API sean correctas
-- Verifica que `requirements.txt` tenga todas las dependencias
-
-### Actualizar la Aplicación Desplegada
-
-**Streamlit re-despliega automáticamente cuando haces push:**
+#### Volumen lleno
 
 ```bash
-# Hacer cambios en el código
-git add .
-git commit -m "Actualizar funcionalidad X"
-git push origin main
+# Ver uso del volumen (desde SSH)
+flyctl ssh console -C "df -h /app/data"
 
-# Streamlit detecta el push y re-despliega automáticamente (2-3 minutos)
+# Solución 1: Limpiar datos viejos
+flyctl ssh console
+# rm -rf /app/data/logs/*.log
+
+# Solución 2: Aumentar tamaño del volumen
+flyctl volumes list
+flyctl volumes extend vol_xxxxx --size 5
 ```
 
-**Re-despliegue manual:**
-1. Ve a https://share.streamlit.io
-2. Click en tu app
-3. Click en "Reboot" o "Redeploy"
+#### App muy lenta
 
-### Actualizar Secrets
+**Posibles causas:**
+1. **CPU/RAM insuficiente** → Escalar VM
+2. **Región lejana** → Mover a región más cercana
+3. **Muchos documentos** → Optimizar chunk_size y top_k
+4. **API de LLM lenta** → Verificar latencia de Gemini/Cohere
 
-1. Ve a tu app en https://share.streamlit.io
-2. Click en "Settings" → "Secrets"
-3. Edita los valores
-4. Click en "Save"
-5. La app se reiniciará automáticamente
+```bash
+# Verificar uso de recursos
+flyctl machine list
+flyctl ssh console -C "top -b -n 1"
+```
 
-### Limitaciones de Streamlit Community Cloud
+### Respaldo y Recuperación
 
-**Recursos:**
-- **RAM:** 1GB (puede causar problemas con muchos documentos grandes)
-- **CPU:** Compartida (puede ser lenta en horas pico)
-- **Storage:** Temporal (se pierde al reiniciar)
-- **Apps:** 3 apps gratuitas máximo
+#### Crear Backup Manual
 
-**Persistencia de Datos:**
-- ⚠️ Los datos en `data/` se pierden al reiniciar la app
-- ⚠️ ChromaDB se reinicia (vectores se pierden)
-- ⚠️ Documentos cargados se pierden
+```bash
+# Crear snapshot del volumen
+flyctl volumes snapshots create techflow_data --description "Backup antes de actualización"
 
-**Solución para persistencia:**
-- Usa almacenamiento externo (S3, Google Drive, etc.)
-- O considera VPS si necesitas datos persistentes
+# Listar snapshots
+flyctl volumes snapshots list techflow_data
+```
 
-**Otros límites:**
-- Apps públicas por defecto (o plan pagado para privadas)
-- Timeouts en operaciones largas
-- Sin acceso a shell/terminal
+#### Backup Automatizado
 
-### Costo
+Crear script `backup.sh`:
 
-- **Plan Community:** Gratuito
-  - 3 apps públicas
-  - 1GB RAM por app
-  - Storage temporal
-  
-- **Plan Team:** ~$20/mes por miembro
-  - Apps privadas
-  - Más recursos
-  - Soporte prioritario
+```bash
+#!/bin/bash
+# Script para backup automático
+
+DATE=$(date +%Y%m%d-%H%M%S)
+flyctl volumes snapshots create techflow_data --description "Backup automatico $DATE"
+
+# Retener solo últimos 7 snapshots
+# (limpiar manualmente viejos si es necesario)
+```
+
+Ejecutar desde tu máquina local con cron o Task Scheduler.
+
+#### Restaurar desde Backup
+
+1. **Crear nuevo volumen desde snapshot:**
+   ```bash
+   flyctl volumes create techflow_data_restored --snapshot-id snap_xxxxx --region mia
+   ```
+
+2. **Actualizar fly.toml para usar el nuevo volumen:**
+   ```toml
+   [[mounts]]
+     source = "techflow_data_restored"
+     destination = "/app/data"
+   ```
+
+3. **Re-desplegar:**
+   ```bash
+   flyctl deploy
+   ```
+
+### Costos y Facturación
+
+#### Free Tier (Incluido)
+
+- **3 VMs compartidas** (shared-cpu-1x con 256MB RAM)
+- **3GB de volumen persistente**
+- **160GB de tráfico de salida/mes**
+- **Certificados SSL ilimitados**
+
+**Suficiente para:**
+- Proyectos personales
+- Demos
+- 5-10 usuarios concurrentes
+
+#### Costos Adicionales
+
+**Si excedes el free tier:**
+
+- **VMs adicionales:** ~$2-3/VM/mes (shared-cpu-1x)
+- **Memoria adicional:** 
+  - 512MB: +$3-5/mes
+  - 1GB: +$10-12/mes
+  - 2GB: +$15-20/mes
+- **Volumen adicional:** ~$0.15/GB/mes
+- **Tráfico:** $0.02/GB después de 160GB
+
+**Ver uso actual:**
+```bash
+# Ver facturación en el dashboard
+flyctl dashboard
+
+# O en: https://fly.io/dashboard/personal/billing
+```
+
+### Mejores Prácticas
+
+✅ **Hacer:**
+- Crear snapshots antes de actualizaciones grandes
+- Monitorear logs regularmente
+- Usar secrets para información sensible
+- Configurar alertas de monitoreo
+- Probar en local antes de desplegar
+- Documentar cambios de configuración
+
+❌ **No hacer:**
+- Commitear secrets al repositorio
+- Ignorar health checks fallidos
+- Desplegar sin probar localmente
+- Olvidar hacer backups
+- Usar contraseñas débiles
 
 ---
 
@@ -613,9 +1078,24 @@ sudo systemctl start techflow
 
 ## Estimación de Costos
 
-### Streamlit Community Cloud
-- **Costo:** Gratuito (plan community)
-- **Limitaciones:** 3 apps, 1GB RAM, público
+### Fly.io
+
+**Free Tier:** $0/mes
+- 3 VMs compartidas (shared-cpu-1x, 256MB RAM cada una)
+- 3GB volumen persistente
+- 160GB tráfico de salida/mes
+- Certificados SSL ilimitados
+- **Ideal para:** Proyectos pequeños/medianos, 5-10 usuarios concurrentes
+
+**Producción Básica:** ~$5-10/mes
+- shared-cpu-2x con 512MB-1GB RAM
+- 3-5GB volumen
+- **Ideal para:** 10-50 usuarios concurrentes
+
+**Producción Media:** ~$15-25/mes
+- dedicated-cpu-1x con 2GB RAM
+- 10GB volumen
+- **Ideal para:** 50-200 usuarios concurrentes
 
 ### DigitalOcean Droplet
 - **Basic (2GB RAM):** $12/mes
@@ -629,31 +1109,34 @@ sudo systemctl start techflow
 - **e2-small (2GB RAM):** ~$13-18/mes
 - **e2-medium (4GB RAM):** ~$27-35/mes
 
-### Costos Adicionales
+### Costos Adicionales (Todos los Proveedores)
 - **Dominio:** ~$10-15/año
-- **Certificado SSL:** Gratuito (Let's Encrypt)
+- **Certificado SSL:** Gratuito (Let's Encrypt / Fly.io automático)
 - **Almacenamiento respaldos:** ~$1-5/mes
-- **Transferencia de datos:** Usualmente incluida
+- **Transferencia de datos:** Usualmente incluida (verificar límites)
 
 ---
 
 ## Mejores Prácticas
 
 ✅ **Hacer:**
-- Usar HTTPS en producción
-- Respaldar datos regularmente
-- Monitorear logs
-- Actualizar dependencias
+- Usar HTTPS en producción (automático en Fly.io)
+- Respaldar datos regularmente (snapshots en Fly.io)
+- Monitorear logs frecuentemente
+- Actualizar dependencias periódicamente
 - Usar contraseñas fuertes
-- Rotar claves API
+- Rotar claves API cada 90 días
 - Configurar health checks
+- Probar cambios localmente antes de desplegar
 
 ❌ **No hacer:**
-- Exponer puerto 8501 directamente (usar reverse proxy)
-- Commitear secretos a git
+- Exponer puerto 8501 directamente sin proxy (Fly.io lo maneja)
+- Commitear secrets a git
 - Usar contraseñas por defecto
 - Ignorar actualizaciones de seguridad
 - Saltear respaldos
+- Desplegar sin verificar logs
+- Ignorar alertas de monitoreo
 
 ---
 

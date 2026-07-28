@@ -606,57 +606,62 @@ python test_integration.py
 python run.py
 ```
 
-### Producción
+### Producción en Fly.io
 
 **Requisitos:**
 - Python 3.11+
-- 2GB RAM mínimo
-- 1GB espacio en disco
+- 512MB-1GB RAM recomendado
+- 3GB+ espacio en disco (volumen persistente)
 - Conexión a internet (para APIs de LLM)
 
 **Configuración de Entorno:**
 ```bash
-# .env de producción
-ADMIN_PASSWORD=contraseña_produccion_segura
-GEMINI_API_KEY=key_produccion
-COHERE_API_KEY=key_produccion
-LOG_LEVEL=WARNING
+# Secrets en Fly.io (configurar con flyctl)
+flyctl secrets set ADMIN_PASSWORD="contraseña_produccion_segura"
+flyctl secrets set GEMINI_API_KEY="key_produccion"
+flyctl secrets set COHERE_API_KEY="key_produccion"
+flyctl secrets set LOG_LEVEL="WARNING"
 ```
 
 **Configuración de Streamlit:**
-Crear `.streamlit/config.toml`:
+Las variables de entorno en `fly.toml` configuran Streamlit automáticamente:
 ```toml
-[server]
-headless = true
-port = 8501
-enableCORS = false
-enableXsrfProtection = true
-
-[browser]
-gatherUsageStats = false
-
-[theme]
-base = "light"
+[env]
+  STREAMLIT_SERVER_PORT = "8501"
+  STREAMLIT_SERVER_ADDRESS = "0.0.0.0"
+  STREAMLIT_SERVER_HEADLESS = "true"
+  STREAMLIT_BROWSER_GATHER_USAGE_STATS = "false"
+  STREAMLIT_SERVER_ENABLE_CORS = "false"
+  STREAMLIT_SERVER_ENABLE_XSRF_PROTECTION = "true"
 ```
 
-**Ejecutar:**
+**Desplegar:**
 ```bash
-streamlit run src/app.py --server.port=8501 --server.address=0.0.0.0
+# Inicial
+flyctl launch --no-deploy
+flyctl volumes create techflow_data --size 3 --region mia
+flyctl secrets set GEMINI_API_KEY="..." COHERE_API_KEY="..." ADMIN_PASSWORD="..."
+flyctl deploy
+
+# Actualizaciones
+flyctl deploy
 ```
 
-### Streamlit Cloud
+**Persistencia de Datos:**
+- Fly.io monta un volumen persistente en `/app/data`
+- ChromaDB, documentos y configuración persisten entre despliegues
+- Se recomienda crear snapshots periódicos: `flyctl volumes snapshots create techflow_data`
 
-**Variables de Entorno (Secrets):**
-```toml
-GEMINI_API_KEY = "tu-api-key"
-COHERE_API_KEY = "tu-api-key"
-ADMIN_PASSWORD = "tu-password"
-GEMINI_MODEL = "gemini-3.6-flash"
-```
+### Producción en VPS
 
-**Consideraciones:**
-- ChromaDB se reinicia con cada redeploy
-- Para persistencia, considera vector store externo (Pinecone, Weaviate)
+**Requisitos:**
+- Python 3.11+
+- 2GB RAM mínimo (4GB recomendado)
+- 10GB+ espacio en disco
+- Conexión a internet estable
+
+**Ejecutar como servicio systemd:**
+Ver [DEPLOYMENT.md](DEPLOYMENT.md) para configuración completa de VPS.
 
 ---
 

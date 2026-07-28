@@ -1,0 +1,81 @@
+# fly.toml app configuration file generated for techflow-rag-agent
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+
+app = "techflow-rag-agent"
+primary_region = "mia"  # Miami - Cambia según tu región preferida
+
+[build]
+  # Usar Dockerfile para construir la imagen
+  dockerfile = "Dockerfile"
+
+[deploy]
+  # Estrategia de despliegue
+  strategy = "rolling"
+
+[env]
+  # Variables de entorno públicas (no sensibles)
+  PORT = "8501"
+  PYTHONUNBUFFERED = "1"
+  PYTHONDONTWRITEBYTECODE = "1"
+  LOG_LEVEL = "INFO"
+  
+  # Configuración de Streamlit
+  STREAMLIT_SERVER_PORT = "8501"
+  STREAMLIT_SERVER_ADDRESS = "0.0.0.0"
+  STREAMLIT_SERVER_HEADLESS = "true"
+  STREAMLIT_BROWSER_GATHER_USAGE_STATS = "false"
+  STREAMLIT_SERVER_ENABLE_CORS = "false"
+  STREAMLIT_SERVER_ENABLE_XSRF_PROTECTION = "true"
+
+# Servicio HTTP
+[[services]]
+  internal_port = 8501
+  protocol = "tcp"
+  auto_stop_machines = false
+  auto_start_machines = true
+  min_machines_running = 1
+  
+  # Health checks
+  [[services.http_checks]]
+    interval = "30s"
+    timeout = "10s"
+    grace_period = "60s"
+    method = "GET"
+    path = "/_stcore/health"
+  
+  # Puertos y configuración HTTP
+  [[services.ports]]
+    port = 80
+    handlers = ["http"]
+    force_https = true
+  
+  [[services.ports]]
+    port = 443
+    handlers = ["tls", "http"]
+  
+  # Configuración de concurrencia
+  [services.concurrency]
+    type = "connections"
+    hard_limit = 50
+    soft_limit = 40
+
+# Volúmenes persistentes para datos
+[[mounts]]
+  source = "techflow_data"
+  destination = "/app/data"
+  initial_size = "3gb"
+
+# Configuración de recursos de la máquina
+[vm]
+  # Tamaño de VM recomendado para el free tier
+  # shared-cpu-1x: 256MB RAM (muy limitado, solo para pruebas)
+  # shared-cpu-2x: 512MB RAM (mínimo recomendado)
+  # shared-cpu-4x: 1GB RAM (recomendado)
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 512
+
+# Configuración de métricas
+[metrics]
+  port = 9091
+  path = "/metrics"

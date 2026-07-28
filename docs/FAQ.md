@@ -450,12 +450,12 @@ O vía Configuración → RAG → Instrucción del Sistema (si la UI está imple
 ### ¿Puedo desplegar esto como servicio?
 
 **¡Sí!** Ver opciones de despliegue:
-1. Streamlit Community Cloud (más fácil)
+1. **Fly.io** (recomendado - persistencia de datos, free tier generoso)
 2. Contenedor Docker
 3. VM en la nube (AWS, GCP, Azure)
 4. Servidor on-premises
 
-Ver `docs/DEPLOYMENT.md` para detalles.
+Ver `docs/DEPLOYMENT.md` para detalles completos.
 
 ---
 
