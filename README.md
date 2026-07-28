@@ -705,7 +705,9 @@ Ver [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) para más detalles.
 
 ## 📄 Licencia
 
-Este proyecto es de uso interno para **TechFlow Solutions**.
+Este proyecto está licenciado bajo la **Licencia MIT** - ver el archivo [LICENSE](LICENSE) para más detalles.
+
+Libre para usar, modificar y distribuir para uso personal, comercial o interno de **TechFlow Solutions**.
 
 ---
 
