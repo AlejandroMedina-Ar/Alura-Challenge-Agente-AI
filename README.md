@@ -2,11 +2,13 @@
 
 Asistente inteligente basado en Retrieval-Augmented Generation (RAG) para consultar documentos corporativos internos. Permite indexar documentos (PDF, TXT, MD, DOCX), generar embeddings vectoriales y realizar consultas en lenguaje natural que el agente responde utilizando exclusivamente el contenido de los documentos de la empresa.
 
+---
+
 ## 🌐 Demo en Vivo
 
-**[Ver Demo en Fly.io →](https://techflow-rag-agent.fly.dev/)**
+### **[http://54.205.4.104](http://54.205.4.104)**
 
-> **Nota:** La demo está desplegada en Fly.io con persistencia completa de datos. Puede tardar unos segundos en cargar la primera vez (cold start).
+> **Nota:** Demo desplegada en AWS EC2 Free Tier (t3.micro, 1GB RAM). Totalmente funcional y gratuita por 12 meses.
 
 ---
 
@@ -44,15 +46,18 @@ Asistente inteligente basado en Retrieval-Augmented Generation (RAG) para consul
 
 ---
 
-## 🚀 Instalación Local
+## 🚀 Instalación y Despliegue
 
-### Requisitos
+### 📦 Opción 1: Instalación Local (Desarrollo y Pruebas)
+
+#### Requisitos
 
 - **Python 3.11+**
+- **2GB RAM** mínimo
 - **API Key de Gemini** (gratuita en [Google AI Studio](https://makersuite.google.com/app/apikey))
 - **API Key de Cohere** (opcional, gratuita en [Cohere Dashboard](https://dashboard.cohere.com/api-keys))
 
-### Paso a Paso
+#### Paso a Paso
 
 ```bash
 # 1. Clonar el repositorio
@@ -93,7 +98,7 @@ python run.py
 
 La aplicación se abrirá automáticamente en `http://localhost:8501`
 
-### ⚡ Primera Configuración
+#### ⚡ Primera Configuración
 
 **Al abrir por primera vez:**
 1. El sistema pedirá login de administrador (no hay documentos)
@@ -108,63 +113,96 @@ La aplicación se abrirá automáticamente en `http://localhost:8501`
 
 ---
 
-## 🚀 Despliegue en Producción
+### ☁️ Opción 2: Despliegue en AWS EC2 Free Tier (Producción)
 
-### Opciones de Despliegue
-
-| Plataforma | RAM | Costo | Persistencia | Mejor Para |
-|------------|-----|-------|--------------|------------|
-| **AWS EC2 Free Tier** ⭐ | 1GB | **GRATIS** (12 meses) | ✅ Completa | Producción, aprendizaje |
-| Fly.io | 512MB-1GB | $5-10/mes | ✅ Completa | Deploy rápido |
-| VPS (DigitalOcean, etc.) | 1GB+ | $5-10/mes | ✅ Completa | Control total |
-
----
-
-## ☁️ Despliegue en AWS EC2 Free Tier
-
-### ¿Por qué AWS EC2?
+#### ⭐ ¿Por qué AWS EC2?
 
 AWS EC2 Free Tier es la **mejor opción** para desplegar TechFlow RAG Agent porque ofrece:
-- ✅ **GRATIS por 12 meses** (t2.micro con 1GB RAM)
-- ✅ **750 horas/mes** (suficiente para 24/7)
-- ✅ **Persistencia completa** de datos
-- ✅ **30GB de almacenamiento** EBS incluido
-- ✅ **IP pública** y elastic IP disponible
-- ✅ **Escalable** cuando termina el free tier
 
-### Recursos del Free Tier
+- ✅ **GRATIS por 12 meses** (750 horas/mes, suficiente para 24/7)
+- ✅ **t3.micro con 1GB RAM** (Free Tier elegible en todas las regiones)
+- ✅ **Persistencia completa** de datos (30GB almacenamiento incluido)
+- ✅ **IP pública** incluida
+- ✅ **Escalable** después del free tier
 
-**Instancia t2.micro incluye:**
-- 1 vCPU
-- 1GB RAM (suficiente para la app con lazy loading)
-- 30GB almacenamiento SSD
-- Red de alta velocidad
+#### 📋 Prerequisitos
 
-### Guía Rápida de Despliegue
+1. **Cuenta AWS**
+   - Crear en [aws.amazon.com](https://aws.amazon.com/free/)
+   - Requiere tarjeta de crédito para verificación (no se cobra en Free Tier)
 
-#### Prerequisitos
-
-1. **Cuenta AWS**: Crear en [aws.amazon.com](https://aws.amazon.com) (requiere tarjeta, no se cobra)
-2. **API Keys**:
+2. **API Keys**
    - [Gemini API Key](https://makersuite.google.com/app/apikey) - Gratuito
    - [Cohere API Key](https://dashboard.cohere.com/api-keys) - Gratuito (opcional)
 
-#### Pasos de Despliegue
+3. **AWS CLI** (para deploy automatizado desde Windows)
+   - Descargar e instalar desde [AWS CLI](https://aws.amazon.com/cli/)
+   - Configurar con `aws configure`
+
+#### 🎯 Método 1: Deploy Automatizado con PowerShell (Recomendado)
+
+**Desde tu Windows 10:**
+
+```powershell
+# 1. Descargar script de deploy automatizado
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/AlejandroMedina-Ar/Alura-Challenge-Agente-AI/main/aws/deploy-aws.ps1" -OutFile "deploy-aws.ps1"
+
+# 2. Ejecutar (crea instancia EC2 completa en 5-10 minutos)
+.\deploy-aws.ps1
+
+# El script hará TODO automáticamente:
+# ✅ Crear key pair para SSH
+# ✅ Crear security group con reglas de firewall
+# ✅ Buscar AMI de Ubuntu 22.04 LTS más reciente
+# ✅ Lanzar instancia t3.micro
+# ✅ Esperar a que esté lista
+# ✅ Mostrar IP pública y próximos pasos
+```
+
+**Próximos pasos después del script:**
+
+```powershell
+# 3. Configurar permisos de la key
+icacls techflow-key.pem /inheritance:r
+icacls techflow-key.pem /grant:r "$($env:USERNAME):(R)"
+
+# 4. Conectar por SSH
+ssh -i techflow-key.pem ubuntu@IP-PUBLICA
+
+# 5. Instalar la aplicación (desde SSH, dentro del servidor)
+wget https://raw.githubusercontent.com/AlejandroMedina-Ar/Alura-Challenge-Agente-AI/main/aws/install.sh
+chmod +x install.sh
+bash install.sh
+
+# Durante la instalación ingresa:
+# - Gemini API Key
+# - Cohere API Key (opcional, Enter para omitir)
+# - Admin Password
+```
+
+**Tiempo total:** 15-20 minutos
+
+**📚 Documentación completa:** [aws/CLI-DEPLOYMENT-GUIDE.md](aws/CLI-DEPLOYMENT-GUIDE.md)
+
+---
+
+#### 🖱️ Método 2: Deploy Manual desde Consola Web AWS
 
 **1. Crear Instancia EC2**
 
-En la consola AWS:
-- Launch Instance → Ubuntu Server 22.04 LTS
-- Instance type: `t2.micro` (Free tier eligible)
-- Create new key pair: `techflow-key.pem` (¡guárdala bien!)
-- Security Group:
-  - SSH (22) desde My IP
-  - HTTP (80) desde 0.0.0.0/0
-  - HTTPS (443) desde 0.0.0.0/0
-- Storage: 20GB gp3
-- Launch instance
+En la [consola de AWS](https://console.aws.amazon.com/ec2/):
 
-**2. Conectarse a la Instancia**
+- **Launch Instance** → Ubuntu Server 22.04 LTS
+- **Instance type:** `t3.micro` (⚠️ **Importante:** En la mayoría de regiones debes usar t3.micro, no t2.micro, para Free Tier)
+- **Key pair:** Create new → `techflow-key.pem` (¡guarda el archivo!)
+- **Network settings:**
+  - Allow SSH (22) from My IP
+  - Allow HTTP (80) from Anywhere
+  - Allow HTTPS (443) from Anywhere
+- **Storage:** 20GB gp3 (incluido en Free Tier)
+- **Launch instance**
+
+**2. Conectarse por SSH**
 
 ```bash
 # Windows PowerShell
@@ -175,13 +213,18 @@ chmod 400 techflow-key.pem
 ssh -i techflow-key.pem ubuntu@TU-IP-PUBLICA
 ```
 
-**3. Ejecutar Script de Instalación Automatizada**
+**3. Instalar la Aplicación**
 
 ```bash
 # Descargar e instalar (10-15 minutos)
 wget https://raw.githubusercontent.com/AlejandroMedina-Ar/Alura-Challenge-Agente-AI/main/aws/install.sh
 chmod +x install.sh
 bash install.sh
+
+# Durante la instalación ingresa:
+# - Gemini API Key
+# - Cohere API Key (opcional)
+# - Admin Password
 ```
 
 El script instalará automáticamente:
@@ -189,19 +232,10 @@ El script instalará automáticamente:
 - ✅ Aplicación completa desde GitHub
 - ✅ Nginx como reverse proxy
 - ✅ Servicio systemd (auto-inicio)
-- ✅ Firewall configurado
-- ✅ Todo listo para usar
+- ✅ Firewall UFW configurado
+- ✅ Swap memory de 2GB (previene OOM)
 
-**4. Configurar API Keys**
-
-Durante la instalación se te pedirá:
-```
-Enter your Gemini API Key: [pegar aquí]
-Enter your Cohere API Key: [pegar o Enter]
-Enter Admin Password: [contraseña segura]
-```
-
-**5. Acceder a la Aplicación**
+**4. Acceder a la Aplicación**
 
 Abre tu navegador:
 ```
@@ -210,487 +244,120 @@ http://TU-IP-PUBLICA
 
 ¡Listo! Tu aplicación está en producción 🎉
 
-### Comandos Útiles
-
-```bash
-# Ver estado
-sudo systemctl status techflow-rag
-
-# Ver logs
-sudo journalctl -u techflow-rag -f
-
-# Reiniciar
-sudo systemctl restart techflow-rag
-
-# Actualizar (cuando haya cambios en GitHub)
-cd /home/ubuntu/techflow-rag-agent/aws
-bash update.sh
-
-# Configurar seguridad adicional
-sudo bash security-setup.sh
-```
-
-### 📚 Documentación Completa
-
-Para guía detallada paso a paso con screenshots conceptuales:
-**[Ver Guía Completa de AWS EC2 →](aws/DEPLOYMENT-GUIDE.md)**
-
-Incluye:
-- Creación de instancia con imágenes paso a paso
-- Configuración de Security Groups
-- Troubleshooting detallado
-- Backups y mantenimiento
-- Estimación de costos
-
-### 💰 Costos
-
-**Free Tier (12 meses)**: $0/mes
-- 750 horas/mes t2.micro
-- 30GB almacenamiento
-- 15GB tráfico de salida
-
-**Después del Free Tier**: ~$8-10/mes (t2.micro 24/7)
-
 ---
 
-## ☁️ Despliegue en Fly.io
-
-### ¿Por qué Fly.io?
-
-Fly.io es la plataforma recomendada para desplegar TechFlow RAG Agent porque ofrece:
-- ✅ **Persistencia de datos** con volúmenes (tus documentos NO se pierden al actualizar)
-- ✅ **Free tier generoso** (3GB volumen + 256MB RAM incluidos)
-- ✅ **Despliegue global** en múltiples regiones
-- ✅ **HTTPS automático** con certificados SSL
-- ✅ **Health checks y auto-scaling**
-- ✅ **CLI potente** para gestión
-
-> **Demo funcionando:** [https://techflow-rag-agent.fly.dev/](https://techflow-rag-agent.fly.dev/)
-
-### Requisitos Previos
-
-1. **Cuenta en Fly.io**
-   - Regístrate en [fly.io](https://fly.io/app/sign-up)
-   - Free tier incluye: 3 VMs compartidas, 3GB volumen persistente
-   - Se requiere tarjeta de crédito para verificación (no se cobra en free tier)
-
-2. **Instalar flyctl (CLI de Fly.io)**
-   
-   **Windows (PowerShell como Administrador):**
-   ```powershell
-   iwr https://fly.io/install.ps1 -useb | iex
-   ```
-   
-   **macOS (Homebrew):**
-   ```bash
-   brew install flyctl
-   ```
-   
-   **Linux:**
-   ```bash
-   curl -L https://fly.io/install.sh | sh
-   ```
-   
-   Luego **cierra y abre tu terminal** para que reconozca `flyctl`
-   
-   ```bash
-   # Verificar instalación
-   flyctl version
-   ```
-
-3. **Autenticarse**
-   
-   ```bash
-   flyctl auth login
-   ```
-   
-   Esto abrirá tu navegador para completar la autenticación.
-
-### Pasos para Desplegar
-
-#### 1. Clonar y Preparar el Proyecto
+#### 🔧 Comandos Útiles de Mantenimiento
 
 ```bash
-# Clonar repositorio
-git clone https://github.com/AlejandroMedina-Ar/Alura-Challenge-Agente-AI.git
-cd Alura-Challenge-Agente-AI
-
-# Verificar que fly.toml existe
-ls fly.toml  # Windows: dir fly.toml
-```
-
-El proyecto ya incluye los archivos necesarios:
-- ✅ `fly.toml` - Configuración de Fly.io
-- ✅ `Dockerfile` - Imagen Docker optimizada
-- ✅ `.dockerignore` - Exclusiones para build
-
-#### 2. Crear la Aplicación en Fly.io
-
-```bash
-# Crear app (usará la configuración de fly.toml)
-flyctl launch --no-deploy
-
-# Responde a las preguntas:
-# - Would you like to copy its configuration? → YES
-# - Would you like to set up a PostgreSQL database? → NO
-# - Would you like to set up an Upstash Redis database? → NO
-```
-
-**Importante:** Anota el nombre de tu app (por defecto: `techflow-rag-agent`)
-
-#### 3. Verificar y Crear Volumen Persistente
-
-```bash
-# Ver región de tu app
-flyctl status
-
-# Crear volumen en la MISMA región que tu app
-# Si tu app está en 'dfw' (Dallas):
-flyctl volumes create techflow_data --size 3 --region dfw
-
-# Si tu app está en 'gru' (São Paulo):
-flyctl volumes create techflow_data --size 3 --region gru
-
-# Verificar que se creó
-flyctl volumes list
-```
-
-**Regiones recomendadas para Latinoamérica:**
-- `gru` - São Paulo, Brasil (mejor latencia)
-- `scl` - Santiago, Chile
-- `iad` - Virginia, USA (buena alternativa)
-- `dfw` - Dallas, USA
-
-#### 4. Configurar Secrets (API Keys y Password)
-
-```bash
-# IMPORTANTE: NO uses comillas al configurar los secrets
-# Reemplaza con tus valores reales
-
-# Gemini API Key (OBLIGATORIO)
-flyctl secrets set GEMINI_API_KEY=tu-gemini-api-key-aqui
-
-# Cohere API Key (RECOMENDADO para fallback)
-flyctl secrets set COHERE_API_KEY=tu-cohere-api-key-aqui
-
-# Contraseña de Administrador (OBLIGATORIO)
-flyctl secrets set ADMIN_PASSWORD=tu-password-segura
-
-# Opcional: Modelos específicos
-flyctl secrets set GEMINI_MODEL=gemini-3.6-flash
-flyctl secrets set COHERE_MODEL=command-r7b-12-2024
-
-# Verificar que se configuraron
-flyctl secrets list
-```
-
-**¿Dónde obtener las API Keys?**
-- **Gemini:** [Google AI Studio](https://makersuite.google.com/app/apikey) (Gratuito)
-- **Cohere:** [Cohere Dashboard](https://dashboard.cohere.com/api-keys) (Gratuito)
-
-#### 5. Desplegar la Aplicación
-
-```bash
-# Primera vez (tomará 5-10 minutos)
-flyctl deploy
-
-# Verás el progreso de:
-# - Building image
-# - Pushing image  
-# - Deploying
-# - Health checks
-```
-
-#### 6. Verificar el Despliegue
-
-```bash
-# Abrir la aplicación en el navegador
-flyctl open
-
-# Ver estado de la aplicación
-flyctl status
+# Ver estado del servicio
+sudo systemctl status techflow-rag
 
 # Ver logs en tiempo real
-flyctl logs
+sudo journalctl -u techflow-rag -f
 
-# Ver información de las máquinas
-flyctl machine list
-```
+# Reiniciar aplicación
+sudo systemctl restart techflow-rag
 
-**Tu aplicación estará disponible en:**
-```
-https://tu-app-name.fly.dev
-```
+# Actualizar app (cuando haya cambios en GitHub)
+cd ~/techflow-rag-agent
+git pull origin main
+sudo systemctl restart techflow-rag
 
-### Actualizaciones y Mantenimiento
+# Ver uso de memoria y disco
+free -h
+df -h
 
-#### Actualizar la Aplicación
-
-```bash
-# Después de hacer cambios en el código local
-git pull origin main  # Si clonaste desde GitHub
-
-# Re-desplegar (toma 3-5 minutos)
-flyctl deploy
-
-# Los datos en el volumen persisten automáticamente
-```
-
-#### Ver Logs
-
-```bash
-# Logs en tiempo real
-flyctl logs
-
-# Últimas 100 líneas
-flyctl logs --lines 100
-
-# Filtrar por nivel
-flyctl logs --level error
-```
-
-#### Gestionar Secrets
-
-```bash
-# Actualizar un secret
-flyctl secrets set ADMIN_PASSWORD=nueva-password
-
-# Listar secrets configurados
-flyctl secrets list
-
-# La app se reinicia automáticamente al cambiar secrets
-```
-
-#### Escalar Recursos
-
-```bash
-# Ver configuración actual
-flyctl scale show
-
-# Cambiar a máquina con más memoria (costo adicional)
-flyctl scale vm shared-cpu-2x --memory 512
-
-# Cambiar a máquina dedicada (mejor rendimiento)
-flyctl scale vm dedicated-cpu-1x --memory 2048
-```
-
-**Precios de referencia:**
-- `shared-cpu-1x` (256MB): **Incluido en free tier**
-- `shared-cpu-2x` (512MB): ~$5-7/mes
-- `shared-cpu-4x` (1GB): ~$10-12/mes
-- `dedicated-cpu-1x` (2GB): ~$15-20/mes
-
-#### Gestionar Volumen
-
-```bash
-# Ver volúmenes
-flyctl volumes list
-
-# Crear snapshot (backup)
-flyctl volumes snapshots create techflow_data
-
-# Listar snapshots
-flyctl volumes snapshots list techflow_data
-
-# Aumentar tamaño del volumen
-flyctl volumes extend vol_xxxxx --size 5
-```
-
-### Monitoreo y Debugging
-
-```bash
-# Ver métricas en dashboard web
-flyctl dashboard
-
-# SSH a la máquina (debugging avanzado)
-flyctl ssh console
-
-# Ver estado de health checks
-flyctl checks list
-
-# Reiniciar la aplicación
-flyctl apps restart techflow-rag-agent
-```
-
-### Consideraciones Importantes
-
-#### ✅ Ventajas de Fly.io
-
-- **Persistencia:** Los datos se mantienen entre despliegues (volumen persistente)
-- **Escalabilidad:** Fácil aumentar recursos cuando lo necesites
-- **Global:** Despliega en la región más cercana a tus usuarios
-- **HTTPS:** Certificados SSL automáticos
-- **CLI:** Herramientas poderosas para gestión
-- **Zero Downtime:** Rolling deployments sin interrupciones
-
-#### ⚠️ Limitaciones del Free Tier
-
-- **3 VMs compartidas:** Suficiente para proyectos pequeños/medianos
-- **256MB RAM por VM:** Puede ser limitado con muchos documentos grandes
-- **Solución:** Upgrade a máquinas más grandes cuando sea necesario
-
-#### 💰 Costos Estimados
-
-**Free Tier:** $0/mes
-- 3 VMs compartidas (shared-cpu-1x)
-- 3GB volumen persistente
-- 160GB tráfico de salida/mes
-- Suficiente para 5-10 usuarios concurrentes
-
-**Producción Básica:** ~$5-10/mes
-- shared-cpu-2x con 512MB-1GB RAM
-- 3-5GB volumen
-- Para 10-50 usuarios concurrentes
-
-**Producción Media:** ~$15-25/mes
-- dedicated-cpu-1x con 2GB RAM
-- 10GB volumen
-- Para 50-200 usuarios concurrentes
-
-### Troubleshooting
-
-#### La aplicación no inicia
-
-```bash
-# Ver logs detallados
-flyctl logs
-
-# Verificar configuración
-flyctl config display
-
-# Verificar health checks
-flyctl checks list
-```
-
-#### Sin memoria (OOM)
-
-```bash
-# Aumentar RAM
-flyctl scale vm shared-cpu-2x --memory 512
-```
-
-#### Problemas con volumen
-
-```bash
-# Verificar que el volumen existe
-flyctl volumes list
-
-# Verificar que está en la misma región que la app
-flyctl status
-```
-
-#### Secrets no se cargan
-
-```bash
-# Verificar secrets
-flyctl secrets list
-
-# Re-configurar si es necesario
-flyctl secrets set GEMINI_API_KEY=tu-key
-```
-
-### Comandos Útiles de Referencia Rápida
-
-```bash
-# Despliegue inicial completo
-flyctl launch --no-deploy
-flyctl volumes create techflow_data --size 3 --region REGION
-flyctl secrets set GEMINI_API_KEY=xxx COHERE_API_KEY=xxx ADMIN_PASSWORD=xxx
-flyctl deploy
-
-# Monitoreo
-flyctl status
-flyctl logs
-flyctl open
-
-# Actualización
-flyctl deploy
-
-# Gestión
-flyctl scale show
-flyctl volumes list
-flyctl secrets list
-
-# Backup
-flyctl volumes snapshots create techflow_data
-
-# Debugging
-flyctl ssh console
-```
-
-### Eliminar la Aplicación
-
-```bash
-# CUIDADO: Esto eliminará la app y TODOS los datos
-flyctl apps destroy techflow-rag-agent
-
-# Confirmar cuando se solicite
+# Editar variables de entorno (API keys, password)
+nano ~/techflow-rag-agent/.env
+sudo systemctl restart techflow-rag
 ```
 
 ---
 
-## 🖥️ Despliegue Alternativo en VPS/Cloud
-
-**Nota:** Fly.io es la opción recomendada. Usa VPS solo si necesitas control total del servidor.
-
-### Instalación en Servidor
+#### 🛡️ Seguridad Adicional (Recomendado)
 
 ```bash
-# Actualizar sistema
-sudo apt update && sudo apt upgrade -y
+# Ejecutar script de hardening de seguridad
+cd ~/techflow-rag-agent/aws
+sudo bash security-setup.sh
 
-# Instalar dependencias
-sudo apt install -y python3 python3-pip python3-venv git
+# Esto configura:
+# ✅ Fail2ban (protección contra ataques SSH)
+# ✅ SSH hardening (deshabilita root login y password auth)
+# ✅ Actualizaciones automáticas de seguridad
+# ✅ Log rotation para logs de la app
+```
 
-# Clonar repositorio
-git clone https://github.com/AlejandroMedina-Ar/Alura-Challenge-Agente-AI.git
-cd Alura-Challenge-Agente-AI
+---
 
-# Crear entorno virtual
-python3 -m venv venv
+#### 💰 Costos
+
+**Free Tier (12 meses):** $0/mes
+- 750 horas/mes de t3.micro
+- 30GB almacenamiento EBS
+- 15GB tráfico de salida
+
+**Después del Free Tier:** ~$8-10/mes
+- t3.micro 24/7: ~$7.50/mes
+- 20GB EBS gp3: ~$1.60/mes
+- **Total:** ~$9/mes (muy económico)
+
+**Si necesitas más recursos:**
+- t3.small (2GB RAM): ~$15/mes
+- t3.medium (4GB RAM): ~$30/mes
+
+---
+
+#### 📚 Documentación Completa de AWS
+
+| Guía | Descripción |
+|------|-------------|
+| [CLI-DEPLOYMENT-GUIDE.md](aws/CLI-DEPLOYMENT-GUIDE.md) | Deploy automatizado con AWS CLI y PowerShell |
+| [DEPLOYMENT-GUIDE.md](aws/DEPLOYMENT-GUIDE.md) | Deploy manual paso a paso con screenshots |
+
+---
+
+#### ⚠️ Notas Importantes del Deploy en AWS
+
+1. **Región us-east-1:** Usa `t3.micro`, NO `t2.micro` (cambio reciente de AWS)
+2. **Swap memory:** El script instala 2GB de swap automáticamente para prevenir crashes por OOM
+3. **Versiones de dependencias:**
+   - `torch==2.2.2` (versión estable)
+   - `transformers==4.40.2` (compatible)
+   - `sentence-transformers==2.7.0` (probado y estable)
+   - `numpy<2.0.0` (numpy 2.x rompe compatibilidad)
+4. **Batch size optimizado:** Reducido a 8 (en lugar de 32) para mejor uso de RAM en t3.micro
+5. **PDFs grandes:** Indexar de uno en uno, evitar múltiples a la vez
+
+---
+
+#### 🆘 Troubleshooting AWS
+
+**502 Bad Gateway:**
+```bash
+# El servicio crasheó, reiniciar:
+sudo systemctl restart techflow-rag
+sudo journalctl -u techflow-rag -n 50
+```
+
+**Out of Memory (OOM):**
+```bash
+# Verificar swap está activo:
+free -h
+# Si Swap: 0B, agregar swap:
+sudo fallocate -l 2G /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+```
+
+**Error "Numpy is not available":**
+```bash
+cd ~/techflow-rag-agent
 source venv/bin/activate
-
-# Instalar dependencias
-pip install -r requirements.txt
-
-# Configurar variables de entorno
-nano .env
-# (Agregar API keys)
-
-# Ejecutar setup
-python setup.py
-
-# Iniciar aplicación
-streamlit run src/app.py --server.port 8501 --server.address 0.0.0.0 --server.headless true
-```
-
-### Servicio Systemd (Opcional)
-
-Crear `/etc/systemd/system/techflow-rag.service`:
-
-```ini
-[Unit]
-Description=TechFlow RAG Agent
-After=network.target
-
-[Service]
-Type=simple
-User=ubuntu
-WorkingDirectory=/home/ubuntu/Alura-Challenge-Agente-AI
-Environment="PATH=/home/ubuntu/Alura-Challenge-Agente-AI/venv/bin"
-ExecStart=/home/ubuntu/Alura-Challenge-Agente-AI/venv/bin/streamlit run src/app.py --server.port 8501 --server.address 0.0.0.0 --server.headless true
-Restart=always
-
-[Install]
-WantedBy=multi-user.target
-```
-
-Activar:
-```bash
-sudo systemctl daemon-reload
-sudo systemctl enable techflow-rag
-sudo systemctl start techflow-rag
-sudo systemctl status techflow-rag
+pip uninstall numpy -y
+pip install "numpy<2.0.0"
+sudo systemctl restart techflow-rag
 ```
 
 ---
@@ -726,7 +393,7 @@ DocumentRepository (checksum SHA-256)
     ↓
 TextChunker (chunk_size=1000, overlap=200)
     ↓
-EmbeddingService (768 dimensiones)
+EmbeddingService (768 dimensiones, batch_size=8)
     ↓
 ChromaDB (almacenar chunks + embeddings)
     ↓
@@ -784,6 +451,13 @@ techflow-rag-agent/
 │   ├── knowledge_library/      # Documentos
 │   ├── logs/                   # Logs
 │   └── config.json             # Config runtime
+├── aws/                        # Scripts de deploy AWS
+│   ├── deploy-aws.ps1          # Deploy automatizado PowerShell
+│   ├── install.sh              # Instalación en EC2
+│   ├── update.sh               # Script de actualización
+│   ├── security-setup.sh       # Hardening de seguridad
+│   ├── CLI-DEPLOYMENT-GUIDE.md # Guía AWS CLI
+│   └── DEPLOYMENT-GUIDE.md     # Guía manual paso a paso
 ├── architecture/               # Docs arquitectura
 ├── specs/                      # Especificaciones
 ├── docs/                       # Documentación
@@ -805,12 +479,14 @@ Ver [Source-Code-Structure.md](architecture/Source-Code-Structure.md) para detal
 | **Framework Web** | Streamlit | 1.47.1 | Interfaz interactiva |
 | **LLM Principal** | Google Gemini | 3.6 Flash | Generación de respuestas |
 | **LLM Fallback** | Cohere Command-R | command-r7b-12-2024 | Backup |
-| **Embeddings** | Sentence Transformers | multilingual-e5-base | Embeddings (768d) |
+| **Embeddings** | Sentence Transformers | 2.7.0 | Embeddings (768d) |
 | **Vector Store** | ChromaDB | 1.0.16 | Base de datos vectorial |
 | **Framework RAG** | LangChain | 0.3.27 | Orquestación RAG |
 | **PDF Parser** | PyMuPDF | 1.23+ | Extracción de texto |
 | **Auth** | bcrypt | 5.0+ | Hash de contraseñas |
 | **Lenguaje** | Python | 3.11+ | Base del proyecto |
+| **PyTorch** | torch | 2.2.2 | Base para embeddings |
+| **Transformers** | transformers | 4.40.2 | Modelos de lenguaje |
 
 ---
 
@@ -894,6 +570,7 @@ Ver [Source-Code-Structure.md](architecture/Source-Code-Structure.md) para detal
 | `top_k` | 5 | Fragmentos recuperados |
 | `temperature` | 0.7 | Creatividad del LLM |
 | `embedding_dim` | 768 | Dimensión del embedding |
+| `batch_size` | 8 | Lote de chunks para embeddings (optimizado para 1GB RAM) |
 
 ### Variables de Entorno (.env)
 
@@ -931,8 +608,9 @@ EMBEDDING_MODEL=intfloat/multilingual-e5-base
 | [TECHNICAL-DOCS.md](docs/TECHNICAL-DOCS.md) | Documentación técnica detallada |
 | [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | Solución de problemas |
 | [FAQ.md](docs/FAQ.md) | Preguntas frecuentes |
-| [DEPLOYMENT.md](docs/DEPLOYMENT.md) | Guía de despliegue |
 | [SECURITY-NOTES.md](docs/SECURITY-NOTES.md) | Consideraciones de seguridad |
+| [aws/CLI-DEPLOYMENT-GUIDE.md](aws/CLI-DEPLOYMENT-GUIDE.md) | Deploy automatizado con AWS CLI |
+| [aws/DEPLOYMENT-GUIDE.md](aws/DEPLOYMENT-GUIDE.md) | Deploy manual en AWS EC2 |
 
 ---
 
@@ -958,6 +636,18 @@ ls -la data/chromadb/
 ### App no abre automáticamente
 Abre manualmente: `http://localhost:8501`
 
+### Error "Numpy is not available"
+```bash
+pip uninstall numpy -y
+pip install "numpy<2.0.0"
+```
+
+### 502 Bad Gateway en AWS
+```bash
+sudo systemctl restart techflow-rag
+sudo journalctl -u techflow-rag -f
+```
+
 Ver [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) para más detalles.
 
 ---
@@ -965,6 +655,19 @@ Ver [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) para más detalles.
 ## 🆕 Historial de Actualizaciones
 
 ### Julio 2026 - v1.0.0
+
+#### Migración a AWS EC2
+- ✅ **Deploy en AWS EC2 Free Tier** (t3.micro, 1GB RAM)
+- ✅ Scripts automatizados de instalación
+- ✅ Deploy con AWS CLI + PowerShell para Windows
+- ✅ Documentación completa de despliegue
+- ✅ Optimizaciones para 1GB RAM (batch_size=8, swap memory)
+
+#### Correcciones Críticas
+- ✅ Fix de versiones de dependencias (numpy<2.0, torch 2.2.2, transformers 4.40.2)
+- ✅ Resolución de conflictos de compatibilidad
+- ✅ Optimización de uso de memoria (garbage collection)
+- ✅ Prevención de OOM con swap memory
 
 #### Migración a Gemini 3.6 Flash
 - ✅ Actualizado a **Gemini 3.6 Flash** (última versión)
@@ -982,6 +685,7 @@ Ver [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) para más detalles.
 - ✅ Embeddings sin dependencia de APIs externas
 - ✅ 768 dimensiones optimizadas
 - ✅ Soporte multilingüe mejorado
+- ✅ Lazy loading para reducir uso de RAM al inicio
 
 #### UI y UX
 - ✅ Tema claro por defecto
@@ -1021,8 +725,9 @@ Construido con las mejores herramientas del ecosistema de IA:
 - [LangChain](https://langchain.com) - Framework RAG y orquestación LLM
 - [ChromaDB](https://www.trychroma.com) - Base de datos vectorial
 - [Google Gemini](https://deepmind.google/technologies/gemini/) - LLM de última generación
-- [Cohere](https://cohere.com) - LLM enterprise y embeddings
-- [HuggingFace](https://huggingface.co) - Modelos open-source
+- [Cohere](https://cohere.com) - LLM enterprise
+- [HuggingFace](https://huggingface.co) - Modelos open-source (Sentence Transformers)
+- [PyTorch](https://pytorch.org) - Framework de deep learning
 
 ---
 
